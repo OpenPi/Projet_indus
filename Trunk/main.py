@@ -15,19 +15,24 @@ from Core.pref import preferences
 import Core.Queue_Global as Queue_Global
 from Core.QueueItem import QueueItem
 import Process.Process_UserCommand.Process_UserCommand as Process_UserCommand
+import Process.Process_SensorsRead.Process_SensorsRead as Process_SensorsRead
 
 
 
 
 # Process launch
 Process_UserCommand.StartThread()
-
+Process_SensorsRead.StartThread()
 
 commande = ""
 
+Queue_Global.process_UserCommand.enqueue('Process')
+Queue_Global.process_SensorsRead.enqueue('Process')
 
 while commande != "Exit":
-	commande = raw_input("commande : ")
-	Queue_Global.process_UserCommand.enqueue(commande, 33)
+    commande = raw_input("commande : ")
+    if commande == "Exit":
+        Queue_Global.process_UserCommand.enqueue('Exit')
+        Queue_Global.process_SensorsRead.enqueue('Exit')
 
 
