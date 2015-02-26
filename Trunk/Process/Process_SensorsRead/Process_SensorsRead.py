@@ -26,8 +26,9 @@ def process(Queue):
 			print("Start State")	
 
 		elif state == "Process":
-			print(poolThermocouple.get_value())		
-
+			thermocoupleValue = poolThermocouple.get_value()
+			print(thermocoupleValue)		
+			database.database.insertMeasure(1, thermocoupleValue)
 			Queue.enqueueIfEmpty(state, data, 1000)
 			
 		elif state == "Stop":

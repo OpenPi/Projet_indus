@@ -32,7 +32,7 @@ def process(Queue):
 			print("Stop State")		
 
 		elif state == "light":
-
+			print("Lumière")
 			if(data == "on"):
 				light.set_value(True)		
 			else:
