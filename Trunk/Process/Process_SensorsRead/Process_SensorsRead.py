@@ -10,7 +10,6 @@ from threading import Thread
 
 import Core.Queue_Global as Queue_Global
 from Core.QueueItem import QueueItem
-from Core.pref import preferences
 import Core.database as database
 from Core.sensor import Thermocouple
 

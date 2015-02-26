@@ -10,7 +10,6 @@ from Queue import Queue
 from threading import Thread
 
 
-from Core.pref import preferences
 
 import Core.Queue_Global as Queue_Global
 from Core.QueueItem import QueueItem
