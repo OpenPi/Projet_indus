@@ -11,6 +11,8 @@ from threading import Thread
 import Core.Queue_Global as Queue_Global
 from Core.QueueItem import QueueItem
 from Core.pref import preferences
+import Core.database as database
+from Core.sensor import Thermocouple
 
 def process(Queue):
 
@@ -19,20 +21,21 @@ def process(Queue):
 		state = Item.state
 		data = Item.data
 		if state == "Init":
-			print("Init State")
+			poolThermocouple = Thermocouple(1, 4.14)
 
 		elif state == "Start":
 			print("Start State")	
 
 		elif state == "Process":
-			print("Lecture des capteurs")		
+			print(poolThermocouple.getValue())		
+
 			Queue.enqueueIfEmpty(state, data, 1000)
 			
 		elif state == "Stop":
 			print("Stop State")		
 
 		elif state == "Exit":
-
+			del poolThermocouple
 			break
 		else:
 			print("Programmation error : This state is not implemented : "+state)

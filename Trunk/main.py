@@ -27,6 +27,7 @@ Process_SensorsRead.StartThread()
 commande = ""
 
 Queue_Global.process_UserCommand.enqueue('Process')
+Queue_Global.process_SensorsRead.enqueue('Init')
 Queue_Global.process_SensorsRead.enqueue('Process')
 
 while commande != "Exit":
