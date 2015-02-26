@@ -22,17 +22,20 @@ import Process.Process_SensorsRead.Process_SensorsRead as Process_SensorsRead
 # Process launch
 Process_UserCommand.StartThread()
 Process_SensorsRead.StartThread()
+Process_Actuators.StartThread()
 
 commande = ""
 
 Queue_Global.process_UserCommand.enqueue('Process')
 Queue_Global.process_SensorsRead.enqueue('Init')
 Queue_Global.process_SensorsRead.enqueue('Process')
+Queue_Global.process_Actuators.enqueue('Init')
 
 while commande != "Exit":
     commande = raw_input("commande : ")
     if commande == "Exit":
         Queue_Global.process_UserCommand.enqueue('Exit')
         Queue_Global.process_SensorsRead.enqueue('Exit')
+        Queue_Global.process_Actuators.enqueue('Exit')
 
 

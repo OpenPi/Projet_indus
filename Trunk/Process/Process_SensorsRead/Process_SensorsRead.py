@@ -26,7 +26,7 @@ def process(Queue):
 			print("Start State")	
 
 		elif state == "Process":
-			print(poolThermocouple.getValue())		
+			print(poolThermocouple.get_value())		
 
 			Queue.enqueueIfEmpty(state, data, 1000)
 			
