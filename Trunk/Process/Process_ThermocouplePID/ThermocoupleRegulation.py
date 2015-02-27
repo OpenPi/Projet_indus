@@ -8,7 +8,7 @@
 
 from time import sleep
 
-class TemperatureRegulation(object):
+class ThermocoupleRegulation(object):
 	"""PID Thermocouple"""
 
 	#------------------------------#
