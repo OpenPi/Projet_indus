@@ -52,4 +52,4 @@ class Database:
             self.db.rollback()
 
 
-database = Database("localhost", "root", "", "PlashBoard")
+database = Database("localhost", "root", "root", "PlashBoard")
