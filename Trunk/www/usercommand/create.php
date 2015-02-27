@@ -14,7 +14,7 @@
         $date = date('Y-m-d h:m:s');
 echo $date;
 
-        $tableObject->insertRow('"NULL", '.$command.', '.$targetName.', '.$value.', "'.$date.'", 0');
+        $tableObject->insertRow('"NULL", "'.$command.'", "'.$targetName.'", "'.$value.'", "'.$date.'", 0');
 
     }
 
