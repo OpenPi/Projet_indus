@@ -34,7 +34,7 @@ Queue_Global.process_UserCommand.enqueue('Process')
 Queue_Global.process_SensorsRead.enqueue('Init')
 Queue_Global.process_SensorsRead.enqueue('Process')
 Queue_Global.process_Actuators.enqueue('Init')
-Queue_Global.TemperatureRegulation.enqueue('Init')
+Queue_Global.process_TemperatureRegulation.enqueue('Init')
 
 while commande != "Exit":
     commande = raw_input("commande : ")
@@ -42,6 +42,6 @@ while commande != "Exit":
         Queue_Global.process_UserCommand.enqueue('Exit')
         Queue_Global.process_SensorsRead.enqueue('Exit')
         Queue_Global.process_Actuators.enqueue('Exit')
-        Queue_Global.TemperatureRegulation.enqueue('Exit')
+        Queue_Global.process_TemperatureRegulation.enqueue('Exit')
 
 
