@@ -12,7 +12,7 @@ Version 1.0 Created 23/02/2015
 ================================================
 """
 
-class Actuator:
+class Actuator(object):
 	"""
 	Mother class of actuator
 	"""
@@ -61,6 +61,18 @@ class NumericActuator(Actuator):
 		pin: Physical position actuator on Expender PI
 		"""
 		Actuator.__init__(self, pin)
+		self._override = False
+		
+	def getOverride(self):
+		return self._override
+		
+	def setOverride(self, value):
+		if bool == type(value):
+			self._a = value
+		else:
+			print("ERROR: override is boolean")
+		
+	override = property(getOverride, setOverride)
 		
 	# Set value activator
 	def set_value_activator(self, value):
