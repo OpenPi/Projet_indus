@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>GUI test</title>
+
+
+    <script type="text/javascript"
+          src="https://www.google.com/jsapi?autoload={
+            'modules':[{
+              'name':'visualization',
+              'version':'1',
+              'packages':['corechart']
+            }]
+          }"></script>
+
+
+   <!-- <script type="application/javascript" src="oXHR.js"></script>-->
+    <link rel="stylesheet" href="ihm.css" />
+	<meta charset="utf-8"/>
+</head>
+
+<body>
+
+	<header>
+
+			<h1 style="text-align: center">Plashboard GUI test</h1>
+
+
+	</header>
+
+
+	<section style="margin-top: 100px">
+
+		<div>
+			<form id="xlastRequest">
+				<input type="text" id="xlast" placeholder="number of data displayed"/>
+			</form>
+		</div>
+
+		<div>
+			<form id="datetimeRequest">
+				<input type="datetime-local" id="timestamp"/>
+			</form>
+		</div>
+
+		<div id="measure">
+		</div>
+
+		<div id="chart">
+			<form id="orderRequest">
+				<input type="text" id="order" placeholder="the regulation order"/>
+			</form>
+			<div id="curve_chart">
+			</div>
+		</div>
+
+		<div>
+			<form id="CreateUserCommand">
+				<select id="command">
+					<option value="Create">Create</option>
+					<option value="Update">Update</option>
+					<option value="Delete">Delete</option>
+					<option value="Get">Get</option>
+					<option value="Set">Set</option>
+				</select>
+				<input type="text" id="targetName" placeholder="target name"/>
+				<select id="val">
+					<option value="on">On</option>
+					<option value="off">Off</option>
+				</select>
+				<input type="button" value="save command" onclick="postUserCommand();"/>
+			</form>
+		</div>
+		
+		<div id="userCommand">
+		</div>
+
+
+
+
+	</section>
+
+	<footer style="margin-top: 700px">
+
+			<p style="size:12px">developped by us</p>
+
+	</footer>
+
+
+
+	<script src="http://code.jquery.com/jquery.min.js"></script>
+	<script type="application/javascript" src="ihm.js"></script>
+
+</body>
