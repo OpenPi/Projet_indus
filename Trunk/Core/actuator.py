@@ -76,7 +76,8 @@ class NumericActuator(Actuator):
 		
 	# Set value activator
 	def set_value_activator(self, value):
-		set_output_num(self.channel, value)
+		if override:
+			set_output_num(self.channel, value)
 		
 class Pump(NumericActuator):
 	"""
