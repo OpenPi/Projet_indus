@@ -1,0 +1,17 @@
+{
+	"type": "object",
+	"$schema": "http://json-schema.org/draft-03/schema",
+	"id": "http://jsonschema.net",
+	"description": "Post identification to get an authorized token"
+	"required": true,
+	"properties": {
+	"username": {
+		"type": "string",
+		"required": true
+	},
+		"password": {
+		"type": "string",
+		"required": true
+		}
+	}				
+}

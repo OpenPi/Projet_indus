@@ -1,0 +1,135 @@
+#%RAML 0.8
+
+title: Plashboard
+baseUri: http://localhost/api/{version}
+version: v1
+mediaType: application/json
+
+schemas:
+	- sensor: !include schema/plashboard-sensor.schema
+	- error: !include schema/plashboard-error.schema
+	- authentication: !include schema/plashboard-authentication.schema
+	- authorize: !include schema/plashboard-authorized.schema
+
+traits:
+	- secured:
+		description: Some requests require authentication
+		headers:
+			Authorization:
+				description: |
+					The JWT token provided by the /authorize method.
+				type: string
+				required: true
+			responses:
+				401:
+					body:
+						application/json:
+							schema: error
+							example: |
+							{
+							"code": -2,
+							"message": "Invalid token"
+							}
+
+/authorize:
+	post:
+		description: |
+			Get an authentication token.
+		body:
+			application/json:
+				schema: authentication
+				example: |
+					{
+					"username": "plashboard",
+					"password": "1234"
+					}
+			responses:
+				200:
+					body:
+						application/json:
+						schema: authorized
+						example: |
+							{
+								"token": "ASDFGHJKL"
+							}
+				401:
+					body:
+					application/json:
+					schema: error
+					example: |
+					{
+						"code": -1,
+						"message": "Username and password invalid"
+					}
+
+/measures:
+	type: collection
+	get:
+		is: [ secured ]
+		description: Get all measures for sensors.
+		responses:
+			200:
+				body:
+					application/json:
+						schema: sensor
+						example: |
+							[
+								{
+									"id": 1,
+									"hardwareConfigurationId": 5,
+									"hardwareName": "temperature_sensor",
+									"value": 21,
+									"timestamp": "2015-03-03 14:22:00"
+								},
+								{
+									"id": 2,
+									"hardwareConfigurationId": 6,
+									"hardwareName": "ph_sensor",
+									"value": 7,
+									"timestamp": "2015-03-03 14:35:03"
+								},
+								{
+									"id": 3,
+									"hardwareConfigurationId": 9,
+									"hardwareName": "pressure_sensor",
+									"value": 4,
+									"timestamp": "2015-03-03 14:40:52"
+								}	
+							]
+
+	/{sensorId}:
+		description: Get measure for a specific sensor.
+		get:
+			is: [ secured ]
+			description: Get the sensor with `sensorId = {sensorId}`.
+			responses:
+				200:
+					body:
+						application/json:
+						schema: sensor
+						example: |
+						{
+							"id": 1,
+							"hardwareConfigurationId": 5,
+							"hardwareName": "temperature_sensor",
+							"value": 21,
+							"timestamp": "2015-03-03 14:22:00"
+						}
+				404:
+					body:
+					application/json:
+					schema: error
+					example: |
+					{
+						"code": 404,
+						"message": "Not found"
+					}
+				401:
+					body:
+					application/json:
+					schema: error
+					example: |
+					{
+						"code": 401,
+						"message": "Authorized require"
+					}
