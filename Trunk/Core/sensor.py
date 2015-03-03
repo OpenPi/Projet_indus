@@ -18,12 +18,14 @@ class Sensor:
 	"""
 	
 	# Builder class
-	def __init__(self, channel):
+	def __init__(self, hardwareId, channel):
 		"""
 		Sensor class
 		
+		hardwareId: Id to hardware equipment
 		channel: Physical position sensor on Expender PI
 		"""
+		self.hardwareId = hardwareId
 		self.channel = channel
 	
 class AnalogSensor(Sensor):
@@ -33,14 +35,14 @@ class AnalogSensor(Sensor):
 	"""
 	
 	# Builder class
-	def __init__(self, channel, refVolt):
+	def __init__(self, hardwareId, channel, refVolt):
 		"""
 		Analog sensor class
 		
 		channel: Physical position sensor on Expender PI
 		refVolt: Reference voltage of Expender PI
 		"""
-		Sensor.__init__(self, channel)
+		Sensor.__init__(self, hardwareId, channel)
 		self.refVolt = refVolt
 		
 	# Get and return physical value of analog sensor 
@@ -56,14 +58,14 @@ class NumericSensor(Sensor):
 	"""
 	
 	# Builder class
-	def __init__(self, pin, pullup=True):
+	def __init__(self, hardwareId, pin, pullup=True):
 		"""
 		Numeric sensor class
 		
 		pin: Physical position sensor on Expender PI
 		pullup: If True the logic pull is up
 		"""
-		Sensor.__init__(self, pin)
+		Sensor.__init__(self, hardwareId, pin)
 		self.pullup = pullup
 	
 	# Get and return physical value of numeric sensor
@@ -79,14 +81,14 @@ class Thermocouple(AnalogSensor):
 	"""
 	
 	# Builder class
-	def __init__(self, channel, refVolt):
+	def __init__(self, hardwareId, channel, refVolt):
 		"""
 		Thermocouple sensor class
 		
 		channel: Physical position sensor on Expender PI
 		refVolt: Reference voltage of Expender PI
 		"""
-		AnalogSensor.__init__(self, channel, refVolt)
+		AnalogSensor.__init__(self, hardwareId, channel, refVolt)
 	
 	# convert physical value to temperature value
 	def conversion(self, voltValue):
@@ -126,7 +128,7 @@ class PhMeter(AnalogSensor):
 		channel: Physical position sensor on Expender PI
 		refVolt: Reference voltage of Expender PI
 		"""
-		AnalogSensor.__init__(self, channel, refVolt)
+		AnalogSensor.__init__(self, hardwareId, channel, refVolt)
 	
 	# convert physical value to ph value
 	def conversion(self, value):
@@ -153,7 +155,7 @@ class AmpereMeter(AnalogSensor):
 		channel: Physical position sensor on Expender PI
 		refVolt: Reference voltage of Expender PI
 		"""
-		AnalogSensor.__init__(self, channel, refVolt)
+		AnalogSensor.__init__(self, hardwareId, channel, refVolt)
 	
 	# convert physical value to ampere value
 	def conversion(self, value):
@@ -173,7 +175,7 @@ class AmpereMeter(AnalogSensor):
 class sensorTestNumeric(NumericSensor):
 
 	def __init__(self, pin, pullup=True):
-		NumericSensor.__init__(self, pin, pullup)
+		NumericSensor.__init__(self, hardwareId, pin, pullup)
 	
 	def get_value(self):
 		return self.get_value_sensor()
