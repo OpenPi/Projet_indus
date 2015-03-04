@@ -6,7 +6,8 @@ version: v1
 mediaType: application/json
 
 schemas:
-	- sensor: !include schema/plashboard-sensor.schema
+	- measures: !include schema/plashboard-measures.schema
+	- userCommands: !include schema/plashboard-userCommands.schema
 	- error: !include schema/plashboard-error.schema
 	- authentication: !include schema/plashboard-authentication.schema
 	- authorize: !include schema/plashboard-authorized.schema
@@ -71,7 +72,7 @@ traits:
 			200:
 				body:
 					application/json:
-						schema: sensor
+						schema: measures
 						example: |
 							[
 								{
@@ -101,12 +102,12 @@ traits:
 		description: Get measure for a specific sensor.
 		get:
 			is: [ secured ]
-			description: Get the sensor with `sensorId = {sensorId}`.
+			description: Get the sensor with `hardwareConfigurationId = {sensorId}`.
 			responses:
 				200:
 					body:
 						application/json:
-						schema: sensor
+						schema: measures
 						example: |
 						{
 							"id": 1,
@@ -114,6 +115,82 @@ traits:
 							"hardwareName": "temperature_sensor",
 							"value": 21,
 							"timestamp": "2015-03-03 14:22:00"
+						}
+				404:
+					body:
+					application/json:
+					schema: error
+					example: |
+					{
+						"code": 404,
+						"message": "Not found"
+					}
+				401:
+					body:
+					application/json:
+					schema: error
+					example: |
+					{
+						"code": 401,
+						"message": "Authorized require"
+					}
+
+/usercommands:
+	type: collection
+	get:
+		is: [ secured ]
+		description: Get all user commands.
+		responses:
+			200:
+				body:
+					application/json:
+						schema: userCommands
+						example: |
+							[
+								{
+									"id": 1,
+									"command": "Create",
+									"targetName": "userConfiguration",
+									"value": "ph_target:2:su:6",
+									"timestamp": "2015-03-03 14:22:00",
+									"done":1
+								},
+								{
+									"id": 2,
+									"command": "Set",
+									"targetName": "light",
+									"value": "1",
+									"timestamp": "2015-03-03 15:00:00",
+									"done":1
+								},
+								{
+									"id": 3,
+									"command": "Set",
+									"targetName": "light",
+									"value": "0",
+									"timestamp": "2015-03-03 16:45:00",
+									"done":0
+								}	
+							]
+
+	/{commandId}:
+		description: Get information for a specific command.
+		get:
+			is: [ secured ]
+			description: Get the command with `id = {commandId}`.
+			responses:
+				200:
+					body:
+						application/json:
+						schema: measures
+						example: |
+						{
+							""id": 3,
+							"command": "Set",
+							"targetName": "light",
+							"value": "0",
+							"timestamp": "2015-03-03 16:45:00",
+							"done":0
 						}
 				404:
 					body:
