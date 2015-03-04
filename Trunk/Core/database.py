@@ -53,11 +53,11 @@ class Database:
 
     def getHardwareConfigurationByName(self, name):
 
-        self.cur.execute("SELECT * FROM hardwareConfiguration WHERE name="+name)
-        result = self.cur.fetchall()
+        self.cur.execute("SELECT * FROM hardwareConfiguration WHERE hardwareName='"+name+"' LIMIT 1")
+        result = self.cur.fetchone()
         self.db.commit()
         return result
 
 databaseSensorsRead = Database("localhost", "root", "root", "PlashBoard")
-
+databaseActuators = Database("localhost", "root", "root", "PlashBoard")
 databaseUserCommand = Database("localhost", "root", "root", "PlashBoard")
