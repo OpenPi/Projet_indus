@@ -20,7 +20,7 @@
 	<meta charset="utf-8"/>
 </head>
 
-<body>
+<body onload="getMeasure();">
 
 	<header>
 
@@ -39,13 +39,27 @@
 		</div>
 
 		<div>
+			<form id="sensorTypeRequest">
+				<input type="radio" name="sensor" value="1" id="ph" /> <label for="ph">ph</label><br />
+		    	<input type="radio" name="sensor" value="2" id="chlorine" /> <label for="chlorine">chlorine</label><br />
+		    	<input type="radio" name="sensor" value="3" id="water" /> <label for="water">water</label><br />
+		    	<input type="radio" name="sensor" value="4" id="temperature" checked/> <label for="temperature">temperature</label>
+	    	</form>
+		</div>
+
+
+		<div>
 			<form id="datetimeRequest">
 				<input type="datetime-local" id="timestamp"/>
 			</form>
 		</div>
 
+
+
 		<div id="measure">
 		</div>
+
+
 
 		<div id="chart">
 			<form id="orderRequest">
@@ -54,6 +68,8 @@
 			<div id="curve_chart">
 			</div>
 		</div>
+
+		
 
 		<div>
 			<form id="CreateUserCommand">
@@ -73,6 +89,8 @@
 			</form>
 		</div>
 		
+
+
 		<div id="userCommand">
 		</div>
 

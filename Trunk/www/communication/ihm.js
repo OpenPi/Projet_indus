@@ -1,51 +1,67 @@
-var urlAllMeasure = 'measure/read.php';
-var urlLimitMeasure = 'measure/read.php?xlast=';
-var urlDateMeasure = 'measure/read.php?time=';
-var urlReadUserCommand = 'userCommand/read.php';
-var urlCreateUserCommand = 'userCommand/create.php';
+var urlAllMeasure = '../measures/';
+var urlLimitMeasure = '?xlast=';
+var urlDateMeasure = '?time=';
+var urlReadUserCommand = '../usercommands/';
+var urlCreateUserCommand = '../usercommands/';
 
 var order = 10;
 var i = 0;
+var sensorType = "";
 
-setInterval(get, 1000); //Execute the get function each seconds
+setInterval(getMeasure, 1000); //Execute the get function each seconds
+setInterval(getMeasuresForChart, 1000); //Execute the get function each seconds
+setInterval(getUserCommand, 1000); //Execute the get function each seconds
 
-function get()
+function typeSensor()
 {
 
-	var xlast = document.forms['xlastRequest'].xlast.value;
+	for(o = 0; o < document.getElementById("sensorTypeRequest").elements.length; o++)
+	{
+		if(document.getElementById("sensorTypeRequest").elements[o].checked)
+		{
+			return sensorType = document.getElementById("sensorTypeRequest").elements[o].value;
+			break;
+		}
+	}
 
-	var calendar = document.getElementById("timestamp").value;
+}
 
-	calendar = calendar.replace("T", "%20");
-	calendar = calendar.replace("-", "/");
-	calendar = calendar.replace("-", "/");
+
+function getMeasure()
+{
+
+	var xlast = $("#xlast").val();
+
+	var calendar = $("#timestamp").val();
 	calendar = "%22" + calendar + ":00%22";
+
+	sensorType = typeSensor();
 
 	if($.isEmptyObject(xlast) && calendar == "%22:00%22") //if we don't have limits, we send a GET Request for take the sensors' data
 	{
 		$.get
 		(
 
-		 	urlAllMeasure, //Target file in the server
+		 	urlAllMeasure + sensorType, //Target file in the server
 
 		 	'', //We don't have arguments in the request
 
-		 	getMeasure, //When we have the server's answer, we execute this function
+		 	displayMeasure, //When we have the server's answer, we execute this function
 
 		 	'json' //We receive the data in JSON format
 
-		);		
+		);	
 	}
 	else if(!$.isEmptyObject(xlast) && calendar == "%22:00%22") //If we have a limit for the number of data
 	{
 		$.get
 		(
 			
-			urlLimitMeasure + xlast, //We send a request with the number of data that the user want
+			urlAllMeasure+ sensorType + urlLimitMeasure + xlast, //We send a request with the number of data that the user want
 
 		 	'',
 
-		 	getMeasure,
+		 	displayMeasure,
 
 		 	'json'
 
@@ -56,21 +72,32 @@ function get()
 		$.get
 		(
 			
-			urlDateMeasure + calendar, //We send a request with the date from which we want the data
+			urlAllMeasure+ sensorType + urlDateMeasure + calendar, //We send a request with the date from which we want the data
 
 		 	'',
 
-		 	getMeasure,
+		 	displayMeasure,
 
 		 	'json'
 
 		);			
 	}
 
+}
+
+
+
+
+
+function getMeasuresForChart()
+{
+
+	sensorType = typeSensor();
+
 	$.get //We send a GET request to draw the chart
 	(
 
-	 	urlAllMeasure,
+	 	urlAllMeasure, // + sensorType,
 
 	 	'',
 
@@ -78,7 +105,16 @@ function get()
 
 	 	'json'
 
-	);	
+	);
+
+}
+
+
+
+
+
+function getUserCommand()
+{
 
 	$.get //We send a GET Request for take the user's commands
 	(
@@ -87,7 +123,7 @@ function get()
 
 	 	'',
 
-	 	getUserCommand,
+	 	displayUserCommand,
 
 	 	'json'
 
@@ -95,11 +131,16 @@ function get()
 
 }
 
+
+
+
+
+
 /*
 	This function draw a table with the sensors' data 
 */
 
-function getMeasure(text)
+function displayMeasure(text)
 {
 
 	var data_long = text['measures'].length; //We take the number of records in the table
@@ -107,7 +148,7 @@ function getMeasure(text)
 
 	var txt_measures = '<table id="measure_display"><th>Hardware Name</th><th>Value</th><th>TimeStamp</th>'; //We initiate the table to display
 
-	for(i; i<data_long; i++) //We write in the string the data from the DB
+	for(i=0; i<data_long; i++) //We write in the string the data from the DB
 	{
 		txt_measures += "<tr><td>" + text['measures'][i]['hardwareName'] + "</td>"
 		txt_measures += "<td>" + text['measures'][i]['value'] + "</td>"
@@ -123,21 +164,21 @@ function getMeasure(text)
 	This function draw a table with the user's commands
 */
 
-function getUserCommand(text)
+function displayUserCommand(text)
 {
 
-	var data_long = text['userCommands'].length; //We take the number of records in the table
+	var data_long = text['commandes'].length; //We take the number of records in the table
 
 
 	var txt_userCommand = '<table id="userCommand_display"><th>Command</th><th>Target Name</th><th>Value</th><th>TimeStamp</th><th>Done</th>'; //We initiate the table to display
 
-	for(i; i<data_long; i++) //We write in the string the data from the DB
+	for(i=0; i<data_long; i++) //We write in the string the data from the DB
 	{
-		txt_userCommand += "<tr><td>" + text['userCommands'][i]['command'] + "</td>"
-		txt_userCommand += "<td>" + text['userCommands'][i]['targetName'] + "</td>"
-		txt_userCommand += "<td>" + text['userCommands'][i]['value'] + "</td>"
-		txt_userCommand += "<td>" + text['userCommands'][i]['timestamp'] + "</td>"
-		txt_userCommand += "<td>" + text['userCommands'][i]['done'] + "</td></tr>"
+		txt_userCommand += "<tr><td>" + text['commandes'][i]['command'] + "</td>"
+		txt_userCommand += "<td>" + text['commandes'][i]['targetName'] + "</td>"
+		txt_userCommand += "<td>" + text['commandes'][i]['value'] + "</td>"
+		txt_userCommand += "<td>" + text['commandes'][i]['timestamp'] + "</td>"
+		txt_userCommand += "<td>" + text['commandes'][i]['done'] + "</td></tr>"
 	}
 	txt_userCommand += "</table>";
 
@@ -151,9 +192,11 @@ function getUserCommand(text)
 
 function postUserCommand()
 {
-	var command = document.forms['CreateUserCommand'].command.value; //We take the command type in the HTML form
-	var targetName = document.forms['CreateUserCommand'].targetName.value; //We take the command name type in the HTML form
-	var val = document.forms['CreateUserCommand'].val.value; //We take the command value type in the HTML form
+	var command = $("#command").val(); //We take the command type in the HTML form
+
+	var targetName = $("#targetName").val(); //We take the command name type in the HTML form
+
+	var val = $("#val").val(); //We take the command value type in the HTML form
 
 
 	$.post(
@@ -166,7 +209,7 @@ function postUserCommand()
 			value : val
 		},
 
-		get //the function that we want execute after the sends
+		getUserCommand //the function that we want execute after the sends
 
 	);
 }
