@@ -53,10 +53,16 @@
 		$i++;
 	}
 
+    header('HTTP/1.1 200 OK');
+    header('Content-Type: application/json');
+
     if(empty($o["measures"])){
         $o="";
         $o["code"]=404;
         $o["message"]= "Not found";
+
+        header('HTTP/1.1 404 Not Found');
+        header('Content-Type: application/json');
     }
 
 	header('Content-Type: application/json');

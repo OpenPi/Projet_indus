@@ -13,6 +13,7 @@
             $o["code"] = 400;
             $o["message"] = "Bad parameters";
 
+            header('HTTP/1.1 400 Bad Request');
             header('Content-Type: application/json');
             echo json_encode($o);
 
@@ -24,6 +25,9 @@
 
         $o["code"] = 201;
         $o["message"] = "Data created";
+
+        header('HTTP/1.1 201 Created');
+        header('Content-Type: application/json');
     }
     else if($_SERVER['REQUEST_METHOD'] == 'GET'){
 
@@ -76,17 +80,25 @@
 		$i++;
 	}
 
+    header('HTTP/1.1 200 OK');
+    header('Content-Type: application/json');
+
     if(empty($o["commandes"])){
         $o = "";
         $o["code"] = 404;
         $o["message"] = "Not found";
+
+        header('HTTP/1.1 404 Not Found');
+        header('Content-Type: application/json');
     }
 }
 else{
     $o["code"] = 405;
     $o["message"] = "Methode ".$_SERVER['REQUEST_METHOD']." not allowed";
+
+    header('HTTP/1.1 405 Method Not Allowed');
+    header('Content-Type: application/json');
 }
 
-	header('Content-Type: application/json');
 	echo json_encode($o);
 ?>
