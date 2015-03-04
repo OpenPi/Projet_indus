@@ -1,212 +1,199 @@
 #%RAML 0.8
-
 title: Plashboard
-baseUri: http://localhost/api/{version}
 version: v1
+baseUri: http://localhost/api/{version}
 mediaType: application/json
 
 schemas:
-	- measures: !include schema/plashboard-measures.schema
-	- userCommands: !include schema/plashboard-userCommands.schema
-	- error: !include schema/plashboard-error.schema
-	- authentication: !include schema/plashboard-authentication.schema
-	- authorize: !include schema/plashboard-authorized.schema
+  - measures: schema/plashboard-measures.json
+    userCommands: schema/plashboard-userCommands.json
+    error: schema/plashboard-error.json
+    authentication: schema/plashboard-authentication.json
+    authorized: schema/plashboard-authorized.json
 
 traits:
-	- secured:
-		description: Some requests require authentication
-		headers:
-			Authorization:
-				description: |
-					The JWT token provided by the /authorize method.
-				type: string
-				required: true
-			responses:
-				401:
-					body:
-						application/json:
-							schema: error
-							example: |
-							{
-							"code": -2,
-							"message": "Invalid token"
-							}
+  - secured:
+        usage: Apply this to any method that needs to be secured
+        description: Some requests require authentication
+        headers:
+            Authorization:
+                description: |
+                    The JWT token provided by the /authorize method.
+                type: string
+                required: true
 
 /authorize:
-	post:
-		description: |
-			Get an authentication token.
-		body:
-			application/json:
-				schema: authentication
-				example: |
-					{
-					"username": "plashboard",
-					"password": "1234"
-					}
-			responses:
-				200:
-					body:
-						application/json:
-						schema: authorized
-						example: |
-							{
-								"token": "ASDFGHJKL"
-							}
-				401:
-					body:
-					application/json:
-					schema: error
-					example: |
-					{
-						"code": -1,
-						"message": "Username and password invalid"
-					}
+    post:
+        description: |
+            Get an authentication token. TODO
+        body:
+            application/json:
+                schema: authentication
+                example: |
+                    {
+                        "username": "plashboard",
+                        "password": "1234"
+                    }
+        responses:
+            200:
+                body:
+                    application/json:
+                        schema: authorized
+                        example: |
+                            {
+                                "token": "ASDFGHJKL"
+                            }
+            401:
+                body:
+                    application/json:
+                        schema: error
+                        example: |
+                            {
+                                "code": -1,
+                                "message": "Username and password invalid"
+                            }
 
 /measures:
-	type: collection
-	get:
-		is: [ secured ]
-		description: Get all measures for sensors.
-		responses:
-			200:
-				body:
-					application/json:
-						schema: measures
-						example: |
-							[
-								{
-									"id": 1,
-									"hardwareConfigurationId": 5,
-									"hardwareName": "temperature_sensor",
-									"value": 21,
-									"timestamp": "2015-03-03 14:22:00"
-								},
-								{
-									"id": 2,
-									"hardwareConfigurationId": 6,
-									"hardwareName": "ph_sensor",
-									"value": 7,
-									"timestamp": "2015-03-03 14:35:03"
-								},
-								{
-									"id": 3,
-									"hardwareConfigurationId": 9,
-									"hardwareName": "pressure_sensor",
-									"value": 4,
-									"timestamp": "2015-03-03 14:40:52"
-								}	
-							]
-
-	/{sensorId}:
-		description: Get measure for a specific sensor.
-		get:
-			is: [ secured ]
-			description: Get the sensor with `hardwareConfigurationId = {sensorId}`.
-			responses:
-				200:
-					body:
-						application/json:
-						schema: measures
-						example: |
-						{
-							"id": 1,
-							"hardwareConfigurationId": 5,
-							"hardwareName": "temperature_sensor",
-							"value": 21,
-							"timestamp": "2015-03-03 14:22:00"
-						}
-				404:
-					body:
-					application/json:
-					schema: error
-					example: |
-					{
-						"code": 404,
-						"message": "Not found"
-					}
-				401:
-					body:
-					application/json:
-					schema: error
-					example: |
-					{
-						"code": 401,
-						"message": "Authorized require"
-					}
+    get:
+        is: [ secured ]
+        description: Get all measures for sensors.
+        responses:
+            200:
+                body:
+                    application/json:
+                        schema: measures
+                        example: |
+                            [
+                                {
+                                    "id": 1,
+                                    "hardwareConfigurationId": 5,
+                                    "hardwareName": "temperature_sensor",
+                                    "value": 21,
+                                    "timestamp": "2015-03-03 14:22:00"
+                                },
+                                {
+                                    "id": 2,
+                                    "hardwareConfigurationId": 6,
+                                    "hardwareName": "ph_sensor",
+                                    "value": 7,
+                                    "timestamp": "2015-03-03 14:35:03"
+                                },
+                                {
+                                    "id": 3,
+                                    "hardwareConfigurationId": 9,
+                                    "hardwareName": "pressure_sensor",
+                                    "value": 4,
+                                    "timestamp": "2015-03-03 14:40:52"
+                                }	
+                            ]
+    /{sensorId}:
+        description: Get measure for a specific sensor.
+        get:
+            is: [ secured ]
+            description: Get the measure with `hardwareConfigurationId = {sensorId}`.
+            responses:
+                200:
+                    body:
+                        application/json:
+                            schema: measures
+                            example: |
+                                {
+                                    "id": 1,
+                                    "hardwareConfigurationId": 5,
+                                    "hardwareName": "temperature_sensor",
+                                    "value": 21,
+                                    "timestamp": "2015-03-03 14:22:00"
+                                }
+                404:
+                    body:
+                        application/json:
+                            schema: error
+                            example: |
+                                {
+                                    "code": 404,
+                                    "message": "Not found"
+                                }
+                401:
+                    body:
+                        application/json:
+                            schema: error
+                            example: |
+                                {
+                                    "code": 401,
+                                    "message": "Authorized require"
+                                }
 
 /usercommands:
-	type: collection
-	get:
-		is: [ secured ]
-		description: Get all user commands.
-		responses:
-			200:
-				body:
-					application/json:
-						schema: userCommands
-						example: |
-							[
-								{
-									"id": 1,
-									"command": "Create",
-									"targetName": "userConfiguration",
-									"value": "ph_target:2:su:6",
-									"timestamp": "2015-03-03 14:22:00",
-									"done":1
-								},
-								{
-									"id": 2,
-									"command": "Set",
-									"targetName": "light",
-									"value": "1",
-									"timestamp": "2015-03-03 15:00:00",
-									"done":1
-								},
-								{
-									"id": 3,
-									"command": "Set",
-									"targetName": "light",
-									"value": "0",
-									"timestamp": "2015-03-03 16:45:00",
-									"done":0
-								}	
-							]
+    get:
+        is: [ secured ]
+        description: Get all user commands.
+        responses:
+            200:
+                body:
+                    application/json:
+                        schema: userCommands
+                        example: |
+                            [
+                                {
+                                    "id": 1,
+                                    "command": "Create",
+                                    "targetName": "userConfiguration",
+                                    "value": "ph_target:2:su:6",
+                                    "timestamp": "2015-03-03 14:22:00",
+                                    "done":1
+                                },
+                                {
+                                    "id": 2,
+                                    "command": "Set",
+                                    "targetName": "light",
+                                    "value": "1",
+                                    "timestamp": "2015-03-03 15:00:00",
+                                    "done":1
+                                },
+                                {
+                                    "id": 3,
+                                    "command": "Set",
+                                    "targetName": "light",
+                                    "value": "0",
+                                    "timestamp": "2015-03-03 16:45:00",
+                                    "done":0
+                                }	
+                            ]
 
-	/{commandId}:
-		description: Get information for a specific command.
-		get:
-			is: [ secured ]
-			description: Get the command with `id = {commandId}`.
-			responses:
-				200:
-					body:
-						application/json:
-						schema: measures
-						example: |
-						{
-							""id": 3,
-							"command": "Set",
-							"targetName": "light",
-							"value": "0",
-							"timestamp": "2015-03-03 16:45:00",
-							"done":0
-						}
-				404:
-					body:
-					application/json:
-					schema: error
-					example: |
-					{
-						"code": 404,
-						"message": "Not found"
-					}
-				401:
-					body:
-					application/json:
-					schema: error
-					example: |
-					{
-						"code": 401,
-						"message": "Authorized require"
-					}
+    /{commandId}:
+        description: Get information for a specific command.
+        get:
+            is: [ secured ]
+            description: Get the command with `id = {commandId}`.
+            responses:
+                200:
+                    body:
+                        application/json:
+                            schema: measures
+                            example: |
+                                {
+                                    ""id": 3,
+                                    "command": "Set",
+                                    "targetName": "light",
+                                    "value": "0",
+                                    "timestamp": "2015-03-03 16:45:00",
+                                    "done":0
+                                }
+                404:
+                    body:
+                        application/json:
+                            schema: error
+                            example: |
+                                {
+                                    "code": 404,
+                                    "message": "Not found"
+                                }
+                401:
+                    body:
+                        application/json:
+                            schema: error
+                            example: |
+                                {
+                                    "code": 401,
+                                    "message": "Authorized require"
+                                }
