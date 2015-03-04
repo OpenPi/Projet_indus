@@ -51,6 +51,12 @@ class Database:
         except:
             self.db.rollback()
 
+    def getHardwareConfigurationByName(self, name):
+
+        self.cur.execute("SELECT * FROM hardwareConfiguration WHERE name="+name)
+        result = self.cur.fetchall()
+        self.db.commit()
+        return result
 
 databaseSensorsRead = Database("localhost", "root", "root", "PlashBoard")
 

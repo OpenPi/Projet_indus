@@ -121,7 +121,7 @@ class Thermocouple(AnalogSensor):
 class PhMeter(AnalogSensor):
 
 	# Builder class
-	def __init__(self, channel, refVolt):
+	def __init__(self, hardwareId, channel, refVolt):
 		"""
 		Ph meter class
 		
@@ -138,7 +138,7 @@ class PhMeter(AnalogSensor):
 	# Return ph
 	def get_value(self):
 		voltValue = self.get_value_sensor()
-		
+		print("Tension :"+str(voltValue)+" | Ph : "+ str(self.conversion(voltValue)) )
 		if voltValue == -1:
 			print("ERROR: get value ph sensor\n")
 			return -1
@@ -148,7 +148,7 @@ class PhMeter(AnalogSensor):
 class AmpereMeter(AnalogSensor):
 
 	# Builder class
-	def __init__(self, channel, refVolt):
+	def __init__(self, hardwareId, channel, refVolt):
 		"""
 		Ampere meter class
 		
@@ -165,7 +165,7 @@ class AmpereMeter(AnalogSensor):
 	# Return ampere
 	def get_value(self):
 		voltValue = self.get_value_sensor()
-		
+		#print("Tension :"+str(voltValue)+" | Intensite : "+ str(self.conversion(voltValue)) )
 		if voltValue == -1:
 			print("ERROR: get value ph sensor\n")
 			return -1
@@ -174,7 +174,7 @@ class AmpereMeter(AnalogSensor):
 			
 class sensorTestNumeric(NumericSensor):
 
-	def __init__(self, pin, pullup=True):
+	def __init__(self, hardwareId, pin, pullup=True):
 		NumericSensor.__init__(self, hardwareId, pin, pullup)
 	
 	def get_value(self):
