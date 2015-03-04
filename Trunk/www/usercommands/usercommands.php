@@ -2,12 +2,39 @@
 
     require_once("../orm/UserCommand.php");
 
+    $tableObject = new UserCommand();
+
+    if($_SERVER['REQUEST_METHOD'] == 'POST'){
+        $command = isset ($_POST["command"]) ? $_POST["command"] : "undefined";
+        $targetName  = isset ($_POST["targetName"]) ? $_POST["targetName"] : "undefined";
+        $value  = isset ($_POST["value"]) ? $_POST["value"] : "undefined";
+
+        if( $command == "undefined" OR $targetName == "undefined" OR $value == "undefined"){
+            $o["code"] = 400;
+            $o["message"] = "Bad parameters";
+
+            header('HTTP/1.1 400 Bad Request');
+            header('Content-Type: application/json');
+            echo json_encode($o);
+
+            die();
+        }
+
+        $date = date("Y-m-d H:i:s");
+        $tableObject->insertRow("'NULL', '".$command."', '".$targetName."', '".$value."', '".$date."', 0");
+
+        $o["code"] = 201;
+        $o["message"] = "Data created";
+
+        header('HTTP/1.1 201 Created');
+        header('Content-Type: application/json');
+    }
+    else if($_SERVER['REQUEST_METHOD'] == 'GET'){
+
     $xlast = isset ($_GET["xlast"]) ? $_GET["xlast"] : "undefined";
     $time  = isset ($_GET["time"]) ? $_GET["time"] : "undefined";
 
     $id  = explode('/', $_SERVER['PATH_INFO'])[1];
-
-    $tableObject = new UserCommand();
 
     //If both of parameter are not given get all measures
     if($xlast == "undefined" and $time == "undefined"){
@@ -53,12 +80,25 @@
 		$i++;
 	}
 
-    if(empty($o["commandes"])){
-        $o="";
-        $o["code"]=404;
-        $o["message"]= "Not found";
-    }
+    header('HTTP/1.1 200 OK');
+    header('Content-Type: application/json');
 
-	header('Content-Type: application/json');
+    if(empty($o["commandes"])){
+        $o = "";
+        $o["code"] = 404;
+        $o["message"] = "Not found";
+
+        header('HTTP/1.1 404 Not Found');
+        header('Content-Type: application/json');
+    }
+}
+else{
+    $o["code"] = 405;
+    $o["message"] = "Methode ".$_SERVER['REQUEST_METHOD']." not allowed";
+
+    header('HTTP/1.1 405 Method Not Allowed');
+    header('Content-Type: application/json');
+}
+
 	echo json_encode($o);
 ?>
