@@ -1,13 +1,14 @@
 #%RAML 0.8
 title: Plashboard
 version: v1
-baseUri: http://localhost/api/{version}
+baseUri: http://localhost/
+#baseUri: http://localhost/api/{version}
 mediaType: application/json
 
 schemas:
   - measures: schema/plashboard-measures.json
     userCommands: schema/plashboard-userCommands.json
-    error: schema/plashboard-error.json
+    message: schema/plashboard-message.json
     authentication: schema/plashboard-authentication.json
     authorized: schema/plashboard-authorized.json
 
@@ -21,6 +22,25 @@ traits:
                     The JWT token provided by the /authorize method.
                 type: string
                 required: true
+        responses:
+            404:
+                body:
+                    application/json:
+                        schema: message
+                        example: |
+                            {
+                                "code": 404,
+                                "message": "Not found"
+                            }
+            401:
+                body:
+                    application/json:
+                        schema: message
+                        example: |
+                            {
+                                "code": 401,
+                                "message": "Authorized require"
+                            }
 
 /authorize:
     post:
@@ -46,7 +66,7 @@ traits:
             401:
                 body:
                     application/json:
-                        schema: error
+                        schema: message
                         example: |
                             {
                                 "code": -1,
@@ -104,24 +124,6 @@ traits:
                                     "value": 21,
                                     "timestamp": "2015-03-03 14:22:00"
                                 }
-                404:
-                    body:
-                        application/json:
-                            schema: error
-                            example: |
-                                {
-                                    "code": 404,
-                                    "message": "Not found"
-                                }
-                401:
-                    body:
-                        application/json:
-                            schema: error
-                            example: |
-                                {
-                                    "code": 401,
-                                    "message": "Authorized require"
-                                }
 
 /usercommands:
     get:
@@ -159,6 +161,44 @@ traits:
                                     "done":0
                                 }	
                             ]
+    post:
+        is: [ secured ]
+        description: Add a user command executate later by the python process
+        queryParameters:
+            command:
+                description: Command name in enum "Create, Delete, Update, Set"
+                example: "Create"
+                required: true
+                type: string
+            targetName:
+                description: Target to apply value
+                example: "light"
+                required: true
+                type: string
+            value:
+                description: Value to apply
+                example: "on"
+                required: true
+                type: string
+        responses:
+            201:
+                body:
+                    application/json:
+                        schema: message
+                        example: |
+                            {
+                                "code": 201,
+                                "message": "Data created"
+                            }
+            400:
+                body:
+                    application/json:
+                        schema: message
+                        example: |
+                            {
+                                "code": 400,
+                                "message": "Bad parameters"
+                            }                            
 
     /{commandId}:
         description: Get information for a specific command.
@@ -178,22 +218,4 @@ traits:
                                     "value": "0",
                                     "timestamp": "2015-03-03 16:45:00",
                                     "done":0
-                                }
-                404:
-                    body:
-                        application/json:
-                            schema: error
-                            example: |
-                                {
-                                    "code": 404,
-                                    "message": "Not found"
-                                }
-                401:
-                    body:
-                        application/json:
-                            schema: error
-                            example: |
-                                {
-                                    "code": 401,
-                                    "message": "Authorized require"
                                 }
