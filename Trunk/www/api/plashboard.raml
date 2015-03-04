@@ -41,11 +41,41 @@ traits:
                                 "code": 401,
                                 "message": "Authorized require"
                             }
+    timeSearchable:
+        usage: Apply this to any method that can be filter by timestamp
+        description: Some requests can search data with time filter
+        queryParameters:
+            time:
+                description: Date time to start the search
+                example: "2015-03-04 15:00:00"
+                required: false
+                type: string
+
+    limitedSearchable:
+        usage: Apply this to any method that can be respond a number max of result
+        description: Some requests can search data with max result to given back
+        queryParameters:
+            xlast:
+                description: Number of result max to given back
+                example: 5
+                required: false
+                type: integer
 
 /authorize:
     post:
         description: |
             Get an authentication token. TODO
+        queryParameters:
+            user:
+                description: Name for the user account
+                example: "Stark"
+                required: true
+                type: string
+            password:
+                description: Password for the user account
+                example: "MissPepper01091963"
+                required: true
+                type: string
         body:
             application/json:
                 schema: authentication
@@ -75,7 +105,7 @@ traits:
 
 /measures:
     get:
-        is: [ secured ]
+        is: [ secured, timeSearchable, limitedSearchable ]
         description: Get all measures for sensors.
         responses:
             200:
@@ -109,7 +139,7 @@ traits:
     /{sensorId}:
         description: Get measure for a specific sensor.
         get:
-            is: [ secured ]
+            is: [ secured, timeSearchable, limitedSearchable ]
             description: Get the measure with `hardwareConfigurationId = {sensorId}`.
             responses:
                 200:
@@ -127,7 +157,7 @@ traits:
 
 /usercommands:
     get:
-        is: [ secured ]
+        is: [ secured, timeSearchable, limitedSearchable ]
         description: Get all user commands.
         responses:
             200:
@@ -203,7 +233,7 @@ traits:
     /{commandId}:
         description: Get information for a specific command.
         get:
-            is: [ secured ]
+            is: [ secured, timeSearchable, limitedSearchable ]
             description: Get the command with `id = {commandId}`.
             responses:
                 200:
