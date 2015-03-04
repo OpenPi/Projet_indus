@@ -52,4 +52,6 @@ class Database:
             self.db.rollback()
 
 
-database = Database("localhost", "root", "root", "PlashBoard")
+databaseSensorsRead = Database("localhost", "root", "root", "PlashBoard")
+
+databaseUserCommand = Database("localhost", "root", "root", "PlashBoard")

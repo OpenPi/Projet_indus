@@ -20,7 +20,7 @@ def process(Queue):
 		state = Item.state
 		data = Item.data
 		if state == "Init":
-			poolThermocouple = Thermocouple(1, 4.14)
+			poolThermocouple = Thermocouple(1, 1, 4.14)
 
 		elif state == "Start":
 			print("Start State")	
@@ -28,7 +28,7 @@ def process(Queue):
 		elif state == "Process":
 			thermocoupleValue = poolThermocouple.get_value()
 			print(thermocoupleValue)		
-			database.database.insertMeasure(1, thermocoupleValue)
+			database.databaseSensorsRead.insertMeasure(1, thermocoupleValue)
 			Queue.enqueueIfEmpty(state, data, 1000)
 			
 		elif state == "Stop":

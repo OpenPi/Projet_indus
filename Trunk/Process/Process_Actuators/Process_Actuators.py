@@ -19,7 +19,7 @@ def process(Queue):
 		state = Item.state
 		data = Item.data
 		if state == "Init":
-			light = Light(1)
+			light = Light(2, 1)
 
 		elif state == "Start":
 			print("Start State")	
