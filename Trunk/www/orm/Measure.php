@@ -33,6 +33,7 @@ final class Measure extends Table{
                     $this->name.".timestamp
                  FROM ".$this->name."
                  INNER JOIN ".$this->hardwareTable."
+                 WHERE ".$this->hardwareTable.".id=".$this->name.".hardwareConfigurationId
                  ORDER BY timestamp DESC";
         $allRows = $this->db->getResponse($query);	
         return $allRows;
@@ -53,6 +54,7 @@ final class Measure extends Table{
                     $this->name.".timestamp
                  FROM ".$this->name."
                  INNER JOIN ".$this->hardwareTable."
+                 WHERE ".$this->hardwareTable.".id=".$this->name.".hardwareConfigurationId
                  ORDER BY timestamp DESC
                  LIMIT 0,".$limit;
 	$allRows = $this->db->getResponse($query);	
@@ -90,7 +92,7 @@ final class Measure extends Table{
                     $this->name.".timestamp
                  FROM ".$this->name."
                  INNER JOIN ".$this->hardwareTable."
-                 WHERE ".$where."
+                 WHERE ".$this->hardwareTable.".id=".$this->name.".hardwareConfigurationId AND ".$where."
                  ORDER BY timestamp DESC";
             $rows = $this->db->getResponse($query);
             return $rows;
@@ -127,7 +129,7 @@ final class Measure extends Table{
                     $this->name.".timestamp
                  FROM ".$this->name."
                  INNER JOIN ".$this->hardwareTable."
-                 WHERE ".$where."
+                 WHERE ".$this->hardwareTable.".id=".$this->name.".hardwareConfigurationId AND ".$where."
                  ORDER BY timestamp DESC
                  LIMIT 0,".$limit;
             $rows = $this->db->getResponse($query);
