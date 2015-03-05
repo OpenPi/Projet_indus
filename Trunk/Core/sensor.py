@@ -42,7 +42,14 @@ class AnalogSensor(Sensor):
 		channel: Physical position sensor on Expender PI
 		refVolt: Reference voltage of Expender PI
 		"""
-		Sensor.__init__(self, hardwareId, channel)
+		# Exchange channel position by pair
+		channelChanged = channel%2
+		if channelChanged == 0:
+			channelChanged = channelChanged+channel-1
+		else:
+			channelChanged = channelChanged+channel
+		
+		Sensor.__init__(self, hardwareId, channelChanged)
 		self.refVolt = refVolt
 		
 	# Get and return physical value of analog sensor 
