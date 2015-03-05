@@ -28,7 +28,7 @@ final class Measure extends Table{
        $query = "SELECT ".
                     $this->name.".id,". 
                     $this->name.".hardwareConfigurationId,". 
-                    $this->hardwareTable.".hardwareName,". 
+                    $this->hardwareTable.".name,". 
                     $this->name.".value,". 
                     $this->name.".timestamp
                  FROM ".$this->name."
@@ -49,7 +49,7 @@ final class Measure extends Table{
 	$query = "SELECT ".
                     $this->name.".id,". 
                     $this->name.".hardwareConfigurationId,". 
-                    $this->hardwareTable.".hardwareName,". 
+                    $this->hardwareTable.".name,". 
                     $this->name.".value,". 
                     $this->name.".timestamp
                  FROM ".$this->name."
@@ -87,7 +87,7 @@ final class Measure extends Table{
             $query = "SELECT ".
                     $this->name.".id,". 
                     $this->name.".hardwareConfigurationId,". 
-                    $this->hardwareTable.".hardwareName,". 
+                    $this->hardwareTable.".name,". 
                     $this->name.".value,". 
                     $this->name.".timestamp
                  FROM ".$this->name."
@@ -124,7 +124,7 @@ final class Measure extends Table{
             $query = "SELECT ".
                     $this->name.".id,". 
                     $this->name.".hardwareConfigurationId,". 
-                    $this->hardwareTable.".hardwareName,". 
+                    $this->hardwareTable.".name,". 
                     $this->name.".value,". 
                     $this->name.".timestamp
                  FROM ".$this->name."

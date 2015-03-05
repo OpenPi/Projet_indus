@@ -10,6 +10,7 @@ final class UserCommand extends Table{
         $this->name = "userCommand";
         $this->fields = array(
                 "id"             => "id",
+                "type"           => "type",
                 "command"        => "command",
                 "targetName"     => "targetName",
                 "value"          => "value",

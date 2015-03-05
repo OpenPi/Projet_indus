@@ -1,13 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 3.4.11.1deb2+deb7u1
+-- version 4.1.14
 -- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: Mar 05, 2015 at 09:42 AM
--- Server version: 5.5.41
--- PHP Version: 5.4.36-0+deb7u3
+-- Client :  127.0.0.1
+-- Généré le :  Jeu 05 Mars 2015 à 11:17
+-- Version du serveur :  5.6.17
+-- Version de PHP :  5.5.12
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
@@ -17,18 +17,16 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `PlashBoard`
+-- Base de données :  `plashboard`
 --
-CREATE DATABASE `PlashBoard` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `PlashBoard`;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `hardwareConfiguration`
+-- Structure de la table `hardwareconfiguration`
 --
 
-CREATE TABLE IF NOT EXISTS `hardwareConfiguration` (
+CREATE TABLE IF NOT EXISTS `hardwareconfiguration` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `pin` tinyint(2) NOT NULL,
@@ -41,10 +39,10 @@ CREATE TABLE IF NOT EXISTS `hardwareConfiguration` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 --
--- Dumping data for table `hardwareConfiguration`
+-- Contenu de la table `hardwareconfiguration`
 --
 
-INSERT INTO `hardwareConfiguration` (`id`, `name`, `pin`, `type`, `IO`, `PullUpDownResistor`, `unit`, `tension`) VALUES
+INSERT INTO `hardwareconfiguration` (`id`, `name`, `pin`, `type`, `IO`, `PullUpDownResistor`, `unit`, `tension`) VALUES
 (1, 'Pool Temperature Sensor', 1, 'Analog', 'Input', 'None', '°c', NULL),
 (2, 'Pool Light', 1, 'Numeric', 'Output', 'None', NULL, 5),
 (3, 'Pump Ampere Meter', 3, 'Analog', 'Input', 'None', 'A', NULL),
@@ -53,7 +51,7 @@ INSERT INTO `hardwareConfiguration` (`id`, `name`, `pin`, `type`, `IO`, `PullUpD
 -- --------------------------------------------------------
 
 --
--- Table structure for table `measure`
+-- Structure de la table `measure`
 --
 
 CREATE TABLE IF NOT EXISTS `measure` (
@@ -68,12 +66,12 @@ CREATE TABLE IF NOT EXISTS `measure` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `userCommand`
+-- Structure de la table `usercommand`
 --
 
-CREATE TABLE IF NOT EXISTS `userCommand` (
+CREATE TABLE IF NOT EXISTS `usercommand` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `type` enum('UserCommand','Actuators') NOT NULL,
+  `type` enum('UserConfiguration','Actuators') NOT NULL,
   `command` enum('Create','Update','Delete','Get','Set') NOT NULL,
   `targetName` varchar(255) NOT NULL,
   `value` varchar(255) NOT NULL,
@@ -85,10 +83,10 @@ CREATE TABLE IF NOT EXISTS `userCommand` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `userConfiguration`
+-- Structure de la table `userconfiguration`
 --
 
-CREATE TABLE IF NOT EXISTS `userConfiguration` (
+CREATE TABLE IF NOT EXISTS `userconfiguration` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `hardwareConfigurationId` int(11) NOT NULL,
@@ -101,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `userConfiguration` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Structure de la table `users`
 --
 
 CREATE TABLE IF NOT EXISTS `users` (
@@ -112,20 +110,20 @@ CREATE TABLE IF NOT EXISTS `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
--- Constraints for dumped tables
+-- Contraintes pour les tables exportées
 --
 
 --
--- Constraints for table `measure`
+-- Contraintes pour la table `measure`
 --
 ALTER TABLE `measure`
-  ADD CONSTRAINT `hardwareConfiguration` FOREIGN KEY (`hardwareConfigurationId`) REFERENCES `hardwareConfiguration` (`id`);
+  ADD CONSTRAINT `hardwareConfiguration` FOREIGN KEY (`hardwareConfigurationId`) REFERENCES `hardwareconfiguration` (`id`);
 
 --
--- Constraints for table `userConfiguration`
+-- Contraintes pour la table `userconfiguration`
 --
-ALTER TABLE `userConfiguration`
-  ADD CONSTRAINT `hardwareConfigurationId` FOREIGN KEY (`hardwareConfigurationId`) REFERENCES `hardwareConfiguration` (`id`);
+ALTER TABLE `userconfiguration`
+  ADD CONSTRAINT `hardwareConfigurationId` FOREIGN KEY (`hardwareConfigurationId`) REFERENCES `hardwareconfiguration` (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

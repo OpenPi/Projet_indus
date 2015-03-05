@@ -9,7 +9,7 @@
 			"description": "Hardware ID",
 			"required": true,
 		},
-		"hardwareName": {
+		"name": {
 			"type": "string",
 			"description": "Hardware name to display",
 			"required": true,

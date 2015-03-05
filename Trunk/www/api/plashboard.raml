@@ -183,6 +183,7 @@ traits:
                             [
                                 {
                                     "id": 1,
+                                    "type": "UserConfiguration",
                                     "command": "Create",
                                     "targetName": "userConfiguration",
                                     "value": "ph_target:2:su:6",
@@ -191,6 +192,7 @@ traits:
                                 },
                                 {
                                     "id": 2,
+                                    "type": "Actuators",
                                     "command": "Set",
                                     "targetName": "light",
                                     "value": "1",
@@ -199,6 +201,7 @@ traits:
                                 },
                                 {
                                     "id": 3,
+                                    "type": "Actuators",
                                     "command": "Set",
                                     "targetName": "light",
                                     "value": "0",
@@ -257,7 +260,8 @@ traits:
                             schema: measures
                             example: |
                                 {
-                                    ""id": 3,
+                                    "id": 3,
+                                    "type": "Actuators",
                                     "command": "Set",
                                     "targetName": "light",
                                     "value": "0",
@@ -278,22 +282,22 @@ traits:
                             [
                                 {
                                     "id": 1 
-                                    "hardwareName": temperature_sensor
+                                    "name": "Pool Temperature Sensor"
                                     "pin": 1
                                     "type": "Analog"
                                     "IO": "Input"
                                     "PullUpDownResistor": "Up"
                                     "unit": "°C"
-                                    "tension": "3.3"
+                                    "tension": "Null"
                                 },
                                 {
                                     "id": 2
-                                    "hardwareName": "pumpe"
+                                    "name": "Pool Light"
                                     "pin": 5
                                     "type": "Numeric"
                                     "IO": "Output"
                                     "PullUpDownResistor": "None"
-                                    "unit": "None"
+                                    "unit": "Null"
                                     "tension": "5"
                                 }
                             ]
@@ -310,11 +314,11 @@ traits:
                             example: |
                                 {
                                     "id": 1 
-                                    "hardwareName": temperature_sensor
+                                    "name": "Pool Temperature Sensor"
                                     "pin": 1
                                     "type": "Analog"
                                     "IO": "Input"
                                     "PullUpDownResistor": "Up"
                                     "unit": "°C"
-                                    "tension": "3.3"
+                                    "tension": "Null"
                                 }

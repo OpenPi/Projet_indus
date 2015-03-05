@@ -181,6 +181,7 @@
 </code></pre></div></div></div></div></div></div></div></div></div></div><div class="panel panel-default"><div class="panel-heading"><h3 id="_usercommands" class="panel-title">/usercommands</h3></div><div class="panel-body"><div class="panel-group"><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel__usercommands"><span class="parent"></span>/usercommands</a> <span class="methods"><a href="#" data-toggle="modal" data-target="#_usercommands_get"><span class="badge badge_get">get</span></a> <a href="#" data-toggle="modal" data-target="#_usercommands_post"><span class="badge badge_post">post</span></a></span></h4></div><div id="panel__usercommands" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div data-toggle="modal" data-target="#_usercommands_get" class="list-group-item"><span class="badge badge_get">get</span><div class="method_description"><p>Get all user commands.</p></div><div class="clearfix"></div></div><div data-toggle="modal" data-target="#_usercommands_post" class="list-group-item"><span class="badge badge_post">post</span><div class="method_description"><p>Add a user command executate later by the python process</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="_usercommands_get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get</span> <span class="parent"></span>/usercommands</h4></div><div class="modal-body"><div class="alert alert-info"><p>Get all user commands.</p></div><ul class="nav nav-tabs"><li class="active"><a href="#_usercommands_get_request" data-toggle="tab">Request</a></li><li><a href="#_usercommands_get_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="_usercommands_get_request"><h3>Headers</h3><ul><li><strong>Authorization</strong>: <em>required (string)</em><p>The JWT token provided by the /authorize method.</p></li></ul><h3>Query Parameters</h3><ul><li><strong>xlast</strong>: <em>(integer)</em><p>Number of result max to given back</p><p><strong>Example</strong>:</p><pre><code>5</code></pre></li><li><strong>time</strong>: <em>(string)</em><p>Date time to start the search</p><p><strong>Example</strong>:</p><pre>2015-03-04 15:00:00</pre></li></ul></div><div class="tab-pane" id="_usercommands_get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>schema/plashboard-userCommands.json</code></pre><p><strong>Example</strong>:</p><pre><code>[
     {
         "id": 1,
+        "type": "UserConfiguration",
         "command": "Create",
         "targetName": "userConfiguration",
         "value": "ph_target:2:su:6",
@@ -189,6 +190,7 @@
     },
     {
         "id": 2,
+        "type": "Actuators",
         "command": "Set",
         "targetName": "light",
         "value": "1",
@@ -197,6 +199,7 @@
     },
     {
         "id": 3,
+        "type": "Actuators",
         "command": "Set",
         "targetName": "light",
         "value": "0",
@@ -237,7 +240,8 @@
     "message": "Methode POST not allowed"
 }
 </code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel__usercommands__commandId_"><span class="parent">/usercommands</span>/{commandId}</a> <span class="methods"><a href="#" data-toggle="modal" data-target="#_usercommands__commandId__get"><span class="badge badge_get">get</span></a></span></h4></div><div id="panel__usercommands__commandId_" class="panel-collapse collapse"><div class="panel-body"><div class="resource-description"><p>Get information for a specific command.</p></div><div class="list-group"><div data-toggle="modal" data-target="#_usercommands__commandId__get" class="list-group-item"><span class="badge badge_get">get</span><div class="method_description"><p>Get the command with <code>id = {commandId}</code>.</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="_usercommands__commandId__get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get</span> <span class="parent">/usercommands</span>/{commandId}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Get the command with <code>id = {commandId}</code>.</p></div><ul class="nav nav-tabs"><li class="active"><a href="#_usercommands__commandId__get_request" data-toggle="tab">Request</a></li><li><a href="#_usercommands__commandId__get_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="_usercommands__commandId__get_request"><h3>URI Parameters</h3><ul><li><strong>commandId</strong>: <em>required (string)</em></li></ul><h3>Headers</h3><ul><li><strong>Authorization</strong>: <em>required (string)</em><p>The JWT token provided by the /authorize method.</p></li></ul><h3>Query Parameters</h3><ul><li><strong>xlast</strong>: <em>(integer)</em><p>Number of result max to given back</p><p><strong>Example</strong>:</p><pre><code>5</code></pre></li><li><strong>time</strong>: <em>(string)</em><p>Date time to start the search</p><p><strong>Example</strong>:</p><pre>2015-03-04 15:00:00</pre></li></ul></div><div class="tab-pane" id="_usercommands__commandId__get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>schema/plashboard-measures.json</code></pre><p><strong>Example</strong>:</p><pre><code>{
-    ""id": 3,
+    "id": 3,
+    "type": "Actuators",
     "command": "Set",
     "targetName": "light",
     "value": "0",
@@ -259,22 +263,22 @@
 </code></pre></div></div></div></div></div></div></div></div></div></div><div class="panel panel-default"><div class="panel-heading"><h3 id="_hardwareconfiguration" class="panel-title">/hardwareconfiguration</h3></div><div class="panel-body"><div class="panel-group"><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel__hardwareconfiguration"><span class="parent"></span>/hardwareconfiguration</a> <span class="methods"><a href="#" data-toggle="modal" data-target="#_hardwareconfiguration_get"><span class="badge badge_get">get</span></a></span></h4></div><div id="panel__hardwareconfiguration" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div data-toggle="modal" data-target="#_hardwareconfiguration_get" class="list-group-item"><span class="badge badge_get">get</span><div class="method_description"><p>Get all hardwares informations.</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="_hardwareconfiguration_get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get</span> <span class="parent"></span>/hardwareconfiguration</h4></div><div class="modal-body"><div class="alert alert-info"><p>Get all hardwares informations.</p></div><ul class="nav nav-tabs"><li class="active"><a href="#_hardwareconfiguration_get_request" data-toggle="tab">Request</a></li><li><a href="#_hardwareconfiguration_get_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="_hardwareconfiguration_get_request"><h3>Headers</h3><ul><li><strong>Authorization</strong>: <em>required (string)</em><p>The JWT token provided by the /authorize method.</p></li></ul></div><div class="tab-pane" id="_hardwareconfiguration_get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>schema/plashboard-hardwareConfiguration.json</code></pre><p><strong>Example</strong>:</p><pre><code>[
     {
         "id": 1 
-        "hardwareName": temperature_sensor
+        "name": "Pool Temperature Sensor"
         "pin": 1
         "type": "Analog"
         "IO": "Input"
         "PullUpDownResistor": "Up"
         "unit": "°C"
-        "tension": "3.3"
+        "tension": "Null"
     },
     {
         "id": 2
-        "hardwareName": "pumpe"
+        "name": "Pool Light"
         "pin": 5
         "type": "Numeric"
         "IO": "Output"
         "PullUpDownResistor": "None"
-        "unit": "None"
+        "unit": "Null"
         "tension": "5"
     }
 ]
@@ -292,13 +296,13 @@
 }
 </code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel__hardwareconfiguration__hardwareId_"><span class="parent">/hardwareconfiguration</span>/{hardwareId}</a> <span class="methods"><a href="#" data-toggle="modal" data-target="#_hardwareconfiguration__hardwareId__get"><span class="badge badge_get">get</span></a></span></h4></div><div id="panel__hardwareconfiguration__hardwareId_" class="panel-collapse collapse"><div class="panel-body"><div class="resource-description"><p>Get measure for a specific sensor.</p></div><div class="list-group"><div data-toggle="modal" data-target="#_hardwareconfiguration__hardwareId__get" class="list-group-item"><span class="badge badge_get">get</span><div class="method_description"><p>Get the hardware information with <code>id = {hardwareId}</code>.</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="_hardwareconfiguration__hardwareId__get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get</span> <span class="parent">/hardwareconfiguration</span>/{hardwareId}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Get the hardware information with <code>id = {hardwareId}</code>.</p></div><ul class="nav nav-tabs"><li class="active"><a href="#_hardwareconfiguration__hardwareId__get_request" data-toggle="tab">Request</a></li><li><a href="#_hardwareconfiguration__hardwareId__get_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="_hardwareconfiguration__hardwareId__get_request"><h3>URI Parameters</h3><ul><li><strong>hardwareId</strong>: <em>required (string)</em></li></ul><h3>Headers</h3><ul><li><strong>Authorization</strong>: <em>required (string)</em><p>The JWT token provided by the /authorize method.</p></li></ul></div><div class="tab-pane" id="_hardwareconfiguration__hardwareId__get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>schema/plashboard-hardwareConfiguration.json</code></pre><p><strong>Example</strong>:</p><pre><code>{
     "id": 1 
-    "hardwareName": temperature_sensor
+    "name": "Pool Temperature Sensor"
     "pin": 1
     "type": "Analog"
     "IO": "Input"
     "PullUpDownResistor": "Up"
     "unit": "°C"
-    "tension": "3.3"
+    "tension": "Null"
 }</code></pre><h2>HTTP status code <a href="http://httpstatus.es/401" target="_blank">401</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>schema/plashboard-message.json</code></pre><p><strong>Example</strong>:</p><pre><code>{
     "code": 401,
     "message": "Authorized require"

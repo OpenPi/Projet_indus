@@ -10,7 +10,7 @@ final class HardwareConfiguration extends Table{
         $this->name = "hardwareConfiguration";
         $this->fields = array(
                 "id"                      => "id",
-                "hardwareName"            => "hardwareName",
+                "name"                    => "name",
                 "pin"                     => "pin",
                 "IO"                      => "IO",
                 "PullUpDownResistor"      => "PullUpDownResistor",
