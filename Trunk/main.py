@@ -25,7 +25,6 @@ import Process.Process_Actuators.Process_Actuators as Process_Actuators
 Process_UserCommand.StartThread()
 Process_SensorsRead.StartThread()
 Process_Actuators.StartThread()
-Process_Actuators.StartThread()
 Process_TemperatureRegulation.StartThread()
 
 commande = ""
@@ -34,7 +33,9 @@ Queue_Global.process_UserCommand.enqueue('Process')
 Queue_Global.process_SensorsRead.enqueue('Init')
 Queue_Global.process_SensorsRead.enqueue('Process')
 Queue_Global.process_Actuators.enqueue('Init')
-Queue_Global.process_TemperatureRegulation.enqueue('Init')
+Queue_Global.process_Actuators.enqueue('light', 'on')
+
+Queue_Global.process_TemperatureRegulation.enqueue('Process')
 
 while commande != "Exit":
     commande = raw_input("commande : ")
@@ -43,5 +44,4 @@ while commande != "Exit":
         Queue_Global.process_SensorsRead.enqueue('Exit')
         Queue_Global.process_Actuators.enqueue('Exit')
         Queue_Global.process_TemperatureRegulation.enqueue('Exit')
-
 

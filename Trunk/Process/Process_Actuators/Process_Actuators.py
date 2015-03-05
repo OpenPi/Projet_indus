@@ -7,23 +7,32 @@
 
 from Queue import Queue
 from threading import Thread
-
+import time
 import Core.Queue_Global as Queue_Global
 from Core.QueueItem import QueueItem
-from Core.actuator import Light
+from Core.actuator import *
 import Core.database as database
+
+
 
 def process(Queue):
 
+	#poolLightConfig = database.databaseActuators.getHardwareConfigurationByName("Pool Light")
+	#poolPumpConfig = database.databaseActuators.getHardwareConfigurationByName("Pool Pump")
+	poolHeaterConfig = database.databaseActuators.getHardwareConfigurationByName("Pool Heater")
+
+	#light = Light(poolLightConfig[0],poolLightConfig[2])
+	#pump = Pump(poolPumpConfig[0],poolPumpConfig[2])
+	light = Light(1,1)
+	pump = Pump(5,2)
+	heater = Heater(poolHeaterConfig[0],poolHeaterConfig[2])
 	while True:
 		Item = Queue.get()
 		state = Item.state
 		data = Item.data
 		if state == "Init":
-			poolLightConfig = database.databaseActuators.getHardwareConfigurationByName("Pool Light")
-			poolPumpConfig = database.databaseActuators.getHardwareConfigurationByName("Pool Pump")
-			light = Light(poolLightConfig[0],poolLightConfig[2])
-			pump = Pump(poolPumpConfig[0],poolPumpConfig[2])
+			print("Init State")
+
 
 		elif state == "Start":
 			print("Start State")	
@@ -49,8 +58,15 @@ def process(Queue):
 			else:
 				pump.set_value(False)
 
-		elif state == "Exit":
+		elif state == "heater":
+			print("heater")
+			if(data == "on"):
+				heater.set_value(True)		
+			else:
+				heater.set_value(False)
 
+		elif state == "Exit":
+			del database.databaseActuators
 			break
 		else:
 			print("Programmation error : This state is not implemented : "+state)
