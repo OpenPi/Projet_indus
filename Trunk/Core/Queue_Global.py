@@ -22,3 +22,4 @@ class ProcessQueue(Queue, object):
 process_UserCommand = ProcessQueue(maxsize=0)
 process_SensorsRead = ProcessQueue(maxsize=0)
 process_Actuators = ProcessQueue(maxsize=0)
+process_TemperatureRegulation = ProcessQueue(maxsize=0)

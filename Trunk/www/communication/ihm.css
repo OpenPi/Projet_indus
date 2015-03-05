@@ -1,0 +1,50 @@
+table, tr, th, td
+{
+	border:3px solid #FF9B05; 
+	border-collapse: collapse;
+	text-align: center;
+}
+
+#measure
+{
+	margin-top: 2%;
+	display: inline-block;
+	float: left;
+}
+
+#userCommand
+{
+	margin-left: 10%;
+	margin-top: 2%;
+	display: inline-block;
+	float: left;
+}
+
+#CreateUserCommand
+{
+	margin-left: 10%;
+	/*margin-top: 0%;*/
+	display: inline-block;
+	width : 450px;
+	float: left;
+}
+
+#measureChoice
+{
+
+	text-indent: 30px;
+	margin-top : 0px;
+	margin-bottom : 30px;
+	width : 500px;
+}
+
+#chart
+{
+	width: 700px; 
+	height: 380px;
+	margin-left: 5%;
+	margin-top: -120px;
+	/*margin-bottom: 10px;*/
+	display: inline-block;
+	float: left;
+}

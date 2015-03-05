@@ -12,18 +12,20 @@ Version 1.0 Created 23/02/2015
 ================================================
 """
 
-class Actuator:
+class Actuator(object):
 	"""
 	Mother class of actuator
 	"""
 	
 	# Builder class
-	def __init__(self, channel):
+	def __init__(self, hardwareId, channel):
 		"""
 		Actuator class
 		
+		hardwareId: Id to hardware equipment
 		channel: Physical position actuator on Expender PI
 		"""
+		self.hardwareId = hardwareId
 		self.channel = channel
 	
 class AnalogActuator(Actuator):
@@ -33,14 +35,14 @@ class AnalogActuator(Actuator):
 	"""
 	
 	# Builder class
-	def __init__(self, channel, voltage=False):
+	def __init__(self, hardwareId, channel, voltage=False):
 		"""
 		Analog actuator class
 		
 		channel: Physical position actuator on Expender PI
 		voltage: Type of value
 		"""
-		Actuator.__init__(self, channel)
+		Actuator.__init__(self, hardwareId, channel)
 		self.voltage = voltage
 	
 	# Set value activator
@@ -54,17 +56,30 @@ class NumericActuator(Actuator):
 	"""
 	
 	# Builder class
-	def __init__(self, pin):
+	def __init__(self, hardwareId, pin):
 		"""
 		Numeric actuator class
 		
 		pin: Physical position actuator on Expender PI
 		"""
-		Actuator.__init__(self, pin)
+		Actuator.__init__(self, hardwareId, pin)
+		self._override = False
+		
+	def getOverride(self):
+		return self._override
+		
+	def setOverride(self, value):
+		if bool == type(value):
+			self._a = value
+		else:
+			print("ERROR: override is boolean")
+		
+	override = property(getOverride, setOverride)
 		
 	# Set value activator
 	def set_value_activator(self, value):
-		set_output_num(self.channel, value)
+		if override:
+			set_output_num(self.channel, value)
 		
 class Pump(NumericActuator):
 	"""
@@ -73,13 +88,13 @@ class Pump(NumericActuator):
 	"""
 	
 	# Builder class
-	def __init__(self, pin): 
+	def __init__(self, hardwareId, pin): 
 		"""
 		Pump actuator class
 		
 		pin: Physical position actuator on Expender PI
 		"""
-		NumericActuator.__init__(self, pin)	
+		NumericActuator.__init__(self, hardwareId, pin)	
 	
 	# Set value Pump
 	def set_value(self, value):
@@ -92,13 +107,13 @@ class Light(NumericActuator):
 	"""
 	
 	# Builder class
-	def __init__(self, pin): 
+	def __init__(self, hardwareId, pin): 
 		"""
 		Light actuator class
 		
 		pin: Physical position actuator on Expender PI
 		"""
-		NumericActuator.__init__(self, pin)	
+		NumericActuator.__init__(self, hardwareId, pin)	
 	
 	# Set value Light
 	def set_value(self, value):
@@ -106,8 +121,8 @@ class Light(NumericActuator):
 
 class actuatorTestAnalog(AnalogActuator):
 
-	def __init__(self, channel,	voltage):
-		AnalogActuator.__init__(self, channel, voltage=False)
+	def __init__(self, hardwareId, channel,	voltage):
+		AnalogActuator.__init__(self, hardwareId, channel, voltage=False)
 	
 	def set_value(self, value):
 		self.set_value_activator(value)	

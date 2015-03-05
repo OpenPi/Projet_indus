@@ -27,12 +27,12 @@ def process(Queue):
 			print("Start State")	
 
 		elif state == "Process":
-			userCommand = database.database.getUserCommand()
+			userCommand = database.databaseUserCommand.getUserCommand()
 
 			for row in userCommand :
 
 				command(row[1], row[2], row[3])
-				database.database.userCommandDone(row[0])
+				database.databaseUserCommand.userCommandDone(row[0])
 
 			Queue.enqueueIfEmpty(state, data, 1000)
 

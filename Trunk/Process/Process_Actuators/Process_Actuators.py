@@ -11,6 +11,7 @@ from threading import Thread
 import Core.Queue_Global as Queue_Global
 from Core.QueueItem import QueueItem
 from Core.actuator import Light
+import Core.database as database
 
 def process(Queue):
 
@@ -19,7 +20,8 @@ def process(Queue):
 		state = Item.state
 		data = Item.data
 		if state == "Init":
-			light = Light(1)
+			poolLightConfig = database.databaseActuators.getHardwareConfigurationByName("Pool Light")
+			light = Light(poolLightConfig[0],poolLightConfig[2])
 
 		elif state == "Start":
 			print("Start State")	
@@ -32,7 +34,7 @@ def process(Queue):
 			print("Stop State")		
 
 		elif state == "light":
-			print("Lumière")
+			print("Light")
 			if(data == "on"):
 				light.set_value(True)		
 			else:

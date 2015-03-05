@@ -19,7 +19,7 @@ def process(Queue):
 		state = Item.state
 		data = Item.data
 		if state == "Init":
-			print("Init State")
+			print("Init Temperature Regulation")
 
 		elif state == "Start":
 			print("Start State")	
@@ -41,6 +41,6 @@ def process(Queue):
 
 
 def StartThread():
-	ThreadProcess = Thread(target=process, args=(Queue_Global.process_Template,))
+	ThreadProcess = Thread(target=process, args=(Queue_Global.process_TemperatureRegulation,))
 	ThreadProcess.setDaemon(False)
 	ThreadProcess.start()

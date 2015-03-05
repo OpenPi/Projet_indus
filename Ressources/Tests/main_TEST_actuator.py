@@ -9,6 +9,13 @@ light = Light(pin)
 
 value = True
 
+light.override = True
+print("Test override: {}".format(light.override))
+light.override = 22
+print("Test override: {}".format(light.override))
+light.override = False
+print("Test override: {}".format(light.override))
+
 i = 0
 while i < 10:
 

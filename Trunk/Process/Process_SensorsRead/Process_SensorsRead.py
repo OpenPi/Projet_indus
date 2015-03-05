@@ -11,7 +11,7 @@ from threading import Thread
 import Core.Queue_Global as Queue_Global
 from Core.QueueItem import QueueItem
 import Core.database as database
-from Core.sensor import Thermocouple
+from Core.sensor import *
 
 def process(Queue):
 
@@ -20,15 +20,24 @@ def process(Queue):
 		state = Item.state
 		data = Item.data
 		if state == "Init":
-			poolThermocouple = Thermocouple(1, 4.14)
+			
+			poolThermocoupleConfig = database.databaseSensorsRead.getHardwareConfigurationByName("Pool Temperature Sensor")			
+			pumpAmpereMeterConfig = database.databaseSensorsRead.getHardwareConfigurationByName("Pump Ampere Meter")
+			poolPhConfig = database.databaseSensorsRead.getHardwareConfigurationByName("Pool Ph Meter")			
+			#poolThermocouple = Thermocouple(poolThermocoupleConfig[0],poolThermocoupleConfig[2], 4.14)
+			#pumpAmpereMeter = AmpereMeter(pumpAmpereMeterConfig[0],pumpAmpereMeterConfig[2], 4.14)
+			poolPhMeter = PhMeter(poolPhConfig[0],poolPhConfig[2], 4.14)
+
 
 		elif state == "Start":
 			print("Start State")	
 
 		elif state == "Process":
-			thermocoupleValue = poolThermocouple.get_value()
-			print(thermocoupleValue)		
-			database.database.insertMeasure(1, thermocoupleValue)
+			#thermocoupleValue = poolThermocouple.get_value()
+			#ampereMeterValue = pumpAmpereMeter.get_value()
+			poolPhMeterValue = poolPhMeter.get_value()
+			#print(ampereMeterValue)		
+			#database.databaseSensorsRead.insertMeasure(1, thermocoupleValue)
 			Queue.enqueueIfEmpty(state, data, 1000)
 			
 		elif state == "Stop":
