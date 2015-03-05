@@ -50,9 +50,7 @@
             $o["token"] = sha1(date("Y-m-d H:i:s"));
 
             session_start();
-            $_SESSION["user"] += $user;
-            $_SESSION["token"] += $o["token"];
-
+            $_SESSION["user"] = $user;
         }
         else{
             $o["code"] = 401;
