@@ -7,7 +7,8 @@
 
 
 from time import sleep
-
+import Core.database as database
+from Queue import Queue
 
 class ThermocoupleRegulation(object):
 	"""PID Thermocouple"""
@@ -40,6 +41,7 @@ class ThermocoupleRegulation(object):
 	def BD_Temperature(self):
 	  ### a lire dans la base de donnée
 	    #temperature = float(input("saisissez une temperature °C : "))
+	    temperature = database.databaseThermocoupleRegulation.getLastMeasureByName("Pool Temperature Sensor")
 	    return temperature
 	    print("Temperature = {} ".format(temperature))
 	
@@ -49,10 +51,12 @@ class ThermocoupleRegulation(object):
 	def turn_on(self):
 	  ### taper dans le process marche moteur
 	  print("turn on")
+	  Queue_Global.process_Actuators.enqueue('pump', 'on')
 	 
 	def turn_off(self):
 	  ### taper dans le process arret moteur
 	  print("turn off")
+	  Queue_Global.process_Actuators.enqueue('pump', 'off')
 	 
 	
 	
@@ -129,9 +133,3 @@ class ThermocoupleRegulation(object):
 					print("tata")
 	
 
-if __name__ == '__main__':
-
-    thermo = ThermocoupleRegulation()
-    while True:
-    	thermo.Regulate()
- 

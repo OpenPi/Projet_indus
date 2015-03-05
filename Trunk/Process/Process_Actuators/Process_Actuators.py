@@ -21,7 +21,9 @@ def process(Queue):
 		data = Item.data
 		if state == "Init":
 			poolLightConfig = database.databaseActuators.getHardwareConfigurationByName("Pool Light")
+			poolPumpConfig = database.databaseActuators.getHardwareConfigurationByName("Pool Pump")
 			light = Light(poolLightConfig[0],poolLightConfig[2])
+			pump = Pump(poolPumpConfig[0],poolPumpConfig[2])
 
 		elif state == "Start":
 			print("Start State")	
@@ -39,6 +41,13 @@ def process(Queue):
 				light.set_value(True)		
 			else:
 				light.set_value(False)
+
+		elif state == "pump":
+			print("pump")
+			if(data == "on"):
+				pump.set_value(True)		
+			else:
+				pump.set_value(False)
 
 		elif state == "Exit":
 
