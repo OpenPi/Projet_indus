@@ -111,13 +111,32 @@ class Light(NumericActuator):
 		"""
 		Light actuator class
 		
-		pin: Physical position actuator on Expender PI
+		pin: Physical position actuator on Expander PI
 		"""
 		NumericActuator.__init__(self, hardwareId, pin)	
 	
 	# Set value Light
 	def set_value(self, value):
-		self.set_value_activator(value)			
+		self.set_value_activator(value)
+		
+class Heater(NumericActuator):
+	"""
+	Class for heater actuator
+	Inherit to NumericActuator class
+	"""
+	
+	# Builder class
+	def __init__(self, hardwareId, pin):
+		"""
+		Heater actuator class
+		
+		pin: Physical position actuator on Expander PI		
+		"""
+		NumericActuator.__init__(self, hardwareId, pin)	
+		
+	# Set value Light
+	def set_value(self, value):
+		self.set_value_activator(value)
 
 class actuatorTestAnalog(AnalogActuator):
 
