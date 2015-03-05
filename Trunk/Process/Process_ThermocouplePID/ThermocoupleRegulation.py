@@ -8,6 +8,7 @@
 
 from time import sleep
 
+
 class ThermocoupleRegulation(object):
 	"""PID Thermocouple"""
 
@@ -23,24 +24,35 @@ class ThermocoupleRegulation(object):
 		self.Integrator_max=Integrator_max #Integrator_max (a tag max)
 		self.Integrator_min=Integrator_min #Integrator_min (a tag min)
 
-		self.set_point=0.0 #set_point is requested setpoint
+		self.set_point=30.0 #set_point is requested setpoint
 		self.error=0.0 #asked error or previous error
+
+		#Initialise some variables for the control loop
+		#self.pwr_cnt=1
+		#self.pwr_tot=0
+		self.pwr_coef=2 #conversion coefficient to obtain second
+		self.coef_regul=1 #coefficient for duration of heaters
 
 	
 	#------------------------------#
 	# Definition temperature value #
 	#------------------------------#
-	def BD_Temperature():
+	def BD_Temperature(self):
 	  ### a lire dans la base de donnée
+	    #temperature = float(input("saisissez une temperature °C : "))
+	    return temperature
+	    print("Temperature = {} ".format(temperature))
 	
 	#---------------------------#
 	# Definition engine control #
 	#---------------------------#	 
-	def turn_on():
+	def turn_on(self):
 	  ### taper dans le process marche moteur
+	  print("turn on")
 	 
-	def turn_off():
+	def turn_off(self):
 	  ### taper dans le process arret moteur
+	  print("turn off")
 	 
 	
 	
@@ -74,38 +86,52 @@ class ThermocoupleRegulation(object):
 	
 		#calculation results PID
 		PID = self.P_value + self.I_value + self.D_value
+		print("PID = {}".format(PID))
 	
 		return PID
 
 
 	def Regulate(self):
 		#Initialise some variables for the control loop
-		pwr_cnt=1
-		pwr_tot=0
+		#pwr_cnt=1
+		#pwr_tot=0
 
 		# Turn on for initial ramp up
-		state="on"
-		turn_on()
-		PID=Calulate_PID(BD_Temperature())
+		#state="on"
+		#self.turn_on()
+		state="off"
+		self.turn_off()
+		PID=self.Calulate_PID(self.BD_Temperature())
 
-		while True:
-		    power = PID/100
-		    if (power > 0):
-		        pwr_tot = pwr_tot + power
-		    pwr_ave = pwr_tot / pwr_cnt
-		    pwr_cnt = pwr_cnt + 1
+		power = PID*self.pwr_coef
 
-		    # Long duration pulse width modulation
-		    for x in range (1, 100):
-		        if (power > x):
-		            if (state=="off"):
-		                state="on"
-		                turn_on()
-		        else:
-		            if (state=="on"):
-		                state="off"
-		                turn_off()
-		        sleep(1)
+		print("POWER = {} secondes soit {} minutes".format(power, power/60))
+		#if (power > 0):
+		#	self.pwr_tot = self.pwr_tot + power
+		#	print("pwr_tot = {}".format(self.pwr_tot))
+#		#self.pwr_ave = self.pwr_tot / self.pwr_cnt
+#		print("pwr_ave = {}".format(self.pwr_ave))
+#		self.pwr_cnt = self.pwr_cnt + 1
+#		print("pwr_cnt = {}".format(self.pwr_cnt))
+
+		#Long duration pulse width modulation
+		for x in range (1, 100):
+			if (power > x):
+				if (state=="off"):
+					state="on"
+					self.turn_on()
+					print("toto")
+					sleep(power*self.coef_regul)
+			else:
+				if (state=="on"):
+					state="off"
+					self.turn_off()
+					print("tata")
 	
 
+if __name__ == '__main__':
 
+    thermo = ThermocoupleRegulation()
+    while True:
+    	thermo.Regulate()
+ 
