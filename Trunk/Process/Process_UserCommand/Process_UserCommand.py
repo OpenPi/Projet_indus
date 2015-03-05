@@ -40,7 +40,7 @@ def process(Queue):
 			print("Stop State")		
 
 		elif state == "Exit":
-
+			del database.databaseUserCommand
 			break
 		else:
 			print("Programmation error : This state is not implemented : "+state)

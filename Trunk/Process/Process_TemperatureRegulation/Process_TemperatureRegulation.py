@@ -14,13 +14,13 @@ import Core.database as database
 import Core.ThermocoupleRegulation as ThermocoupleRegulation
 
 def process(Queue):
-
+	thermocoupleRegulation = ThermocoupleRegulation.ThermocoupleRegulation()
 	while True:
 		Item = Queue.get()
 		state = Item.state
 		data = Item.data
 		if state == "Init":
-			thermocoupleRegulation = ThermocoupleRegulation()
+			print("Init State")
 
 		elif state == "Start":
 			print("Start State")	
@@ -29,13 +29,13 @@ def process(Queue):
 
 			thermocoupleRegulation.Regulate()
 			
-			Queue.enqueueIfEmpty(state, data, 1000)
+			Queue.enqueueIfEmpty(state, data, 60000)
 			
 		elif state == "Stop":
 			print("Stop State")		
 
 		elif state == "Exit":
-
+			del database.databaseThermocoupleRegulation
 			break
 		else:
 			print("Programmation error : This state is not implemented : "+state)

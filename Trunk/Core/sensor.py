@@ -145,7 +145,7 @@ class PhMeter(AnalogSensor):
 	# Return ph
 	def get_value(self):
 		voltValue = self.get_value_sensor()
-		print("Tension :"+str(voltValue)+" | Ph : "+ str(self.conversion(voltValue)) )
+		#print("Tension :"+str(voltValue)+" | Ph : "+ str(self.conversion(voltValue)) )
 		if voltValue == -1:
 			print("ERROR: get value ph sensor\n")
 			return -1

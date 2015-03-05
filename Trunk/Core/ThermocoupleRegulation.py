@@ -1,3 +1,5 @@
+# -*-coding:Latin-1 -*
+
 # The recipe gives simple implementation of a Discrete Proportional-Integral-Derivative (PID) controller. 
 # PID controller gives output value for error between desired reference input and measurement feedback to minimize error value.
 #
@@ -8,7 +10,7 @@
 
 from time import sleep
 import Core.database as database
-from Queue import Queue
+import Core.Queue_Global as Queue_Global
 
 class ThermocoupleRegulation(object):
 	"""PID Thermocouple"""
@@ -51,12 +53,12 @@ class ThermocoupleRegulation(object):
 	def turn_on(self):
 	  ### taper dans le process marche moteur
 	  print("turn on")
-	  Queue_Global.process_Actuators.enqueue('pump', 'on')
+	  Queue_Global.process_Actuators.enqueue('heater', 'on')
 	 
 	def turn_off(self):
 	  ### taper dans le process arret moteur
 	  print("turn off")
-	  Queue_Global.process_Actuators.enqueue('pump', 'off')
+	  Queue_Global.process_Actuators.enqueue('heater', 'off')
 	 
 	
 	

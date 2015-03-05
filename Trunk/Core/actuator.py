@@ -70,15 +70,15 @@ class NumericActuator(Actuator):
 		
 	def setOverride(self, value):
 		if bool == type(value):
-			self._a = value
+			self._override = value
 		else:
 			print("ERROR: override is boolean")
 		
 	override = property(getOverride, setOverride)
 		
 	# Set value activator
-	def set_value_activator(self, value):
-		if override:
+	def set_value(self, value):
+		if self._override:
 			set_output_num(self.channel, value)
 		
 class Pump(NumericActuator):
@@ -96,9 +96,7 @@ class Pump(NumericActuator):
 		"""
 		NumericActuator.__init__(self, hardwareId, pin)	
 	
-	# Set value Pump
-	def set_value(self, value):
-		self.set_value_activator(value)
+
 
 class Light(NumericActuator):
 	"""
@@ -115,9 +113,6 @@ class Light(NumericActuator):
 		"""
 		NumericActuator.__init__(self, hardwareId, pin)	
 	
-	# Set value Light
-	def set_value(self, value):
-		self.set_value_activator(value)
 		
 class Heater(NumericActuator):
 	"""
@@ -133,15 +128,9 @@ class Heater(NumericActuator):
 		pin: Physical position actuator on Expander PI		
 		"""
 		NumericActuator.__init__(self, hardwareId, pin)	
-		
-	# Set value Light
-	def set_value(self, value):
-		self.set_value_activator(value)
+
 
 class actuatorTestAnalog(AnalogActuator):
 
 	def __init__(self, hardwareId, channel,	voltage):
 		AnalogActuator.__init__(self, hardwareId, channel, voltage=False)
-	
-	def set_value(self, value):
-		self.set_value_activator(value)	

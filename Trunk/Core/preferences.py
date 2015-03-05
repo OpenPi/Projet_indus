@@ -1,8 +1,5 @@
 # to Add a new preference :
-# Add in __init__ method your data with default value (like self.ph = 7.4)
-# Add your data in copy method (self.yourData = ObjectToCopy.yourData)
-# Erase the preferences file
-# setup your preferences
+
 
 import pickle
 
