@@ -10,7 +10,8 @@ from threading import Thread
 
 import Core.Queue_Global as Queue_Global
 from Core.QueueItem import QueueItem
-
+import Core.database as database
+import Core.ThermocoupleRegulation as ThermocoupleRegulation
 
 def process(Queue):
 
@@ -19,13 +20,15 @@ def process(Queue):
 		state = Item.state
 		data = Item.data
 		if state == "Init":
-			print("Init Temperature Regulation")
+			thermocoupleRegulation = ThermocoupleRegulation()
 
 		elif state == "Start":
 			print("Start State")	
 
 		elif state == "Process":
-			print("Process State")		
+
+			thermocoupleRegulation.Regulate()
+			
 			Queue.enqueueIfEmpty(state, data, 1000)
 			
 		elif state == "Stop":
