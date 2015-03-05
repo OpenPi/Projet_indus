@@ -11,6 +11,7 @@ schemas:
     message: schema/plashboard-message.json
     authentication: schema/plashboard-authentication.json
     authorized: schema/plashboard-authorized.json
+    hardwareConfiguration: schema/plashboard-hardwareConfiguration.json
 
 traits:
   - secured:
@@ -23,15 +24,6 @@ traits:
                 type: string
                 required: true
         responses:
-            404:
-                body:
-                    application/json:
-                        schema: message
-                        example: |
-                            {
-                                "code": 404,
-                                "message": "Not found"
-                            }
             401:
                 body:
                     application/json:
@@ -41,6 +33,29 @@ traits:
                                 "code": 401,
                                 "message": "Authorized require"
                             }
+    basic:
+        usage: Apply this to any method that needs basic methods
+        description: Some requests require basics messages
+        responses:
+            404:
+                body:
+                    application/json:
+                        schema: message
+                        example: |
+                            {
+                                "code": 404,
+                                "message": "Not found"
+                            }
+            405:
+                body:
+                    application/json:
+                        schema: message
+                        example: |
+                            {
+                                "code": 405,
+                                "message": "Methode POST not allowed"
+                            }
+
     timeSearchable:
         usage: Apply this to any method that can be filter by timestamp
         description: Some requests can search data with time filter
@@ -105,7 +120,7 @@ traits:
 
 /measures:
     get:
-        is: [ secured, timeSearchable, limitedSearchable ]
+        is: [ basic, secured, timeSearchable, limitedSearchable ]
         description: Get all measures for sensors.
         responses:
             200:
@@ -139,7 +154,7 @@ traits:
     /{sensorId}:
         description: Get measure for a specific sensor.
         get:
-            is: [ secured, timeSearchable, limitedSearchable ]
+            is: [ basic, secured, timeSearchable, limitedSearchable ]
             description: Get the measure with `hardwareConfigurationId = {sensorId}`.
             responses:
                 200:
@@ -157,7 +172,7 @@ traits:
 
 /usercommands:
     get:
-        is: [ secured, timeSearchable, limitedSearchable ]
+        is: [ basic, secured, timeSearchable, limitedSearchable ]
         description: Get all user commands.
         responses:
             200:
@@ -192,7 +207,7 @@ traits:
                                 }	
                             ]
     post:
-        is: [ secured ]
+        is: [ basic, secured ]
         description: Add a user command executate later by the python process
         queryParameters:
             command:
@@ -233,7 +248,7 @@ traits:
     /{commandId}:
         description: Get information for a specific command.
         get:
-            is: [ secured, timeSearchable, limitedSearchable ]
+            is: [ basic, secured, timeSearchable, limitedSearchable ]
             description: Get the command with `id = {commandId}`.
             responses:
                 200:
@@ -248,4 +263,58 @@ traits:
                                     "value": "0",
                                     "timestamp": "2015-03-03 16:45:00",
                                     "done":0
+                                }
+
+/hardwareconfiguration:
+    get:
+        is: [ basic, secured ]
+        description: Get all hardwares informations.
+        responses:
+            200:
+                body:
+                    application/json:
+                        schema: hardwareConfiguration
+                        example: |
+                            [
+                                {
+                                    "id": 1 
+                                    "hardwareName": temperature_sensor
+                                    "pin": 1
+                                    "type": "Analog"
+                                    "IO": "Input"
+                                    "PullUpDownResistor": "Up"
+                                    "unit": "°C"
+                                    "tension": "3.3"
+                                },
+                                {
+                                    "id": 2
+                                    "hardwareName": "pumpe"
+                                    "pin": 5
+                                    "type": "Numeric"
+                                    "IO": "Output"
+                                    "PullUpDownResistor": "None"
+                                    "unit": "None"
+                                    "tension": "5"
+                                }
+                            ]
+    /{hardwareId}:
+        description: Get measure for a specific sensor.
+        get:
+            is: [ basic, secured ]
+            description: Get the hardware information with `id = {hardwareId}`.
+            responses:
+                200:
+                    body:
+                        application/json:
+                            schema: hardwareConfiguration
+                            example: |
+                                {
+                                    "id": 1 
+                                    "hardwareName": temperature_sensor
+                                    "pin": 1
+                                    "type": "Analog"
+                                    "IO": "Input"
+                                    "PullUpDownResistor": "Up"
+                                    "unit": "°C"
+                                    "tension": "3.3"
                                 }
