@@ -83,12 +83,11 @@ traits:
         queryParameters:
             user:
                 description: Name for the user account
-                example: "Stark"
                 required: true
                 type: string
             password:
-                description: Password for the user account
-                example: "MissPepper01091963"
+                description: Hashed sha password for the user account
+                example: "MissPepper01091963 give 89018eab1dcab8bba137b1b13b54e079a924cd7c"
                 required: true
                 type: string
         body:
@@ -96,8 +95,8 @@ traits:
                 schema: authentication
                 example: |
                     {
-                        "username": "plashboard",
-                        "password": "1234"
+                        "username": "Stark",
+                        "password": "89018eab1dcab8bba137b1b13b54e079a924cd7c"
                     }
         responses:
             200:
@@ -116,6 +115,33 @@ traits:
                             {
                                 "code": -1,
                                 "message": "Username and password invalid"
+                            }
+            400:
+                body:
+                    application/json:
+                        schema: message
+                        example: |
+                            {
+                                "code": 400,
+                                "message": "Bad parameters"
+                            }
+            405:
+                body:
+                    application/json:
+                        schema: message
+                        example: |
+                            {
+                                "code": 405,
+                                "message": "Methode GET not allowed"
+                            }
+            500:
+                body:
+                    application/json:
+                        schema: message
+                        example: |
+                            {
+                                "code": 500,
+                                "message": "Something went wrong in the server"
                             }
 
 /measures:
