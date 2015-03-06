@@ -1,47 +1,49 @@
 <?php
 
-    require_once("../orm/HardwareConfiguration.php");
+session_start();
 
-    if($_SERVER['REQUEST_METHOD'] == 'GET'){
-        $id  = explode('/', $_SERVER['PATH_INFO'])[1];
+//Check the user authorization
+if(isset($_SESSION['user']))
+{
+    //Check the HTTP Verb and select the right header
+    switch($_SERVER['REQUEST_METHOD']){
+        case 'GET':
+            require_once('get.php');
+            break;
+        case 'PUT':
+            header('HTTP/1.1 405 Method Not Allowed');
 
-        $tableObject = new HardwareConfiguration();
+            $output['code'] = 405.1;
+            $output['message'] = 'Methode '.$_SERVER['REQUEST_METHOD'].' not allowed';
+            break;
+        case 'POST':
+            header('HTTP/1.1 405 Method Not Allowed');
 
-        if($id != ""){
-            $cond = array("id" => array("=", $id));
-            $res = $tableObject->getRows($cond);
-        }
-        else{
-            $res = $tableObject->getAll();
-        }
-        
-        $i= 0;
-        $o["hardwareConfigurations"] = "";
+            $output['code'] = 405.1;
+            $output['message'] = 'Methode '.$_SERVER['REQUEST_METHOD'].' not allowed';
+            break;
+        case 'DELETE':
+            header('HTTP/1.1 405 Method Not Allowed');
 
-    	foreach ($res as $value) {
-    		$o["hardwareConfigurations"][$i] = $value;
-    		$i++;
-    	}
+            $output['code'] = 405.1;
+            $output['message'] = 'Methode '.$_SERVER['REQUEST_METHOD'].' not allowed';
+            break;
+        default:
+            header('HTTP/1.1 405 Method Not Allowed');
 
-        header('HTTP/1.1 200 OK');
-        header('Content-Type: application/json');
-
-        if(empty($o["hardwareConfigurations"])){
-            $o="";
-            $o["code"]=404;
-            $o["message"]= "Not found";
-
-            header('HTTP/1.1 404 Not Found');
-            header('Content-Type: application/json');
-        }
+            $output['code'] = 405.1;
+            $output['message'] = 'Methode '.$_SERVER['REQUEST_METHOD'].' not allowed';
+            break;
     }
-    else{
-        $o["code"] = 405;
-        $o["message"] = "Methode ".$_SERVER['REQUEST_METHOD']." not allowed";
+//User are not authorized
+}else{
+    header('HTTP/1.1 401 Unauthorized');
 
-        header('HTTP/1.1 405 Method Not Allowed');
-        header('Content-Type: application/json');
-    }
+    $output['code'] = 401;
+    $output['message'] = 'You need to be identificated to have access to this data';
+}
 
-	echo json_encode($o);
+
+header('Content-Type: application/json');
+echo json_encode($output);
 ?>
