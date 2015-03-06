@@ -33,7 +33,6 @@ Queue_Global.process_UserCommand.enqueue('Process')
 Queue_Global.process_SensorsRead.enqueue('Init')
 Queue_Global.process_SensorsRead.enqueue('Process')
 Queue_Global.process_Actuators.enqueue('Init')
-Queue_Global.process_Actuators.enqueue('light', 'on')
 
 Queue_Global.process_TemperatureRegulation.enqueue('Process')
 

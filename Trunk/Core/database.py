@@ -22,10 +22,11 @@ class Database:
             self.db.rollback()
 
     def getUserCommand(self):
-
+	
 	cur = self.db.cursor()
         cur.execute("SELECT * FROM userCommand WHERE done=0")
         result = cur.fetchall()
+	self.db.commit()
 	cur.close()
         return result
 
@@ -59,6 +60,7 @@ class Database:
 	try:
         	cur.execute("SELECT * FROM hardwareConfiguration WHERE name='"+name+"' LIMIT 1")
         	result = cur.fetchone()
+		self.db.commit()
 		cur.close()
 		return result
 	except:
@@ -66,17 +68,12 @@ class Database:
 	    return 0	
 
 
-	
-
-
-
-        
-
     def getLastMeasureByName(self, name):
 	print("getLastMeasureByName")
 	cur = self.db.cursor()
         cur.execute("SELECT measure.value, hardwareConfiguration.name FROM measure INNER JOIN hardwareConfiguration ON measure.hardwareConfigurationId = hardwareConfiguration.Id WHERE name = '"+ name +"' LIMIT 1")
         result = cur.fetchone()
+	self.db.commit()
 	cur.close()
 
         return result[0]
