@@ -2,12 +2,14 @@
 
     require_once("../orm/UserCommand.php");
 
-    $tableObject = new UserCommand();
-
+    //Retrive filtring param
     $xlast = isset ($_GET["xlast"]) ? $_GET["xlast"] : "undefined";
     $time  = isset ($_GET["time"]) ? $_GET["time"] : "undefined";
 
+    //Retrieve ID to get information about a specific usercommand
     $id  = explode('/', $_SERVER['PATH_INFO'])[1];
+
+    $tableObject = new UserCommand();
 
     //If both of parameter are not given get all measures
     if($xlast == "undefined" and $time == "undefined"){
@@ -45,16 +47,16 @@
 	$res = $tableObject->getRows($cond);
     }
     
+    //Create JSON with database information
     $i= 0;
     $output["commandes"] = "";
-
 	foreach ($res as $value) {
 		$output["commandes"][$i] = $value;
 		$i++;
 	}
-
     header('HTTP/1.1 200 OK');
 
+    //If output empty respond not ressource found
     if(empty($output["commandes"])){
         $output = "";
         $output["code"] = 404;
