@@ -17,10 +17,7 @@ switch($_SERVER['REQUEST_METHOD']){
         include_once('post.php');
         break;
     case 'DELETE':
-        header('HTTP/1.1 405 Method Not Allowed');
-
-        $output['code'] = 405.1;
-        $output['message'] = 'Methode '.$_SERVER['REQUEST_METHOD'].' not allowed';
+        include_once('delete.php');
         break;
     default:
         header('HTTP/1.1 405 Method Not Allowed');
