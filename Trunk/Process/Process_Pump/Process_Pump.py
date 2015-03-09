@@ -1,0 +1,87 @@
+# To add a new process, follow instructions :
+# Copy/Paste/rename Process_template folder
+# Go to Trunk/Core/Queue_Global.py and follow instructions
+# Go to Trunk/main.py and follow instructions
+# Rename Process name in StartThread function
+
+
+from Queue import Queue
+from threading import Thread
+
+import Core.Queue_Global as Queue_Global
+from Core.QueueItem import QueueItem
+from datetime import datetime
+
+def process(Queue):
+
+	while True:
+		Item = Queue.get()
+		state = Item.state
+		data = Item.data
+		if state == "Init":
+			print("Init State")
+
+			precision = 30 #minute
+			poolTemperature = 12.0
+			preferedHours = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1] # use the same precision 
+
+			pumpingTime = (poolTemperature / 3) * (60 / precision) # 1 hour of pumping every 3 degrees
+
+			now = datetime.now()
+			hoursLeft = 23 - now.hour
+			minutesLeft = 59 - now.minute + 1
+		
+			numberOfPrecisionFormattedTimeLeft = HourToPrecisionFormatted(hoursLeft, minutesLeft, precision) + 1
+
+			startTimeInNumberOfPrecisionFormattedTime = HourToPrecisionFormatted(now.hour, now.minute, precision)
+
+			pumpingTPrecisionFormattedTimeList = [0] * numberOfPrecisionFormattedTimeLeft
+
+			if(preferedHours[startTimeInNumberOfPrecisionFormattedTime:].count(1) > pumpingTime):
+				print("All in prefered hours but we have to adapt time in bloc time")
+				# Choose when to pump during prefered hours
+
+			elif(preferedHours[startTimeInNumberOfPrecisionFormattedTime:].count(1) < pumpingTime):
+				print("Not all in prefered hours")
+				# Pump during all prefered hours and choose when pumping all hours left
+			else:
+				print("All in prefered hour")
+				# Go to process
+
+
+			print(str(preferedHours[startTimeInNumberOfPrecisionFormattedTime:].count(1)) + " | " + str(numberOfPrecisionFormattedTimeLeft) + " | " + str(startTimeInNumberOfPrecisionFormattedTime) + " | " + str(pumpingTime)) 
+			#print(preferedHours[startTimeInNumberOfPrecisionFormattedTime:])
+			#print("Left till midnight "+ str(hoursLeft) +"h"+ str(minutesLeft)) 
+		elif state == "Start":
+			print("Start State")	
+
+		elif state == "Process":
+			print("Process State")		
+			Queue.enqueueIfEmpty(state, data, 1000)
+			
+		elif state == "Stop":
+			print("Stop State")		
+
+		elif state == "Exit":
+
+			break
+		else:
+			print("Programmation error : This state is not implemented : "+state)
+
+		Queue.task_done() # Indicate that a formerly enqueued task is complete
+
+
+def StartThread():
+	ThreadProcess = Thread(target=process, args=(Queue_Global.process_Pump,))
+	ThreadProcess.setDaemon(False)
+	ThreadProcess.start()
+
+def HourToPrecisionFormatted(hour, minute, precision):
+	hourInMinutes = hour * 60 + minute
+	hourToPrecisionFormatted = hourInMinutes / precision
+	return hourToPrecisionFormatted
+
+#class preferedHour(object):
+
+#	def __init__(self, ):
+		
