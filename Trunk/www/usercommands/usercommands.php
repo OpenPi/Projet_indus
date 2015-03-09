@@ -1,4 +1,5 @@
 <?php
+session_start();
 //Check the user authorization
 if(isset($_SESSION['user']))
 {
