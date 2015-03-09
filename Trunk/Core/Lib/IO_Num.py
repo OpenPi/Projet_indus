@@ -12,7 +12,7 @@ Version 1.0 Created 19/02/2015
 ================================================
 """
 
-def set_output_num(pin, value):
+def set_output_num(pin, value, pullup):
 	
 	"""
 	Set value of numeric output
@@ -49,6 +49,12 @@ def set_output_num(pin, value):
 	io = IO(bus)  # create an instance of the IO class
 	
 	io.set_pin_direction(pin, 0)		# Define as output pin
+	
+	# Define home position "up or down"
+	if pullup:
+		io.set_pin_pullup(pin, 0xFF)
+	else:
+		io.set_pin_pullup(pin, 0x00)
 	
 	io.write_pin(pin, value)
 	

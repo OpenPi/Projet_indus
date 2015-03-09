@@ -56,13 +56,14 @@ class NumericActuator(Actuator):
 	"""
 	
 	# Builder class
-	def __init__(self, hardwareId, pin):
+	def __init__(self, hardwareId, pin, pullup=False):
 		"""
 		Numeric actuator class
 		
 		pin: Physical position actuator on Expender PI
 		"""
 		Actuator.__init__(self, hardwareId, pin)
+		self.pullup = pullup
 		self._override = False
 		
 	def getOverride(self):
@@ -79,7 +80,7 @@ class NumericActuator(Actuator):
 	# Set value activator
 	def set_value(self, value):
 		if not self._override:
-			set_output_num(self.channel, value)
+			set_output_num(self.channel, value, self.pullup)
 		
 class Pump(NumericActuator):
 	"""

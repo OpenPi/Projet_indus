@@ -65,7 +65,7 @@ class NumericSensor(Sensor):
 	"""
 	
 	# Builder class
-	def __init__(self, hardwareId, pin, pullup=True):
+	def __init__(self, hardwareId, pin, pullup=False):
 		"""
 		Numeric sensor class
 		
@@ -181,7 +181,7 @@ class AmpereMeter(AnalogSensor):
 			
 class sensorTestNumeric(NumericSensor):
 
-	def __init__(self, hardwareId, pin, pullup=True):
+	def __init__(self, hardwareId, pin, pullup):
 		NumericSensor.__init__(self, hardwareId, pin, pullup)
 	
 	def get_value(self):
