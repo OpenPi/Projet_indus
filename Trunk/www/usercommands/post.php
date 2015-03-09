@@ -19,7 +19,7 @@
         $tableObject = new UserCommand();
     
         $date = date("Y-m-d H:i:s");
-        $tableObject->insertRow("'NULL', ".$type.", ".$command.", '".$targetName."', '".$value."', '".$date."', 0");
+        $tableObject->insertRow("'NULL', '".$type."', '".$command."', '".$targetName."', '".$value."', '".$date."', 0");
 
         $output["code"] = 201;
         $output["message"] = "Data created";
