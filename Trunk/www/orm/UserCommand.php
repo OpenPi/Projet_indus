@@ -7,7 +7,7 @@ final class UserCommand extends Table{
 	
     public function __construct(){
         $this->db = new Db();
-        $this->name = "userCommand";
+        $this->name = "usercommand";
         $this->fields = array(
                 "id"             => "id",
                 "type"           => "type",

@@ -17,7 +17,7 @@ final class Measure extends Table{
                 "value"                        => "value",
                 "timestamp"                    => "timestamp",
         );
-        $this->hardwareTable = "hardwareConfiguration";
+        $this->hardwareTable = "hardwareconfiguration";
     }
 
     /**

@@ -7,7 +7,7 @@ final class HardwareConfiguration extends Table{
 	
     public function __construct(){
         $this->db = new Db();
-        $this->name = "hardwareConfiguration";
+        $this->name = "hardwareconfiguration";
         $this->fields = array(
                 "id"                      => "id",
                 "name"                    => "name",
