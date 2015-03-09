@@ -12,12 +12,26 @@ final class Measure extends Table{
         $this->db = new Db();
         $this->name = "measure";
         $this->fields = array(
-                "id"                           => "id",
-                "hardwareConfigurationId"      => "hardwareConfigurationId",
+                "id"                           => "measure_id",
+                "hardwareConfigurationId"      => "hardware_id",
                 "value"                        => "value",
                 "timestamp"                    => "timestamp",
         );
         $this->hardwareTable = "hardwareconfiguration";
+
+        /*$this->all = $this->name.".id AS measure_id,". 
+                    $this->name.".hardwareConfigurationId AS hardware_id,". 
+                    $this->hardwareTable.".name AS name,". 
+                    $this->name.".value AS value,". 
+                    $this->name.".timestamp AS timestamp";*/
+
+        //Change database label by userfrindly label for the respond
+        $this->all = "";
+        foreach ($this->fields as $key => $value) {
+             $this->all = $this->all.$this->name.".".$key." AS ".$value.", ";
+        }
+        $this->all = $this->all.$this->hardwareTable.".name AS hardware_name";
+        //$this->all = substr_replace($this->all, '', '-2');
     }
 
     /**
@@ -25,12 +39,7 @@ final class Measure extends Table{
         * @return $allRows Data list
     **/
     public function getAll(){
-       $query = "SELECT ".
-                    $this->name.".id,". 
-                    $this->name.".hardwareConfigurationId,". 
-                    $this->hardwareTable.".name,". 
-                    $this->name.".value,". 
-                    $this->name.".timestamp
+       $query = "SELECT ".$this->all."
                  FROM ".$this->name."
                  INNER JOIN ".$this->hardwareTable."
                  WHERE ".$this->hardwareTable.".id=".$this->name.".hardwareConfigurationId
@@ -46,12 +55,7 @@ final class Measure extends Table{
     **/
     public function getAllLimited($limit){
 
-	$query = "SELECT ".
-                    $this->name.".id,". 
-                    $this->name.".hardwareConfigurationId,". 
-                    $this->hardwareTable.".name,". 
-                    $this->name.".value,". 
-                    $this->name.".timestamp
+	$query = "SELECT ".$this->all."
                  FROM ".$this->name."
                  INNER JOIN ".$this->hardwareTable."
                  WHERE ".$this->hardwareTable.".id=".$this->name.".hardwareConfigurationId
@@ -84,12 +88,7 @@ final class Measure extends Table{
                 $where .= $key."".$operator_value[0]."".$operator_value[1]." AND ";
             }
             $where = substr_replace($where, "", -5, 5)."";
-            $query = "SELECT ".
-                    $this->name.".id,". 
-                    $this->name.".hardwareConfigurationId,". 
-                    $this->hardwareTable.".name,". 
-                    $this->name.".value,". 
-                    $this->name.".timestamp
+            $query = "SELECT ".$this->all."
                  FROM ".$this->name."
                  INNER JOIN ".$this->hardwareTable."
                  WHERE ".$this->hardwareTable.".id=".$this->name.".hardwareConfigurationId AND ".$where."
@@ -121,12 +120,7 @@ final class Measure extends Table{
                 $where .= $key."".$operator_value[0]."".$operator_value[1]." AND ";
             }
             $where = substr_replace($where, "", -5, 5)."";
-            $query = "SELECT ".
-                    $this->name.".id,". 
-                    $this->name.".hardwareConfigurationId,". 
-                    $this->hardwareTable.".name,". 
-                    $this->name.".value,". 
-                    $this->name.".timestamp
+            $query = "SELECT ".$this->all."
                  FROM ".$this->name."
                  INNER JOIN ".$this->hardwareTable."
                  WHERE ".$this->hardwareTable.".id=".$this->name.".hardwareConfigurationId AND ".$where."

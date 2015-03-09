@@ -13,6 +13,13 @@ final class Users extends Table{
                 "name"                    => "name",
                 "password"                => "password"
         );
+
+        //Change database label by userfrindly label for the respond
+        $this->all = "";
+        foreach ($this->fields as $key => $value) {
+             $this->all = $this->all.$this->name.".".$key." AS ".$value.", ";
+        }
+        $this->all = substr_replace($this->all, '', '-2');
     }
 }
 
