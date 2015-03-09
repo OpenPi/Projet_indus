@@ -2,6 +2,7 @@
 
 from Lib.IO_Ana import set_output_ana
 from Lib.IO_Num import set_output_num
+from Lib.IO_Num import set_output_direction
 
 """
 ================================================
@@ -56,15 +57,15 @@ class NumericActuator(Actuator):
 	"""
 	
 	# Builder class
-	def __init__(self, hardwareId, pin, pullup=False):
+	def __init__(self, hardwareId, pin):
 		"""
 		Numeric actuator class
 		
 		pin: Physical position actuator on Expender PI
 		"""
 		Actuator.__init__(self, hardwareId, pin)
-		self.pullup = pullup
 		self._override = False
+		set_output_direction(self.channel)
 		
 	def getOverride(self):
 		return self._override
@@ -81,7 +82,9 @@ class NumericActuator(Actuator):
 	def set_value(self, value):
 		if not self._override:
 			print("Light"+ str(self.channel) + " " + str(value))
-			set_output_num(self.channel, not value, self.pullup)  #active low relay
+			set_output_num(self.channel, not value)  #active low relay
+		
+		
 		
 class Pump(NumericActuator):
 	"""
@@ -98,8 +101,6 @@ class Pump(NumericActuator):
 		"""
 		NumericActuator.__init__(self, hardwareId, pin)	
 	
-
-
 class Light(NumericActuator):
 	"""
 	Class for Light actuator
@@ -114,7 +115,6 @@ class Light(NumericActuator):
 		pin: Physical position actuator on Expander PI
 		"""
 		NumericActuator.__init__(self, hardwareId, pin)	
-	
 		
 class Heater(NumericActuator):
 	"""
@@ -130,7 +130,6 @@ class Heater(NumericActuator):
 		pin: Physical position actuator on Expander PI		
 		"""
 		NumericActuator.__init__(self, hardwareId, pin)	
-
 
 class actuatorTestAnalog(AnalogActuator):
 
