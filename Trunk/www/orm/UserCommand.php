@@ -12,11 +12,18 @@ final class UserCommand extends Table{
                 "id"             => "id",
                 "type"           => "type",
                 "command"        => "command",
-                "targetName"     => "targetName",
+                "targetName"     => "name",
                 "value"          => "value",
                 "timestamp"      => "timestamp",
                 "done"           => "done",
         );
+
+        //Change database label by userfrindly label for the respond
+        $this->all = "";
+        foreach ($this->fields as $key => $value) {
+             $this->all = $this->all.$this->name.".".$key." AS ".$value.", ";
+        }
+        $this->all = substr_replace($this->all, '', '-2');
     }
 
     /**
@@ -24,7 +31,7 @@ final class UserCommand extends Table{
         * @return $allRows Data list
     **/
     public function getAll(){
-       $query = "SELECT *
+       $query = "SELECT ".$this->all."
                  FROM ".$this->name."
                  ORDER BY timestamp DESC";
         $allRows = $this->db->getResponse($query);	
@@ -38,7 +45,7 @@ final class UserCommand extends Table{
     **/
     public function getAllLimited($limit){
 
-	$query = "SELECT *
+	$query = "SELECT ".$this->all."
                  FROM ".$this->name."
                  ORDER BY timestamp DESC
                  LIMIT 0,".$limit;
@@ -69,7 +76,7 @@ final class UserCommand extends Table{
                 $where .= $key."".$operator_value[0]."".$operator_value[1]." AND ";
             }
             $where = substr_replace($where, "", -5, 5)."";
-            $query = "SELECT *
+            $query = "SELECT ".$this->all."
                  FROM ".$this->name."
                  WHERE ".$where."
                  ORDER BY timestamp DESC";
@@ -100,7 +107,7 @@ final class UserCommand extends Table{
                 $where .= $key."".$operator_value[0]."".$operator_value[1]." AND ";
             }
             $where = substr_replace($where, "", -5, 5)."";
-            $query = "SELECT *
+            $query = "SELECT ".$this->all."
                  FROM ".$this->name."
                  WHERE ".$where."
                  ORDER BY timestamp DESC

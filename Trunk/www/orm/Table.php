@@ -12,14 +12,16 @@ abstract class Table{
 
 	protected $db; //!< Database
 	protected $name; //!< table name
-	protected $fields;
+	protected $fields; //!< Field name in database and name userfrindly to respond
+	protected $all; //!< Redifine all selection with user friendly name
 	
 	/**
             * @brief This function returns the entire table
             * @return $allRows Data list
         **/
 	public function getAll(){
-		$query = "SELECT * FROM ".$this->name;
+		$query = "SELECT ".$this->all." FROM ".$this->name;
+		//echo $query;
 		$allRows = $this->db->getResponse($query);
 		
 		return $allRows;
@@ -32,7 +34,7 @@ abstract class Table{
         **/
 	public function getAllLimited($limit){
 
-		$query = "SELECT * FROM ".$this->name." LIMIT 0,".$limit;
+		$query = "SELECT ".$this->all." FROM ".$this->name." LIMIT 0,".$limit;
 		$allRows = $this->db->getResponse($query);
 		
 		return $allRows;
@@ -61,7 +63,7 @@ abstract class Table{
                 $where .= $key."".$operator_value[0]."".$operator_value[1]." AND ";
             }
             $where = substr_replace($where, "", -5, 5).";";
-            $query = "SELECT * FROM ".$this->name." WHERE ".$where;
+            $query = "SELECT ".$this->all." FROM ".$this->name." WHERE ".$where;
             $rows = $this->db->getResponse($query);
             return $rows;
 	}
@@ -89,7 +91,7 @@ abstract class Table{
                 $where .= $key."".$operator_value[0]."".$operator_value[1]." AND ";
             }
             $where = substr_replace($where, "", -5, 5)."";
-            $query = "SELECT * FROM ".$this->name." WHERE ".$where." LIMIT 0,".$limit;
+            $query = "SELECT ".$this->all." FROM ".$this->name." WHERE ".$where." LIMIT 0,".$limit;
             $rows = $this->db->getResponse($query);
             return $rows;
 	}
