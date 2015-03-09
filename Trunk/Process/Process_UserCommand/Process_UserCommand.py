@@ -28,10 +28,10 @@ def process(Queue):
 
 		elif state == "Process":
 			userCommand = database.databaseUserCommand.getUserCommand()
-
+			print("user command")
 			for row in userCommand :
-
-				command(row[1], row[2], row[3])
+				print("aaaaaaaaaaaaaaaaaaaaaaa")
+				command(row[1], row[2], row[3], row[4])
 				database.databaseUserCommand.userCommandDone(row[0])
 
 			Queue.enqueueIfEmpty(state, data, 1000)
@@ -53,7 +53,7 @@ def StartThread():
 	ThreadProcess.setDaemon(False)
 	ThreadProcess.start()
 
-def command(command, targetName, value):
+def command(type, command, targetName, value):
 	if(command == 'Set'):
 		#print command + " " + targetName + " " + value
 		Queue_Global.process_Actuators.enqueue(targetName, value)
