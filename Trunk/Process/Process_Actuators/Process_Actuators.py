@@ -23,9 +23,12 @@ def process(Queue):
 
 	#light = Light(poolLightConfig[0],poolLightConfig[2])
 	#pump = Pump(poolPumpConfig[0],poolPumpConfig[2])
-	light = Light(1,1)
-	pump = Pump(5,2)
-	heater = Heater(poolHeaterConfig[0],poolHeaterConfig[2])
+	light = Light(2,1)
+	light2 = Light(2,9)
+	light3 = Light(2,14)
+	light4 = Light(2,5)
+	#pump = Pump(5,2)
+	#heater = Heater(poolHeaterConfig[0],poolHeaterConfig[2])
 	while True:
 		Item = Queue.get()
 		state = Item.state
@@ -45,11 +48,32 @@ def process(Queue):
 			print("Stop State")		
 
 		elif state == "light":
-			print("Light")
+			#print("Light " + data)
 			if(data == "on"):
-				light.set_value(True)		
+				light.set_value(True)
 			else:
-				light.set_value(False)
+				light.set_value(False)	
+
+		elif state == "light2":
+			#print("Light2 " + data)
+			if(data == "on"):
+				light2.set_value(True)
+			else:
+				light2.set_value(False)	
+
+		elif state == "light3":
+			#print("Light3 " + data)
+			if(data == "on"):
+				light3.set_value(True)
+			else:
+				light3.set_value(False)	
+
+		elif state == "light4":
+			#print("Light4 " + data)
+			if(data == "on"):
+				light4.set_value(True)
+			else:
+				light4.set_value(False)	
 
 		elif state == "pump":
 			print("pump")

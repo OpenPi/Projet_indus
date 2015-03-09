@@ -80,7 +80,8 @@ class NumericActuator(Actuator):
 	# Set value activator
 	def set_value(self, value):
 		if not self._override:
-			set_output_num(self.channel, value, self.pullup)
+			print("Light"+ str(self.channel) + " " + str(value))
+			set_output_num(self.channel, not value, self.pullup)  #active low relay
 		
 class Pump(NumericActuator):
 	"""

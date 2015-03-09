@@ -49,13 +49,13 @@ def set_output_num(pin, value, pullup):
 	io = IO(bus)  # create an instance of the IO class
 	
 	io.set_pin_direction(pin, 0)		# Define as output pin
-	
 	# Define home position "up or down"
-	if pullup:
-		io.set_pin_pullup(pin, 0xFF)
-	else:
-		io.set_pin_pullup(pin, 0x00)
-	
+	#if pullup:
+		#io.set_pin_pullup(pin, 1)
+		#io.set_port_pullups(1, 0xFF)
+	#else:
+		#io.set_pin_pullup(pin, 0)
+		#io.set_port_pullups(1, 0x00)
 	io.write_pin(pin, value)
 	
 def get_input_num(pin, pullup):
