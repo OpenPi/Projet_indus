@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from Lib.IO_Ana import get_input_ana
+from Lib.IO_Ana import set_refVolt_adc
 from Lib.IO_Num import get_input_num
 from Lib.IO_Num import set_input_direction
 
@@ -80,10 +81,12 @@ class NumericSensor(Sensor):
 	
 	# Get and return physical value of numeric sensor
 	def get_value_sensor(self):
-		valueSensor = get_input_num(self.channel, self.pullup)	# get_input_ana return -1 if ERROR
+		valueSensor = get_input_num(self.channel)	# get_input_ana return -1 if ERROR
 		
 		return valueSensor		
-		
+	
+
+	
 class Thermocouple(AnalogSensor):
 	"""
 	Class for thermocouple sensor

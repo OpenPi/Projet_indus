@@ -55,8 +55,6 @@ def set_output_ana(channel, value, voltage):
 		print("ERROR: The parameter voltage is not boolean")
 		return -1
 	
-	dac = DAC()  	# create an instance of the DAC class (Output analog)
-	
 	if voltage:
 		# Control if the voltage command is a number	
 		try:
@@ -115,3 +113,4 @@ def get_input_ana(channel):
 	return voltage
 	
 adc = ADC()  	# create an instance of the ADC class (Input analog)
+dac = DAC()  	# create an instance of the DAC class (Output analog)
