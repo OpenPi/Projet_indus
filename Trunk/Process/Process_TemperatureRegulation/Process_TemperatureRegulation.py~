@@ -7,61 +7,35 @@
 
 from Queue import Queue
 from threading import Thread
-import time
+
 import Core.Queue_Global as Queue_Global
 from Core.QueueItem import QueueItem
-from Core.actuator import *
 import Core.database as database
-
-
+import Core.ThermocoupleRegulation as ThermocoupleRegulation
 
 def process(Queue):
-
-	#poolLightConfig = database.databaseActuators.getHardwareConfigurationByName("Pool Light")
-	#poolPumpConfig = database.databaseActuators.getHardwareConfigurationByName("Pool Pump")
-
-
-	#light = Light(poolLightConfig[0],poolLightConfig[2])
-	#pump = Pump(poolPumpConfig[0],poolPumpConfig[2])
-	light = Light(2,1)
-	#pump = Pump(5,2)
-
+	thermocoupleRegulation = ThermocoupleRegulation.ThermocoupleRegulation()
 	while True:
 		Item = Queue.get()
 		state = Item.state
 		data = Item.data
-		
 		if state == "Init":
 			print("Init State")
-
 
 		elif state == "Start":
 			print("Start State")	
 
 		elif state == "Process":
-			print("Process State")		
-			Queue.enqueueIfEmpty(state, data, 1000)
+
+			heatTime = thermocoupleRegulation.Regulate()
+			thermocoupleRegulation.turn_on(heatTime)
+			Queue.enqueueIfEmpty(state, data, 60000)
 			
 		elif state == "Stop":
 			print("Stop State")		
 
-		elif state == "light":
-			#print("Light " + data)
-			if(data == "on"):
-				light.set_value(True)
-			else:
-				light.set_value(False)	
-
-		elif state == "pump":
-			print("pump")
-			if(data == "on"):
-				pump.set_value(True)		
-			else:
-				pump.set_value(False)	
-
-
 		elif state == "Exit":
-			del database.databaseActuators
+			del database.databaseThermocoupleRegulation
 			break
 		else:
 			print("Programmation error : This state is not implemented : "+state)
@@ -70,6 +44,6 @@ def process(Queue):
 
 
 def StartThread():
-	ThreadProcess = Thread(target=process, args=(Queue_Global.process_Actuators,))
+	ThreadProcess = Thread(target=process, args=(Queue_Global.process_TemperatureRegulation,))
 	ThreadProcess.setDaemon(False)
 	ThreadProcess.start()

@@ -7,61 +7,45 @@
 
 from Queue import Queue
 from threading import Thread
-import time
+
 import Core.Queue_Global as Queue_Global
 from Core.QueueItem import QueueItem
-from Core.actuator import *
 import Core.database as database
-
-
-
+from Core.actuator import Heater
 def process(Queue):
-
-	#poolLightConfig = database.databaseActuators.getHardwareConfigurationByName("Pool Light")
-	#poolPumpConfig = database.databaseActuators.getHardwareConfigurationByName("Pool Pump")
-
-
-	#light = Light(poolLightConfig[0],poolLightConfig[2])
-	#pump = Pump(poolPumpConfig[0],poolPumpConfig[2])
-	light = Light(2,1)
-	#pump = Pump(5,2)
 
 	while True:
 		Item = Queue.get()
 		state = Item.state
 		data = Item.data
-		
 		if state == "Init":
-			print("Init State")
-
-
+			poolHeaterConfig = database.databaseHeater.getHardwareConfigurationByName("Pool Heater")
+			heater = Heater(poolHeaterConfig[0],poolHeaterConfig[2])
 		elif state == "Start":
 			print("Start State")	
 
+		elif state == "on":
+			print("Heater : On State")
+			numberOfSecond = data
+			heater.set_value(True)
+			Queue_Global.process_Heater.enqueue('Process')
+		elif state == "off":
+			print("Heater : Off State")	
+			heater.set_value(False)
+
 		elif state == "Process":
-			print("Process State")		
-			Queue.enqueueIfEmpty(state, data, 1000)
+			print("Number of second left : " + str(numberOfSecond))
+			numberOfSecond = numberOfSecond - 1
+			if(numberOfSecond <= 0):
+				Queue_Global.process_Heater.enqueue('off')
+			else:			
+				Queue.enqueueIfEmpty(state, data, 1000)
 			
 		elif state == "Stop":
 			print("Stop State")		
 
-		elif state == "light":
-			#print("Light " + data)
-			if(data == "on"):
-				light.set_value(True)
-			else:
-				light.set_value(False)	
-
-		elif state == "pump":
-			print("pump")
-			if(data == "on"):
-				pump.set_value(True)		
-			else:
-				pump.set_value(False)	
-
-
 		elif state == "Exit":
-			del database.databaseActuators
+
 			break
 		else:
 			print("Programmation error : This state is not implemented : "+state)
@@ -70,6 +54,6 @@ def process(Queue):
 
 
 def StartThread():
-	ThreadProcess = Thread(target=process, args=(Queue_Global.process_Actuators,))
+	ThreadProcess = Thread(target=process, args=(Queue_Global.process_Heater,))
 	ThreadProcess.setDaemon(False)
 	ThreadProcess.start()

@@ -24,7 +24,7 @@ class Database:
     def getUserCommand(self):
 	
 	cur = self.db.cursor()
-        cur.execute("SELECT * FROM usercommand WHERE done=0")
+        cur.execute("SELECT * FROM userCommand WHERE done=0")
         result = cur.fetchall()
 	self.db.commit()
 	cur.close()
@@ -36,7 +36,7 @@ class Database:
         try:
 
 	    cur = self.db.cursor()
-            cur.execute("UPDATE usercommand SET done = 1 WHERE id="+str(id))
+            cur.execute("UPDATE userCommand SET done = 1 WHERE id="+str(id))
             self.db.commit()
 	    cur.close()
         except:
@@ -48,7 +48,7 @@ class Database:
         try:
 
 	    cur = self.db.cursor()
-            cur.execute("UPDATE usercommand SET done = 1 WHERE id="+str(id))
+            cur.execute("UPDATE userCommand SET done = 1 WHERE id="+str(id))
             self.db.commit()
 	    cur.close()
         except:
@@ -58,7 +58,7 @@ class Database:
 
 	cur = self.db.cursor()
 	try:
-        	cur.execute("SELECT * FROM hardwareconfiguration WHERE name='"+name+"' LIMIT 1")
+        	cur.execute("SELECT * FROM hardwareConfiguration WHERE name='"+name+"' LIMIT 1")
         	result = cur.fetchone()
 		self.db.commit()
 		cur.close()
@@ -71,7 +71,7 @@ class Database:
     def getAverageMeasureByName(self, name, numberOfInput = 10):
 	print("getLastMeasureByName")
 	cur = self.db.cursor()
-        cur.execute("SELECT measure.value, hardwareconfiguration.name FROM measure INNER JOIN hardwareconfiguration ON measure.hardwareConfigurationId = hardwareconfiguration.Id WHERE name = '"+ name +"' ORDER BY timestamp DESC LIMIT "+ str(numberOfInput))
+        cur.execute("SELECT measure.value, hardwareConfiguration.name FROM measure INNER JOIN hardwareConfiguration ON measure.hardwareConfigurationId = hardwareConfiguration.Id WHERE name = '"+ name +"' ORDER BY timestamp DESC LIMIT "+ str(numberOfInput))
         result = cur.fetchall()
 	moyenne = 0
 	for row in result :
