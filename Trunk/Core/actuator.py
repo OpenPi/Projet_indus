@@ -3,6 +3,7 @@
 from Lib.IO_Ana import set_output_ana
 from Lib.IO_Num import set_output_num
 from Lib.IO_Num import set_output_direction
+from Lib.IO_Num import set_pullUp
 
 """
 ================================================
@@ -13,7 +14,7 @@ Version 1.0 Created 23/02/2015
 ================================================
 """
 
-class Actuator(object):
+class Actuator:
 	"""
 	Mother class of actuator
 	"""
@@ -36,11 +37,12 @@ class AnalogActuator(Actuator):
 	"""
 	
 	# Builder class
-	def __init__(self, hardwareId, channel, voltage=False):
+	def __init__(self, hardwareId, channel, voltage):
 		"""
 		Analog actuator class
 		
-		channel: Physical position actuator on Expender PI
+		hardwareId: Unique Id to hardware
+		channel: Physical position actuator on Expander PI
 		voltage: Type of value
 		"""
 		Actuator.__init__(self, hardwareId, channel)
@@ -48,6 +50,9 @@ class AnalogActuator(Actuator):
 	
 	# Set value activator
 	def set_value_activator(self, value):
+		"""
+		Set value to analog actuator		
+		"""
 		set_output_ana(self.channel, value, self.voltage)
 	
 class NumericActuator(Actuator):
@@ -57,33 +62,51 @@ class NumericActuator(Actuator):
 	"""
 	
 	# Builder class
-	def __init__(self, hardwareId, pin):
+	def __init__(self, hardwareId, pin, pullup):
 		"""
 		Numeric actuator class
 		
+		hardwareId: Unique Id to hardware
 		pin: Physical position actuator on Expender PI
 		"""
 		Actuator.__init__(self, hardwareId, pin)
-		self._override = False
-		set_output_direction(self.channel)
+		self._lock = False
+		self.pullup = pullup
 		
-	def getOverride(self):
-		return self._override
+		set_output_direction(self.channel)		# Set pin to output
+		set_pullUp(self.channel, self.pullup)	# Set pull type
+	
+	# Set value activator to on and lock
+	def set_on(self):
+		"""
+		Lock authorization change value actuator and Set True the actuator
+		"""
+		self._lock = True
+		value = True
+		set_output_num(self.channel, not value)  #active low relay
+	
+	# Set value activator to off and lock
+	def set_off(self):
+		"""
+		Lock authorization change value actuator and Set False the actuator
+		"""
+		self._lock = True
+		value = False
+		set_output_num(self.channel, not value)  #active low relay
 		
-	def setOverride(self, value):
-		if bool == type(value):
-			self._override = value
-		else:
-			print("ERROR: override is boolean")
-		
-	override = property(getOverride, setOverride)
+	# Reset lock
+	def set_mode_auto(self):
+		"""
+		Unlock authorization change value actuator for automatic mode
+		"""
+		self._lock = False
 		
 	# Set value activator
 	def set_value(self, value):
-		if not self._override:
+		if not self._lock:
 			set_output_num(self.channel, not value)  #active low relay
 		
-		
+
 		
 class Pump(NumericActuator):
 	"""
@@ -129,8 +152,3 @@ class Heater(NumericActuator):
 		pin: Physical position actuator on Expander PI		
 		"""
 		NumericActuator.__init__(self, hardwareId, pin)	
-
-class actuatorTestAnalog(AnalogActuator):
-
-	def __init__(self, hardwareId, channel,	voltage):
-		AnalogActuator.__init__(self, hardwareId, channel, voltage=False)
