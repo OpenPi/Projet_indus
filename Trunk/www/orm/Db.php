@@ -20,7 +20,7 @@ class Db{
 
         $this->host = "localhost";
         $this->user = "root";
-        $this->password = "root";
+        $this->password = "";
         $this->bd_name = "PlashBoard";
 
         $this->link = mysqli_connect( $this->host , $this->user, $this->password, $this->bd_name) or die ("Connexion MYSQL => PROBLEME");
