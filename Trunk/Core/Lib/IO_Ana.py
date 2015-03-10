@@ -13,6 +13,17 @@ Version 1.0 Created 18/02/2015
 ================================================
 """
 
+def set_refVolt_adc(refVolt):
+
+	# Control if the reference voltage is a number	
+	try:
+		(int == type(refVolt)) or (float == type(refVolt))
+	except ValueError:
+		print("ERROR: The value of reference voltage is not number\n")
+		return -1
+
+	adc.set_adc_refvoltage(refVolt)					# Initializes the reference voltage
+
 def set_output_ana(channel, value, voltage):
 	"""
 	Set value of analog output
@@ -44,10 +55,6 @@ def set_output_ana(channel, value, voltage):
 		print("ERROR: The parameter voltage is not boolean")
 		return -1
 	
-	#i2c_helper = ABEHelpers()
-	#bus = i2c_helper.get_smbus()
-
-	#adc = ADC(bus)
 	dac = DAC()  	# create an instance of the DAC class (Output analog)
 	
 	if voltage:
@@ -80,7 +87,7 @@ def set_output_ana(channel, value, voltage):
 			
 		dac.set_dac_raw(channel, value)		# set value on channel "channel" to "value" (12 bits)
 		
-def get_input_ana(channel, refVolt):
+def get_input_ana(channel):
 	"""
 	Get value of analog input
 	
@@ -103,21 +110,8 @@ def get_input_ana(channel, refVolt):
 		print("ERROR: The channel's number is incorrect\n")
 		return -1
 	
-	# Control if the reference voltage is a number	
-	try:
-		(int == type(refVolt)) or (float == type(refVolt))
-	except ValueError:
-		print("ERROR: The value of reference voltage is not number\n")
-		return -1
-	
-	#i2c_helper = ABEHelpers()
-	#bus = i2c_helper.get_smbus()
-
-	#adc = ADC(bus)
-	adc = ADC()  	# create an instance of the ADC class (Input analog)
-
-	adc.set_adc_refvoltage(refVolt)					# Initializes the reference voltage
-	
 	voltage = float(adc.read_adc_voltage(channel))	# Read the value of the input
 	
 	return voltage
+	
+adc = ADC()  	# create an instance of the ADC class (Input analog)

@@ -52,10 +52,11 @@ class AnalogSensor(Sensor):
 		
 		Sensor.__init__(self, hardwareId, channelChanged)
 		self.refVolt = refVolt
+		set_refVolt_adc(self.refVolt)
 		
 	# Get and return physical value of analog sensor 
 	def get_value_sensor(self):
-		valueSensor = get_input_ana(self.channel, self.refVolt)
+		valueSensor = get_input_ana(self.channel)
 		
 		return valueSensor
 	
