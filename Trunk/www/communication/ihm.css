@@ -23,7 +23,6 @@ table, tr, th, td
 #CreateUserCommand
 {
 	margin-left: 10%;
-	/*margin-top: 0%;*/
 	display: inline-block;
 	width : 450px;
 	float: left;
@@ -44,7 +43,16 @@ table, tr, th, td
 	height: 380px;
 	margin-left: 5%;
 	margin-top: -120px;
-	/*margin-bottom: 10px;*/
+	display: inline-block;
+	float: left;
+}
+
+#curve_chart
+{
+	width: 700px; 
+	height: 350px;
+	margin-left: 5%;
+	margin-top: 0px;
 	display: inline-block;
 	float: left;
 }

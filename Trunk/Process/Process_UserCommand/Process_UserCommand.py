@@ -28,9 +28,8 @@ def process(Queue):
 
 		elif state == "Process":
 			userCommand = database.databaseUserCommand.getUserCommand()
-			print("user command")
 			for row in userCommand :
-				print("aaaaaaaaaaaaaaaaaaaaaaa")
+
 				command(row[1], row[2], row[3], row[4])
 				database.databaseUserCommand.userCommandDone(row[0])
 

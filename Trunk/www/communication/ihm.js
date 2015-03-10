@@ -3,14 +3,19 @@ var urlLimitMeasure = '?xlast=';
 var urlDateMeasure = '?time=';
 var urlReadUserCommand = '../usercommands/';
 var urlCreateUserCommand = '../usercommands/';
+var urlHardwareConfiguration = '../hardwareconfiguration/';
+var urlAuthorization = '../authorize/';
 
 var order = 10;
 var i = 0;
 var sensorType = "";
+var urlAll = "";
+var urlLimit = "";
+var urlDAte = "";
 
-setInterval(getMeasure, 1000); //Execute the get function each seconds
-setInterval(getMeasuresForChart, 1000); //Execute the get function each seconds
-setInterval(getUserCommand, 1000); //Execute the get function each seconds
+setInterval(getMeasure, 5000); //Execute the get function each seconds
+setInterval(getMeasuresForChart, 5000); //Execute the get function each seconds
+setInterval(getUserCommand, 5000); //Execute the get function each seconds
 
 function typeSensor()
 {
@@ -37,53 +42,94 @@ function getMeasure()
 
 	sensorType = typeSensor();
 
+	if(!$.isNumeric(sensorType))
+	{
+		urlAll =  urlAllMeasure;
+		urlLimit =  urlAllMeasure;
+		urlDAte =  urlAllMeasure;
+	}
+	else
+	{
+		urlAll = urlAllMeasure + sensorType;
+		urlLimit = urlAllMeasure + sensorType + urlLimitMeasure + xlast;
+		urlDAte = urlAllMeasure+ sensorType + urlDateMeasure + calendar;
+	}
+
 	if($.isEmptyObject(xlast) && calendar == "%22:00%22") //if we don't have limits, we send a GET Request for take the sensors' data
 	{
-		$.get
-		(
+		$.ajax
+		({
 
-		 	urlAllMeasure + sensorType, //Target file in the server
+		 	url : urlAll, //Target file in the server
 
-		 	'', //We don't have arguments in the request
+		 	type : "GET",
 
-		 	displayMeasure, //When we have the server's answer, we execute this function
+		 	dataType : 'json', //We receive the data in JSON format
 
-		 	'json' //We receive the data in JSON format
+		 	success : displayMeasure,
 
-		);	
+		 	error : function(resultat, statut, erreur)
+		 	{
+		 		if(resultat['status'] == '404')
+		 		{
+		 			$("#measure").html("<p>There is an error, the query found nothing</p>"); //We send on the screen the table
+		 			console.log(resultat['status'] + " : " + erreur);
+		 		}
+		 	}
+
+		});	
 	}
 	else if(!$.isEmptyObject(xlast) && calendar == "%22:00%22") //If we have a limit for the number of data
 	{
-		$.get
-		(
+		$.ajax
+		({
 			
-			urlAllMeasure+ sensorType + urlLimitMeasure + xlast, //We send a request with the number of data that the user want
+			url : urlLimit, //We send a request with the number of data that the user want
 
-		 	'',
+			type : "GET",
 
-		 	displayMeasure,
+		 	dataType : 'json',
 
-		 	'json'
+		 	success : displayMeasure,
 
-		);	
+		 	error : function(resultat, statut, erreur)
+		 	{
+		 		if(resultat['status'] == '404')
+		 		{
+		 			$("#measure").html("<p>There is an error, the query found nothing</p>"); //We send on the screen the table
+		 			console.log(resultat['status'] + " : " + erreur);
+		 		}
+		 	}
+
+		});	
 	}
 	else if($.isEmptyObject(xlast) && calendar != "%22:00%22") //If we have a limit of date
 	{
-		$.get
-		(
+		$.ajax	
+		({
 			
-			urlAllMeasure+ sensorType + urlDateMeasure + calendar, //We send a request with the date from which we want the data
+			url : urlDAte, //We send a request with the date from which we want the data
 
-		 	'',
+			type : "GET",
 
-		 	displayMeasure,
+		 	dataType : 'json',
 
-		 	'json'
+		 	success : displayMeasure,
 
-		);			
+		 	error : function(resultat, statut, erreur)
+		 	{
+		 		if(resultat['status'] == '404')
+		 		{
+		 			$("#measure").html("<p>There is an error, the query found nothing</p>"); //We send on the screen the table
+		 			console.log(resultat['status'] + " : " + erreur);
+		 		}
+		 	}
+
+		});			
 	}
 
 }
+
 
 
 
@@ -94,18 +140,35 @@ function getMeasuresForChart()
 
 	sensorType = typeSensor();
 
-	$.get //We send a GET request to draw the chart
-	(
+	if(sensorType != "")
+	{
 
-	 	urlAllMeasure, // + sensorType,
+		$.ajax //We send a GET request to draw the chart
+		({
+				
+				url : urlAllMeasure + sensorType, // We send a request with the date from which we want the data
 
-	 	'',
+				type : "GET",
 
-	 	drawChart,
+			 	dataType : 'json',
 
-	 	'json'
+			 	success : drawChart,
 
-	);
+			 	error : function(resultat, statut, erreur)
+			 	{
+			 		if(resultat['status'] == '404')
+			 		{
+			 			$('#curve_chart').html("<p> The chart is impossible to draw (no data) </p>");
+			 			console.log(resultat['status'] + " : " + erreur);
+			 		}
+			 	}
+
+		});
+	}
+	else
+	{
+		$('#curve_chart').html("<p>Sorry, we don't have only one type of data, the draw is impossible</p>")
+	}
 
 }
 
@@ -116,20 +179,90 @@ function getMeasuresForChart()
 function getUserCommand()
 {
 
-	$.get //We send a GET Request for take the user's commands
-	(
+	$.ajax //We send a GET Request for take the user's commands
+	({
+			
+			url : urlReadUserCommand, // We send a request with the date from which we want the data
 
-	 	urlReadUserCommand,
+			type : "GET",
 
-	 	'',
+		 	dataType : 'json',
 
-	 	displayUserCommand,
+		 	success : displayUserCommand,
 
-	 	'json'
+		 	error : function(resultat, statut, erreur)
+		 	{
+		 		if(resultat['status'] == '404')
+		 		{
+		 			$("#measure").html("<p>There is an error, the query found nothing</p>"); //We send on the screen the table
+		 			console.log(resultat['status'] + " : " + erreur);
+		 		}
+		 	}
 
-	);
+	});
 
 }
+
+
+function getHardwareConfiguration()
+{
+
+	$.ajax //We send a GET Request for take the user's commands
+	({
+			
+			url : urlHardwareConfiguration, // We send a request with the date from which we want the data
+
+			type : "GET",
+
+		 	dataType : 'json',
+
+		 	success : displayHardwareConfiguration,
+
+		 	error : function(resultat, statut, erreur)
+		 	{
+		 		if(resultat['status'] == '404')
+		 		{
+		 			$("#measure").html("<p>There is an error, the query found nothing</p>"); //We send on the screen the table
+		 			console.log(resultat['status'] + " : " + erreur);
+		 		}
+		 	}
+
+	});
+
+}
+
+
+
+
+
+
+/*
+	This function draw a form to select the sensor data to display 
+*/
+
+function displayHardwareConfiguration(text)
+{
+
+	var data_long = text['hardwareConfigurations'].length; //We take the number of records in the form
+	var name = '';
+	var id = '';
+
+	var txt_measures = ''; //We initiate the form to display
+
+	txt_measures += '<input type="radio" name="sensor" value="" id="nothing" checked/> <label>"Nothing"</label><br />';
+
+	for(i=0; i<data_long; i++) //We write in the string the data from the DB
+	{
+
+		id = text['hardwareConfigurations'][i]['id'];
+		name = text['hardwareConfigurations'][i]['name'].split(" ");
+
+		txt_measures += '<input type="radio" name="sensor" value="'+id+'" id="'+name[1]+'"/> <label>"'+name[1]+'"</label><br />';
+	}
+
+	$("#sensorTypeRequest").html(txt_measures); //We send on the screen the form
+}
+
 
 
 
@@ -145,12 +278,11 @@ function displayMeasure(text)
 
 	var data_long = text['measures'].length; //We take the number of records in the table
 
-
 	var txt_measures = '<table id="measure_display"><th>Hardware Name</th><th>Value</th><th>TimeStamp</th>'; //We initiate the table to display
 
 	for(i=0; i<data_long; i++) //We write in the string the data from the DB
 	{
-		txt_measures += "<tr><td>" + text['measures'][i]['hardwareName'] + "</td>"
+		txt_measures += "<tr><td>" + text['measures'][i]['hardware_name'] + "</td>"
 		txt_measures += "<td>" + text['measures'][i]['value'] + "</td>"
 		txt_measures += "<td>" + text['measures'][i]['timestamp'] + "</td></tr>"
 	}
@@ -169,13 +301,12 @@ function displayUserCommand(text)
 
 	var data_long = text['commandes'].length; //We take the number of records in the table
 
-
 	var txt_userCommand = '<table id="userCommand_display"><th>Command</th><th>Target Name</th><th>Value</th><th>TimeStamp</th><th>Done</th>'; //We initiate the table to display
 
 	for(i=0; i<data_long; i++) //We write in the string the data from the DB
 	{
 		txt_userCommand += "<tr><td>" + text['commandes'][i]['command'] + "</td>"
-		txt_userCommand += "<td>" + text['commandes'][i]['targetName'] + "</td>"
+		txt_userCommand += "<td>" + text['commandes'][i]['name'] + "</td>"
 		txt_userCommand += "<td>" + text['commandes'][i]['value'] + "</td>"
 		txt_userCommand += "<td>" + text['commandes'][i]['timestamp'] + "</td>"
 		txt_userCommand += "<td>" + text['commandes'][i]['done'] + "</td></tr>"
@@ -192,11 +323,18 @@ function displayUserCommand(text)
 
 function postUserCommand()
 {
+	var type = $("#type").val(); //We take the command type in the HTML form
+
 	var command = $("#command").val(); //We take the command type in the HTML form
 
 	var targetName = $("#targetName").val(); //We take the command name type in the HTML form
 
 	var val = $("#val").val(); //We take the command value type in the HTML form
+
+	console.log(type)
+	console.log(command)
+	console.log(targetName)
+	console.log(val)
 
 
 	$.post(
@@ -204,6 +342,7 @@ function postUserCommand()
 		urlCreateUserCommand, //The target file on the server
 
 		{ //The parameters of the request
+			type : type,
 			command : command,
 			targetName : targetName,
 			value : val
@@ -223,12 +362,16 @@ function drawChart(text)
 
 	var data_long = text['measures'].length; //We take the number of records in the table
 
+	var sens = text['measures'][0]['hardware_name'].split(" ");
+
+	var typeSensor = sens[1];
+
 	var increment = data_long - 1; //We initiate the increment variable
 
 	var data = new google.visualization.DataTable(); //We create a new DataTable to draw the chart
-	data.addColumn('number', 'Heure'); //We ceate the first column
-	data.addColumn('number', 'Consigne'); //We ceate the second column
-	data.addColumn('number', 'Temperature'); //We ceate the third column
+	data.addColumn('number', 'Time'); //We ceate the first column
+	data.addColumn('number', 'Order'); //We ceate the second column
+	data.addColumn('number', typeSensor); //We ceate the third column
 
 	var val = 0;
 	var j = 0;
@@ -246,23 +389,24 @@ function drawChart(text)
 	{
 		val = text['measures'][increment]['value']; //We take the measure value in the request answer
 
-		data.addRows([[j,parseInt(order),parseInt(val)]]); //We create a new row in the DataTable
+		data.addRows([[j,parseFloat(order),parseFloat(val)]]); //We create a new row in the DataTable
 		j++; 
 
 	}
 
-		//We create an option variable for the chart feature
-        var options = {
-          title: 'PID temperature',
-          vAxis: {title: "Température"},
-          hAxis: {title: "Heure"},
-          curveType: 'function',
-          legend: { position: 'bottom' }
-        };
+	//We create an option variable for the chart feature
+    var options = 
+    {
+      title: 'PID ' + typeSensor,
+      vAxis: {title: typeSensor},
+      hAxis: {title: "Time"},
+      curveType: 'function',
+      legend: { position: 'bottom' }
+    };
 
 
 
-        var chart = new google.visualization.LineChart(document.getElementById('curve_chart')); //We create a new chart
+    var chart = new google.visualization.LineChart(document.getElementById('curve_chart')); //We create a new chart
 
-        chart.draw(data, options); //We draw the chart
+    chart.draw(data, options); //We draw the chart
 }

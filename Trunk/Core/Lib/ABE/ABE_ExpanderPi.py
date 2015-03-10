@@ -193,6 +193,8 @@ class IO:
     __portB_val = 0x00  # port b value
     port_a_dir = 0x00
     port_b_dir = 0x00
+    porta_pullup = 0x00
+    portb_pullup = 0x00
     address = 0x20
     __portA_pullup = 0x00  # port a pull-up resistors
     __portB_pullup = 0x00  # port a pull-up resistors

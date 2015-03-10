@@ -1,7 +1,9 @@
 #!/usr/bin/python
 
 from Lib.IO_Ana import get_input_ana
+from Lib.IO_Ana import set_refVolt_adc
 from Lib.IO_Num import get_input_num
+from Lib.IO_Num import set_input_direction
 
 """
 ================================================
@@ -51,10 +53,11 @@ class AnalogSensor(Sensor):
 		
 		Sensor.__init__(self, hardwareId, channelChanged)
 		self.refVolt = refVolt
+		set_refVolt_adc(self.refVolt)
 		
 	# Get and return physical value of analog sensor 
 	def get_value_sensor(self):
-		valueSensor = get_input_ana(self.channel, self.refVolt)
+		valueSensor = get_input_ana(self.channel)
 		
 		return valueSensor
 	
@@ -74,13 +77,16 @@ class NumericSensor(Sensor):
 		"""
 		Sensor.__init__(self, hardwareId, pin)
 		self.pullup = pullup
+		set_input_direction(self.channel)
 	
 	# Get and return physical value of numeric sensor
 	def get_value_sensor(self):
-		valueSensor = get_input_num(self.channel, self.pullup)	# get_input_ana return -1 if ERROR
+		valueSensor = get_input_num(self.channel)	# get_input_ana return -1 if ERROR
 		
 		return valueSensor		
-		
+	
+
+	
 class Thermocouple(AnalogSensor):
 	"""
 	Class for thermocouple sensor
@@ -99,21 +105,24 @@ class Thermocouple(AnalogSensor):
 	
 	# convert physical value to temperature value
 	def conversion(self, voltValue):
-		c0 = 0
-		c1 = 25.08355
-		c2 = 0.07860106
-		c3 = -0.2503131
-		c4 = 0.08315270
-		c5 = -1.228034E-02
-		c6 = 9.804036E-04
-		c7 = -4.413030E-05
-		c8 = 1.057734E-06
-		c9 = -1.052755E-08
+		# c0 = 0
+		# c1 = 25.08355
+		# c2 = 0.07860106
+		# c3 = -0.2503131
+		# c4 = 0.08315270
+		# c5 = -1.228034E-02
+		# c6 = 9.804036E-04
+		# c7 = -4.413030E-05
+		# c8 = 1.057734E-06
+		# c9 = -1.052755E-08
 
-		x =voltValue
+		# x =voltValue
 
-		temp = c0+(x*(c1+(x*(c2+(x*(c3+(x*(c4+(x*(c5+(x*(c6+(x*(c7+(x*(c8+(x*c9)))))))))))))))))
-		return float(temp*100)		
+		# temp = c0+(x*(c1+(x*(c2+(x*(c3+(x*(c4+(x*(c5+(x*(c6+(x*(c7+(x*(c8+(x*c9)))))))))))))))))
+		
+		temp = (voltValue - 1.25)/0.005
+		
+		return float(temp)		
 	
 	# Return temperature
 	def get_value(self):
