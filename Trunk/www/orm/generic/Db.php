@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 /**
     * @file Db.php
@@ -21,7 +21,7 @@ class Db{
         $this->host = "localhost";
         $this->user = "root";
         $this->password = "root";
-        $this->bd_name = "PlashBoard";
+        $this->bd_name = "plashboard";
 
         $this->link = mysqli_connect( $this->host , $this->user, $this->password, $this->bd_name) or die ("Connexion MYSQL => PROBLEME");
         mysqli_set_charset($this->link, "utf8");
