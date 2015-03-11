@@ -1,7 +1,7 @@
 <?php
 
-require_once("abstract/Db.php");
-require_once("abstract/TableJoinedTimestamped.php");
+require_once("generic/Db.php");
+require_once("generic/abstract/TableJoinedTimestamped.php");
 
 final class Measure extends TableJoinedTimestamped{
 	

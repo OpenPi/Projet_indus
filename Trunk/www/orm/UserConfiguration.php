@@ -1,7 +1,7 @@
 <?php
 
-require_once("abstract/Db.php");
-require_once("abstract/TableJoined.php");
+require_once("generic/Db.php");
+require_once("generic/abstract/TableJoined.php");
 
 final class UserConfiguration extends TableJoined{
 

@@ -1,7 +1,7 @@
 <?php
 
-require_once("abstract/Db.php");
-require_once("abstract/Table.php");
+require_once("generic/Db.php");
+require_once("generic/abstract/Table.php");
 
 final class HardwareConfiguration extends Table{
 	

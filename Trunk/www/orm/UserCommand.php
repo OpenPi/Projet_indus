@@ -1,7 +1,7 @@
 <?php
 
-require_once("abstract/Db.php");
-require_once("abstract/TableTimestamped.php");
+require_once("generic/Db.php");
+require_once("generic/abstract/TableTimestamped.php");
 
 final class UserCommand extends TableTimestamped{
 	
