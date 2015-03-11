@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Mar 10 Mars 2015 à 16:28
+-- Généré le :  Mer 11 Mars 2015 à 14:15
 -- Version du serveur :  5.6.17
 -- Version de PHP :  5.5.12
 
@@ -38,11 +38,7 @@ CREATE TABLE IF NOT EXISTS `hardwareconfiguration` (
   `unit` varchar(50) DEFAULT NULL,
   `tension` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-<<<<<<< HEAD
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
-=======
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
->>>>>>> cd98888f45e7395892fec4557f985a61271b6c1e
 
 --
 -- Contenu de la table `hardwareconfiguration`
@@ -69,7 +65,6 @@ CREATE TABLE IF NOT EXISTS `measure` (
   `timestamp` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `hardwareConfiguration` (`hardwareConfigurationId`)
-<<<<<<< HEAD
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 --
@@ -79,9 +74,6 @@ CREATE TABLE IF NOT EXISTS `measure` (
 INSERT INTO `measure` (`id`, `hardwareConfigurationId`, `value`, `timestamp`) VALUES
 (1, 1, 12, '2015-03-05 07:00:00'),
 (2, 1, 13, '2015-03-05 07:27:00');
-=======
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
->>>>>>> cd98888f45e7395892fec4557f985a61271b6c1e
 
 -- --------------------------------------------------------
 
@@ -98,7 +90,6 @@ CREATE TABLE IF NOT EXISTS `usercommand` (
   `timestamp` datetime NOT NULL,
   `done` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
-<<<<<<< HEAD
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 --
@@ -108,9 +99,6 @@ CREATE TABLE IF NOT EXISTS `usercommand` (
 INSERT INTO `usercommand` (`id`, `type`, `command`, `targetName`, `value`, `timestamp`, `done`) VALUES
 (1, 'Actuators', 'Set', 'Pool Light', '1', '2015-03-05 16:00:00', 1),
 (2, 'Actuators', 'Set', 'Pool Light', '0', '2015-03-05 17:00:00', 0);
-=======
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
->>>>>>> cd98888f45e7395892fec4557f985a61271b6c1e
 
 -- --------------------------------------------------------
 
