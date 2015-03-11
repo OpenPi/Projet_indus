@@ -3,7 +3,7 @@ var urlLimitMeasure = '?xlast=';
 var urlDateMeasure = '?time=';
 var urlReadUserCommand = '../usercommands/';
 var urlCreateUserCommand = '../usercommands/';
-var urlHardwareConfiguration = '../hardwareconfiguration/';
+var urlHardwareConfiguration = '../hardwareconfigurations/';
 var urlAuthorization = '../authorize/';
 
 var order = 10;
@@ -60,7 +60,7 @@ function getMeasure()
 		$.ajax
 		({
 
-		 	url : urlAll, //Target file in the server
+		 	url : urlAllMeasure + sensorType, //Target file in the server
 
 		 	type : "GET",
 
@@ -137,33 +137,61 @@ function getMeasure()
 
 function getMeasuresForChart()
 {
+	var xlastChart = $("#xlastChart").val();
 
 	sensorType = typeSensor();
 
 	if(sensorType != "")
 	{
+		if(!$.isEmptyObject(xlastChart))
+		{
+			$.ajax //We send a GET request to draw the chart
+			({
+					
+					url : urlAllMeasure + sensorType + urlLimitMeasure + xlastChart, // We send a request with the date from which we want the data
 
-		$.ajax //We send a GET request to draw the chart
-		({
-				
-				url : urlAllMeasure + sensorType, // We send a request with the date from which we want the data
+					type : "GET",
 
-				type : "GET",
+				 	dataType : 'json',
 
-			 	dataType : 'json',
+				 	success : drawChart,
 
-			 	success : drawChart,
+				 	error : function(resultat, statut, erreur)
+				 	{
+				 		if(resultat['status'] == '404')
+				 		{
+				 			$('#curve_chart').html("<p> The chart is impossible to draw (no data) </p>");
+				 			console.log(resultat['status'] + " : " + erreur);
+				 		}
+				 	}
 
-			 	error : function(resultat, statut, erreur)
-			 	{
-			 		if(resultat['status'] == '404')
-			 		{
-			 			$('#curve_chart').html("<p> The chart is impossible to draw (no data) </p>");
-			 			console.log(resultat['status'] + " : " + erreur);
-			 		}
-			 	}
+			});
 
-		});
+		}
+		else
+		{
+			$.ajax //We send a GET request to draw the chart
+			({
+					
+					url : urlAllMeasure + sensorType, // We send a request with the date from which we want the data
+
+					type : "GET",
+
+				 	dataType : 'json',
+
+				 	success : drawChart,
+
+				 	error : function(resultat, statut, erreur)
+				 	{
+				 		if(resultat['status'] == '404')
+				 		{
+				 			$('#curve_chart').html("<p> The chart is impossible to draw (no data) </p>");
+				 			console.log(resultat['status'] + " : " + erreur);
+				 		}
+				 	}
+
+			});			
+		}
 	}
 	else
 	{
@@ -282,7 +310,11 @@ function displayMeasure(text)
 
 	for(i=0; i<data_long; i++) //We write in the string the data from the DB
 	{
-		txt_measures += "<tr><td>" + text['measures'][i]['hardware_name'] + "</td>"
+		var sens = text['measures'][i]['hardware_name'].split(" ");
+
+		var typeSensor = sens[1];
+
+		txt_measures += "<tr><td>" + typeSensor + "</td>"
 		txt_measures += "<td>" + text['measures'][i]['value'] + "</td>"
 		txt_measures += "<td>" + text['measures'][i]['timestamp'] + "</td></tr>"
 	}
@@ -330,12 +362,6 @@ function postUserCommand()
 	var targetName = $("#targetName").val(); //We take the command name type in the HTML form
 
 	var val = $("#val").val(); //We take the command value type in the HTML form
-
-	console.log(type)
-	console.log(command)
-	console.log(targetName)
-	console.log(val)
-
 
 	$.post(
 
