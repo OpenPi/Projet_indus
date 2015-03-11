@@ -191,8 +191,7 @@ class PhMeter(AnalogSensor):
 		#phSensor = value*5000/1023/1000
 		#phValue = (0.0178*phSensor*200)-1.889
 
-		voltage = value;
-      		phValue = 3.5*voltage+self.offset;
+      		phValue = 3.5*value+self.offset;
 		return phValue
 
 	# Return ph

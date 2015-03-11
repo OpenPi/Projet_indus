@@ -37,9 +37,11 @@ def process(Queue):
 			thermocoupleValue = poolThermocouple.get_value()
 			ampereMeterValue = pumpAmpereMeter.get_value()
 			poolPhMeterValue = poolPhMeter.get_value()
-			print(poolPhMeterValue)		
+			#print(str(thermocoupleValue) + " | " + str(pumpAmpereMeter) + " | " + str(poolPhMeter))
 			database.databaseSensorsRead.insertMeasure(poolThermocoupleConfig[0], thermocoupleValue)
-			Queue.enqueueIfEmpty(state, data, 2000)
+			database.databaseSensorsRead.insertMeasure(pumpAmpereMeterConfig[0], ampereMeterValue)
+			database.databaseSensorsRead.insertMeasure(poolPhConfig[0], poolPhMeterValue)
+			Queue.enqueueIfEmpty(state, data, 6000)
 			
 		elif state == "Stop":
 			print("Stop State")		

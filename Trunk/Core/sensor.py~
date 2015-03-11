@@ -176,7 +176,7 @@ class PhMeter(AnalogSensor):
 		refVolt: Reference voltage of Expender PI
 		"""
 
-		self.Offset = 0 #TODO use the preferences
+		self.offset = 0 #TODO use the preferences
 		AnalogSensor.__init__(self, hardwareId, channel, refVolt)
 	
 	# convert physical value to ph value
@@ -192,7 +192,7 @@ class PhMeter(AnalogSensor):
 		#phValue = (0.0178*phSensor*200)-1.889
 
 		voltage = value;
-      		phValue = 3.5*voltage+Offset;
+      		phValue = 3.5*voltage+self.offset;
 		return phValue
 
 	# Return ph
