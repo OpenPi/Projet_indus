@@ -19,15 +19,15 @@
     
     //Create JSON with information
     $i= 0;
-    $output["hardwareConfigurations"] = "";
+    $output["userconfigurations"] = "";
     foreach ($res as $value) {
-        $output["hardwareConfigurations"][$i] = $value;
+        $output["userconfigurations"][$i] = $value;
         $i++;
     }
     header('HTTP/1.1 200 OK');
 
     //In case JSON is empty change output
-    if(empty($output["hardwareConfigurations"])){
+    if(empty($output["userconfigurations"])){
         $output="";
         $output["code"]=404;
         $output["message"]= "Not found";
