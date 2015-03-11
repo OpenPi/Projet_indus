@@ -1,7 +1,7 @@
 <?php
 
-require_once("Db.php");
-require_once("Table.php");
+require_once("abstract/Db.php");
+require_once("abstract/Table.php");
 
 final class Users extends Table{
 	
