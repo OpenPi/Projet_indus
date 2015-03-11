@@ -52,12 +52,6 @@ def process(Queue):
 			else:
 				light.set_value(False)	
 
-		elif state == "pump":
-			print("pump")
-			if(data == "on"):
-				pump.set_value(True)		
-			else:
-				pump.set_value(False)	
 
 
 		elif state == "Exit":

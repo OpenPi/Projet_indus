@@ -24,7 +24,7 @@ class Database:
     def getUserCommand(self):
 	
 	cur = self.db.cursor()
-        cur.execute("SELECT * FROM userCommand WHERE done=0")
+        cur.execute("SELECT * FROM usercommand WHERE done=0")
         result = cur.fetchall()
 	self.db.commit()
 	cur.close()
@@ -36,29 +36,41 @@ class Database:
         try:
 
 	    cur = self.db.cursor()
-            cur.execute("UPDATE userCommand SET done = 1 WHERE id="+str(id))
+            cur.execute("UPDATE usercommand SET done = 1 WHERE id="+str(id))
             self.db.commit()
 	    cur.close()
         except:
             self.db.rollback()
 
-    def updateUserConfiguration(self, id):
-
+    def updateUserConfiguration(self, name, value):
 
         try:
-
 	    cur = self.db.cursor()
-            cur.execute("UPDATE userCommand SET done = 1 WHERE id="+str(id))
+            cur.execute("UPDATE userconfiguration SET value = '" + str(value) + "' WHERE name='"+str(name)+"'")
             self.db.commit()
 	    cur.close()
         except:
             self.db.rollback()
+
+    def getUserConfiguration(self, name):
+
+	cur = self.db.cursor()
+	try:
+        	cur.execute("SELECT * FROM userconfiguration WHERE name='"+name+"' LIMIT 1")
+        	result = cur.fetchone()
+		self.db.commit()
+		cur.close()
+		return result[0]
+	except:
+   	    print "Error: unable to fecth data"
+	    return 0	
+
 
     def getHardwareConfigurationByName(self, name):
 
 	cur = self.db.cursor()
 	try:
-        	cur.execute("SELECT * FROM hardwareConfiguration WHERE name='"+name+"' LIMIT 1")
+        	cur.execute("SELECT * FROM hardwareconfiguration WHERE name='"+name+"' LIMIT 1")
         	result = cur.fetchone()
 		self.db.commit()
 		cur.close()
@@ -69,9 +81,9 @@ class Database:
 
 
     def getAverageMeasureByName(self, name, numberOfInput = 10):
-	print("getLastMeasureByName")
+
 	cur = self.db.cursor()
-        cur.execute("SELECT measure.value, hardwareConfiguration.name FROM measure INNER JOIN hardwareConfiguration ON measure.hardwareConfigurationId = hardwareConfiguration.Id WHERE name = '"+ name +"' ORDER BY timestamp DESC LIMIT "+ str(numberOfInput))
+        cur.execute("SELECT measure.value, hardwareconfiguration.name FROM measure INNER JOIN hardwareconfiguration ON measure.hardwareConfigurationId = hardwareconfiguration.Id WHERE name = '"+ name +"' ORDER BY timestamp DESC LIMIT "+ str(numberOfInput))
         result = cur.fetchall()
 	moyenne = 0
 	for row in result :
@@ -82,8 +94,9 @@ class Database:
 
         return moyenne
 
-databaseSensorsRead = Database("localhost", "root", "root", "PlashBoard")
-databaseActuators = Database("localhost", "root", "root", "PlashBoard")
-databaseUserCommand = Database("localhost", "root", "root", "PlashBoard")
-databaseThermocoupleRegulation = Database("localhost", "root", "root", "PlashBoard")
-databaseHeater = Database("localhost", "root", "root", "PlashBoard")
+databaseSensorsRead = Database("localhost", "root", "root", "plashboard")
+databaseActuators = Database("localhost", "root", "root", "plashboard")
+databaseUserCommand = Database("localhost", "root", "root", "plashboard")
+databaseThermocoupleRegulation = Database("localhost", "root", "root", "plashboard")
+databaseHeater = Database("localhost", "root", "root", "plashboard")
+databasePump = Database("localhost", "root", "root", "plashboard")

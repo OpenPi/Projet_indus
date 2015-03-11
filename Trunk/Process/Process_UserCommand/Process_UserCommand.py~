@@ -61,7 +61,6 @@ def command(type, command, targetName, value):
 	elif(type == 'UserConfiguration'):
 
 		if(targetName == 'ph_setpoint' or targetName == 'temperature_setpoint' or targetName == 'temperature_setpoint' or targetName == 'temperature_alert_level' or targetName == 'ph_alert_level' or targetName == 'ph_offset'):
-			print ("hahaha")
 			database.databaseUserCommand.updateUserConfiguration(targetName, value)
 		else:
 			print('Database Error')

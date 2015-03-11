@@ -15,7 +15,7 @@ import Core.database as database
 from Core.actuator import Pump
 
 def process(Queue):
-	poolPumpConfig = database.databasePump.getHardwareConfigurationByName("Pool Pump")
+	poolPumpConfig = database.databaseActuators.getHardwareConfigurationByName("Pool Pump")
 
 	pump = Pump(poolPumpConfig[0],poolPumpConfig[2])
 	#pump = Pump(5,2)

@@ -84,9 +84,9 @@ def set_pullUp(pin, value=True):
 		
 	# If value = True pull type is pullUp else is pullDown
 	if value:
-		io.set_pin_pullup(pin, 1)	# Set pin to pullUP
+		io.set_pin_pullup(pin, 0xFF)	# Set pin to pullUP
 	else:
-		io.set_pin_pullup(pin, 0)	# Set pin to pullDown
+		io.set_pin_pullup(pin, 0x00)	# Set pin to pullDown
 	
 def set_output_num(pin, value):
 	"""

@@ -130,7 +130,7 @@ class Light(NumericActuator):
 	"""
 	
 	# Builder class
-	def __init__(self, hardwareId, pin, pullup = False): 
+	def __init__(self, hardwareId, pin, pullup = True): 
 		"""
 		Light actuator class
 		
