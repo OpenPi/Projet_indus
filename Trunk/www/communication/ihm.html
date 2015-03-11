@@ -58,6 +58,7 @@
 		<div id="chart">
 			<form id="orderRequest">
 				<input type="text" id="order" placeholder="the regulation order"/>
+				<input type="text" id="xlastChart" placeholder="number of data for the chart"/>
 			</form>
 			<div id="curve_chart">
 			</div>
@@ -79,10 +80,7 @@
 					<option value="Set">Set</option>
 				</select>
 				<input type="text" id="targetName" placeholder="target name"/>
-				<select id="val">
-					<option value="on">On</option>
-					<option value="off">Off</option>
-				</select>
+				<input type="text" id="val" placeholder="value" />
 				<input type="button" value="save command" onclick="postUserCommand();"/>
 			</form>
 		</div>
