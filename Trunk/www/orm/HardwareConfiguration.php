@@ -13,6 +13,7 @@ final class HardwareConfiguration extends Table{
                 "name"                    => "name",
                 "pin"                     => "pin",
                 "IO"                      => "IO",
+                "init"                    => "init"
                 "PullUpDownResistor"      => "PullUpDownResistor",
                 "unit"                    => "unit",
                 "tension"                 => "tension"

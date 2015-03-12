@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Mer 11 Mars 2015 à 14:15
+-- Généré le :  Jeu 12 Mars 2015 à 16:28
 -- Version du serveur :  5.6.17
 -- Version de PHP :  5.5.12
 
@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS `hardwareconfiguration` (
   `pin` tinyint(2) NOT NULL,
   `type` enum('Analog','Numeric','','') NOT NULL,
   `IO` enum('Input','Output','','') NOT NULL,
+  `init` enum('True','False','','') DEFAULT NULL,
   `PullUpDownResistor` enum('None','Pull-Up','Pull-Down','') NOT NULL,
   `unit` varchar(50) DEFAULT NULL,
   `tension` float DEFAULT NULL,
@@ -44,13 +45,13 @@ CREATE TABLE IF NOT EXISTS `hardwareconfiguration` (
 -- Contenu de la table `hardwareconfiguration`
 --
 
-INSERT INTO `hardwareconfiguration` (`id`, `name`, `pin`, `type`, `IO`, `PullUpDownResistor`, `unit`, `tension`) VALUES
-(1, 'Pool Temperature Sensor', 1, 'Analog', 'Input', 'None', '°C', NULL),
-(2, 'Pool Light', 1, 'Numeric', 'Output', 'Pull-Down', NULL, 5),
-(3, 'Pump Ampere Meter', 2, 'Analog', 'Input', 'None', 'A', NULL),
-(4, 'Pool Ph Meter', 3, 'Analog', 'Input', 'None', NULL, NULL),
-(5, 'Pool Pump', 2, 'Numeric', 'Output', 'None', 'Null', 5),
-(6, 'Pool Heater', 3, 'Numeric', 'Output', 'None', 'Null', 5);
+INSERT INTO `hardwareconfiguration` (`id`, `name`, `pin`, `type`, `IO`, `init`, `PullUpDownResistor`, `unit`, `tension`) VALUES
+(1, 'Pool Temperature Sensor', 1, 'Analog', 'Input', NULL, 'None', '°C', NULL),
+(2, 'Pool Light', 1, 'Numeric', 'Output', NULL, 'Pull-Down', NULL, 5),
+(3, 'Pump Ampere Meter', 2, 'Analog', 'Input', NULL, 'None', 'A', NULL),
+(4, 'Pool Ph Meter', 3, 'Analog', 'Input', NULL, 'None', NULL, NULL),
+(5, 'Pool Pump', 2, 'Numeric', 'Output', NULL, 'None', 'Null', 5),
+(6, 'Pool Heater', 3, 'Numeric', 'Output', NULL, 'None', 'Null', 5);
 
 -- --------------------------------------------------------
 
@@ -65,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `measure` (
   `timestamp` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `hardwareConfiguration` (`hardwareConfigurationId`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 --
 -- Contenu de la table `measure`
@@ -73,7 +74,8 @@ CREATE TABLE IF NOT EXISTS `measure` (
 
 INSERT INTO `measure` (`id`, `hardwareConfigurationId`, `value`, `timestamp`) VALUES
 (1, 1, 12, '2015-03-05 07:00:00'),
-(2, 1, 13, '2015-03-05 07:27:00');
+(2, 1, 13, '2015-03-05 07:27:00'),
+(3, 4, 7, '2015-03-12 13:00:00');
 
 -- --------------------------------------------------------
 
