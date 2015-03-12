@@ -30,10 +30,13 @@ class ThermocoupleRegulation(object):
 		self.error=0.0 #asked error or previous error
 
 		#Initialise some variables for the control loop
-		#self.pwr_cnt=1
-		#self.pwr_tot=0
 		self.pwr_coef=2 #conversion coefficient to obtain second
 		self.coef_regul=1 #coefficient for duration of heaters
+
+		#Initialise temperature rise time
+		self.desiredTemperature = self.set_point #desired temperature
+		self.poolVolume = 0.12 #volume of the pool (m3)
+		self.powerHeatPump = 0.15 #power of the heat pump (kW)
 
 	
 	#------------------------------#
@@ -98,27 +101,23 @@ class ThermocoupleRegulation(object):
 
 
 	def Regulate(self):
-		#Initialise some variables for the control loop
-		#pwr_cnt=1
-		#pwr_tot=0
-
 		# Turn on for initial ramp up
-		#state="on"
-		#self.turn_on()
 		state="off"
 		self.turn_off()
 		PID=self.Calulate_PID(self.BD_Temperature())
 
-		power = PID*self.pwr_coef
+		#power = PID*self.pwr_coef
+		#print("POWER = {} secondes soit {} minutes".format(power, power/60))
 
-		print("POWER = {} secondes soit {} minutes".format(power, power/60))
-		#if (power > 0):
-		#	self.pwr_tot = self.pwr_tot + power
-		#	print("pwr_tot = {}".format(self.pwr_tot))
-#		#self.pwr_ave = self.pwr_tot / self.pwr_cnt
-#		print("pwr_ave = {}".format(self.pwr_ave))
-#		self.pwr_cnt = self.pwr_cnt + 1
-#		print("pwr_cnt = {}".format(self.pwr_cnt))
+		#Temperature rise time
+		initialTemperature = PID/2
+		#temperatureDifference = self.desiredTemperature - initialTemperature
+		#heatingTime = (self.poolVolume * temperatureDifference * 1.163) / self.powerHeatPump
+		heatingTime = (self.poolVolume * initialTemperature * 1.163) / self.powerHeatPump
+		print("heatingTime = {} minutes, {} heures, {} jours".format(heatingTime*60, heatingTime, heatingTime/24))
+		
+		self.turn_on(heatingTime) #return time heating operation
+
 
 		#Long duration pulse width modulation
 		"""for x in range (1, 100):
@@ -133,6 +132,6 @@ class ThermocoupleRegulation(object):
 					state="off"
 					self.turn_off()
 					print("tata")"""
-		self.turn_on(power*self.coef_regul)
+		#self.turn_on(power*self.coef_regul)
 	
 
