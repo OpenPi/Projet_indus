@@ -56,3 +56,8 @@ table, tr, th, td
 	display: inline-block;
 	float: left;
 }
+
+section
+{
+	margin-top: 100px;
+}

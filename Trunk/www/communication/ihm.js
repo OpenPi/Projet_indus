@@ -6,6 +6,9 @@ var urlCreateUserCommand = '../usercommands/';
 var urlHardwareConfiguration = '../hardwareconfigurations/';
 var urlAuthorization = '../authorize/';
 
+var user = "";
+var password = "";
+
 var order = 10;
 var i = 0;
 var sensorType = "";
@@ -13,9 +16,14 @@ var urlAll = "";
 var urlLimit = "";
 var urlDAte = "";
 
+var log = '<form id="login"><input type="text" name="user" placeholder="user" id="user"  required/><input type="password" name="password" placeholder="password" id="password" required/><input type="button" value="Valid" id="valid" onclick="postLogin();"/></form>';
+
+var delog = '<form id="disconnect"><input type="button" value="disconnect" id="disconnect" onclick="postDisconnect();"/></form>';
+
 setInterval(getMeasure, 5000); //Execute the get function each seconds
 setInterval(getMeasuresForChart, 5000); //Execute the get function each seconds
 setInterval(getUserCommand, 5000); //Execute the get function each seconds
+
 
 function typeSensor()
 {
@@ -436,3 +444,81 @@ function drawChart(text)
 
     chart.draw(data, options); //We draw the chart
 }
+
+
+
+
+
+
+
+function displayLoginBox()
+{
+
+	$("#connect").html(log);
+}
+
+function deDisplayLoginBox()
+{
+
+	$("#connect").html(delog);
+	getHardwareConfiguration();
+}
+
+
+
+function postLogin()
+{
+
+	user = document.forms['login'].user.value;
+	password = document.forms['login'].password.value;
+
+	$.ajax //We send a GET Request for take the user's commands
+	({
+			
+			url : urlAuthorization, // We send a request with the date from which we want the data
+
+			type : "POST",
+
+			data : 'user='+user+'&password='+password,
+
+		 	success : deDisplayLoginBox,
+
+		 	error : function(resultat, statut, erreur)
+		 	{
+		 		if(resultat['status'] == '401')
+		 		{
+		 			$("#error").html("<p>There is an error, the query found nothing</p>"); //We send on the screen the table
+		 			console.log(resultat['status'] + " : " + erreur);
+		 		}
+		 	}
+
+	});
+
+}
+
+function postDisconnect()
+{
+	$.ajax //We send a GET Request for take the user's commands
+	({
+			
+			url : urlAuthorization, // We send a request with the date from which we want the data
+
+			type : "DELETE",
+
+			//data : 'user='+user+'&password='+password,
+
+		 	success : displayLoginBox,
+
+		 	error : function(resultat, statut, erreur)
+		 	{
+		 		if(resultat['status'] == '401')
+		 		{
+		 			$("#error").html("<p>There is an error, the query found nothing</p>"); //We send on the screen the table
+		 			console.log(resultat['status'] + " : " + erreur);
+		 		}
+		 	}
+
+	});
+
+}
+
