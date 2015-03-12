@@ -34,7 +34,7 @@ class ThermocoupleRegulation(object):
 		self.coef_regul=1 #coefficient for duration of heaters
 
 		#Initialise temperature rise time
-		self.desiredTemperature = self.set_point #desired temperature
+		#self.desiredTemperature = self.set_point #desired temperature
 		self.poolVolume = float(database.databaseThermocoupleRegulation.getUserConfiguration("pool_volume")) #volume of the pool (m3)
 		self.powerHeatPump = float(database.databaseThermocoupleRegulation.getUserConfiguration("power_heat_pump")) #power of the heat pump (kW)
 
@@ -116,7 +116,7 @@ class ThermocoupleRegulation(object):
 		heatingTime = (self.poolVolume * initialTemperature * 1.163) / self.powerHeatPump
 		print("heatingTime = {} minutes, {} heures, {} jours".format(heatingTime*60, heatingTime, heatingTime/24))
 		
-		self.turn_on(heatingTime) #return time heating operation
+		self.turn_on(heatingTime*60*60) #return time heating operation
 
 
 		#Long duration pulse width modulation

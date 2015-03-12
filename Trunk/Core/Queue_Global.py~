@@ -15,7 +15,14 @@ class ProcessQueue(Queue, object):
 		self.put(QueueItem(state, data))
 
 	def enqueueIfEmpty(self, state, data = False, timeoutMs = 1000):
-		time.sleep(timeoutMs/1000)
+		numberOfSeconds = timeoutMs/1000 # Number Of seconds to wait before timeout
+		while(numberOfSeconds > 0 and self.empty())
+			if(numberOfSeconds >= 1):
+				time.sleep(1)
+			else:
+				time.sleep(numberOfSeconds)
+				
+			numberOfSeconds = numberOfSeconds - 1
 		if(self.empty()):
 			self.enqueue(state,data)
 
@@ -24,3 +31,4 @@ process_SensorsRead = ProcessQueue(maxsize=0)
 process_Actuators = ProcessQueue(maxsize=0)
 process_TemperatureRegulation = ProcessQueue(maxsize=0)
 process_Heater = ProcessQueue(maxsize=0)
+process_Pump = ProcessQueue(maxsize=0)
