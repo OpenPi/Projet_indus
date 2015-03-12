@@ -35,8 +35,8 @@ class ThermocoupleRegulation(object):
 
 		#Initialise temperature rise time
 		self.desiredTemperature = self.set_point #desired temperature
-		self.poolVolume = 0.12 #volume of the pool (m3)
-		self.powerHeatPump = 0.15 #power of the heat pump (kW)
+		self.poolVolume = float(database.databaseThermocoupleRegulation.getUserConfiguration("pool_volume")) #volume of the pool (m3)
+		self.powerHeatPump = float(database.databaseThermocoupleRegulation.getUserConfiguration("power_heat_pump")) #power of the heat pump (kW)
 
 	
 	#------------------------------#
