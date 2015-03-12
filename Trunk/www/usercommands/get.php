@@ -35,8 +35,9 @@
         if($id != ""){
             $cond = array("id" => array("=", $id));
             $res = $tableObject->getRowsLimited($cond, $xlast);
+        }else{
+	       $res = $tableObject->getAllLimited($xlast);
         }
-	   $res = $tableObject->getAllLimited($xlast);
     }
     //If time alone
     else if($xlast == "undefined" and $time != "undefined"){
