@@ -12,13 +12,11 @@ import Core.Queue_Global as Queue_Global
 from Core.QueueItem import QueueItem
 from datetime import datetime
 import Core.database as database
-from Core.actuator import Pump
+#from Core.actuator import Pump
 
 def process(Queue):
 	poolPumpConfig = database.databasePump.getHardwareConfigurationByName("Pool Pump")
-
 	pump = Pump(poolPumpConfig[0],poolPumpConfig[2])
-	#pump = Pump(5,2)
 
 	while True:
 		Item = Queue.get()
@@ -27,9 +25,24 @@ def process(Queue):
 		if state == "Init":
 			print("Init State")
 
+			date = datetime
+
 			precision = 30 #minute
 			poolTemperature = 12.0
-			preferedHours = [1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1] # use the same precision 
+
+			pumpingHoursConfig = database.databasePump.getUserConfiguration("pumping_hours")
+			print(pumpingHoursConfig)
+
+			#Create preference hours with data in database
+			preferedHours = []
+			for value in pumpingHoursConfig:
+				if value == ',':
+					pass
+				elif value == '1':
+					preferedHours.append(1)
+				else:
+					preferedHours.append(0)
+			
 			pumpDecision  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] # use the same precision 
 
 			pumpingTime = (poolTemperature / 3) * 60 # 1 hour of pumping every 3 degrees
@@ -40,7 +53,7 @@ def process(Queue):
 
 			pumpingInterval = 30
 
-			#Calculate position of max occurence 1
+			#Calculate position of max occurence of 0 in preferedHours
 			numberOfIntervale = 1
 			value = preferedHours[0]
 			index = 0
@@ -63,12 +76,13 @@ def process(Queue):
 			if preferedHours[0] == preferedHours[len(preferedHours)-1] :
 				numberOfIntervale -= 1
 
+			#Apply half of pumping time to the left of max occurency of 0
 			blockApply = 0
 			for i in range(index, 0, -1) :
 				if preferedHours[i] == 1 and blockApply < pumpingInterval/2 :
 					pumpDecision[i] = 1
 					blockApply += 1
-
+			#Try to place all of pumping time to the right
 			for i in range(index, len(preferedHours)) :
 				if preferedHours[i] == 1 and blockApply < pumpingInterval :
 					pumpDecision[i] = 1
@@ -84,7 +98,8 @@ def process(Queue):
 					blockApply += 1
 				i += 1
 
-			#After that if block not assigned we have to start pump over preferedHours
+			#After that if block not assigned we have to start pump over preferedHours, calculate max occurrence of 0
+			#and number of element (1) next and previous of the max occurence of 0 
 			while blockApply < pumpingInterval :
 				numberOfIntervale = 1
 				value = preferedHours[0]
@@ -117,10 +132,11 @@ def process(Queue):
 				if preferedHours[0] == preferedHours[len(preferedHours)-1] :
 					nextConsecutive = interPreviousConsecutive
 					numberOfIntervale -= 1
-
+				#If only two block (one with 1 and one with 0) create a new block of pumping in the bigger block of 0
 				if(numberOfIntervale == 2) :
 					pumpDecision[index-consecutive/2] = 1
 					blockApply += 1
+				#Else add pumping to the tinner block of 1
 				elif previousConsecutive < nextConsecutive :
 					pumpDecision[index-consecutive+1] = 1
 					blockApply += 1
@@ -128,56 +144,48 @@ def process(Queue):
 					pumpDecision[index] = 1
 					blockApply += 1
 
-
-
-			print(pumpingInterval)
-			print(blockApply)
-			print(preferedHours)
-			print(pumpDecision)
+			#print(pumpingInterval)
+			#print(blockApply)
+			#print(preferedHours)
+			#print(pumpDecision)
+			Queue_Global.process_Pump.enqueue('Start')
 			
-
-			#now = datetime.now()
-			#hoursLeft = 23 - now.hour
-			#minutesLeft = 59 - now.minute + 1
-		#
-			#numberOfPrecisionFormattedTimeLeft = HourToPrecisionFormatted(hoursLeft, minutesLeft, precision) + 1
-#
-			#startTimeInNumberOfPrecisionFormattedTime = HourToPrecisionFormatted(now.hour, now.minute, precision)
-#
-			#pumpingTPrecisionFormattedTimeList = [0] * numberOfPrecisionFormattedTimeLeft
-#
-			#if(preferedHours[startTimeInNumberOfPrecisionFormattedTime:].count(1) > pumpingTime):
-			#	print("All in prefered hours but we have to adapt time in bloc time")
-			#	# Choose when to pump during prefered hours
-#
-			#elif(preferedHours[startTimeInNumberOfPrecisionFormattedTime:].count(1) < pumpingTime):
-			#	print("Not all in prefered hours")
-			#	# Pump during all prefered hours and choose when pumping all hours left
-			#else:
-			#	print("All in prefered hour")
-			#	# Go to process
-#
-#
-			#print(str(preferedHours[startTimeInNumberOfPrecisionFormattedTime:].count(1)) + " | " + str(numberOfPrecisionFormattedTimeLeft) + " | " + str(startTimeInNumberOfPrecisionFormattedTime) + " | " + str(pumpingTime)) 
-			#print(preferedHours[startTimeInNumberOfPrecisionFormattedTime:])
-			#print("Left till midnight "+ str(hoursLeft) +"h"+ str(minutesLeft)) 
 		elif state == "Start":
-			print("Start State")	
+			print("Start State")
+			Queue_Global.process_Pump.enqueue('auto')	
 
 		elif state == "Process":
 			print("Process State")		
+
+			#Calculate time to find index to check
+			#Test without time
+			index = 0
+			#index = (date.now().hour*60 + date.now().minute)/precision
+
+			#Check decision and start or stop pump
+			if(pumpDecision[index] == 1):
+				pump.set_value(True)
+				pass
+			else:
+				pump.set_value(False)
+				pass
+
 			Queue.enqueueIfEmpty(state, data, 1000)
+			#Test without time
+			index += 1
 			
-		elif state == "on":
-			
+		elif state == "on":	
+			print("On State")		
 			pump.set_on()		
 
 		elif state == "off":
+			print("Off State")
 			pump.set_off()	
 
 		elif state == "auto":
-			pump.set_mode_auto()	
-			#Launch process
+			print("Auto State")
+			pump.set_mode_auto()
+			Queue_Global.process_Pump.enqueue('Process')	
 
 		elif state == "Stop":
 			print("Stop State")	
