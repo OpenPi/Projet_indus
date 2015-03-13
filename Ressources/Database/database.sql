@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Jeu 12 Mars 2015 à 16:28
+-- Généré le :  Ven 13 Mars 2015 à 10:02
 -- Version du serveur :  5.6.17
 -- Version de PHP :  5.5.12
 
@@ -111,20 +111,25 @@ INSERT INTO `usercommand` (`id`, `type`, `command`, `targetName`, `value`, `time
 CREATE TABLE IF NOT EXISTS `userconfiguration` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `hardwareConfigurationId` int(11) NOT NULL,
+  `hardwareConfigurationId` int(11) DEFAULT NULL,
   `unit` varchar(50) NOT NULL,
   `value` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `hardwareConfiguration` (`hardwareConfigurationId`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
 
 --
 -- Contenu de la table `userconfiguration`
 --
 
 INSERT INTO `userconfiguration` (`id`, `name`, `hardwareConfigurationId`, `unit`, `value`) VALUES
-(1, 'Ph', 4, 'None', '7'),
-(2, 'Temperature', 1, '°C', '22');
+(1, 'ph_setpoint', 4, 'None', '7.5'),
+(2, 'temperature_setpoint', 1, '°C', '20'),
+(3, 'temperature_alert_level', 1, '°C', '20:30'),
+(4, 'ph_alert_level', 4, 'None', '6.8:7.9'),
+(7, 'ph_offset', 4, 'None', '0'),
+(8, 'pool_volume', NULL, 'm3', '0.12'),
+(9, 'power_heat_pump', 6, 'kW', '0.15');
 
 -- --------------------------------------------------------
 
