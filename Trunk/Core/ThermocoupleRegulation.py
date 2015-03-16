@@ -45,7 +45,7 @@ class ThermocoupleRegulation(object):
 	def BD_Temperature(self):
 	  ### a lire dans la base de donnée
 	    #temperature = float(input("saisissez une temperature °C : "))
-	    temperature = database.databaseThermocoupleRegulation.getAverageMeasureByName("Pool Temperature Sensor")
+	    temperature = database.databaseThermocoupleRegulation.getLastMeasureByName("Pool Temperature Sensor")
 	    print("Temperature = {} ".format(temperature))
 	    return temperature
 	    

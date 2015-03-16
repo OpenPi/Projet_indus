@@ -20,28 +20,39 @@ def process(Queue):
 		state = Item.state
 		data = Item.data
 		if state == "Init":
-			
+			numberOfSecond = 59
 			poolThermocoupleConfig = database.databaseSensorsRead.getHardwareConfigurationByName("Pool Temperature Sensor")			
 			pumpAmpereMeterConfig = database.databaseSensorsRead.getHardwareConfigurationByName("Pump Ampere Meter")
 			poolPhConfig = database.databaseSensorsRead.getHardwareConfigurationByName("Pool Ph Meter")			
 	
-			poolThermocouple = Thermocouple(poolThermocoupleConfig[0],poolThermocoupleConfig[2], 4.14)
-			pumpAmpereMeter = AmpereMeter(pumpAmpereMeterConfig[0],pumpAmpereMeterConfig[2], 4.14)
-			poolPhMeter = PhMeter(poolPhConfig[0],poolPhConfig[2], 4.14)
+			poolThermocouple = Thermocouple(poolThermocoupleConfig[0],poolThermocoupleConfig[2], 4.14, 60, 2)
+			pumpAmpereMeter = AmpereMeter(pumpAmpereMeterConfig[0],pumpAmpereMeterConfig[2], 4.14, 60, 2)
+			poolPhMeter = PhMeter(poolPhConfig[0],poolPhConfig[2], 4.14, 60, 2)
 
 
 		elif state == "Start":
 			print("Start State")	
 
 		elif state == "Process":
-			thermocoupleValue = poolThermocouple.get_value()
-			ampereMeterValue = pumpAmpereMeter.get_value()
-			poolPhMeterValue = poolPhMeter.get_value()
+			#thermocoupleValue = poolThermocouple.get_value()
+			#ampereMeterValue = pumpAmpereMeter.get_value()
+			#poolPhMeterValue = poolPhMeter.get_value()
 			#print(str(thermocoupleValue) + " | " + str(pumpAmpereMeter) + " | " + str(poolPhMeter))
-			database.databaseSensorsRead.insertMeasure(poolThermocoupleConfig[0], thermocoupleValue)
-			database.databaseSensorsRead.insertMeasure(pumpAmpereMeterConfig[0], ampereMeterValue)
-			database.databaseSensorsRead.insertMeasure(poolPhConfig[0], poolPhMeterValue)
-			Queue.enqueueIfEmpty(state, data, 6000)
+			#database.databaseSensorsRead.insertMeasure(poolThermocoupleConfig[0], thermocoupleValue)
+			#database.databaseSensorsRead.insertMeasure(pumpAmpereMeterConfig[0], ampereMeterValue)
+			#database.databaseSensorsRead.insertMeasure(poolPhConfig[0], poolPhMeterValue)
+			
+			if(numberOfSecond > 1):
+				
+				poolThermocouple.read_save(numberOfSecond)
+				pumpAmpereMeter.read_save(numberOfSecond)
+				poolPhMeter.read_save(numberOfSecond)
+				numberOfSecond = numberOfSecond - 1
+				
+			else:
+				numberOfSecond = 60
+			
+			Queue.enqueueIfEmpty(state, data, 1000)
 			
 		elif state == "Stop":
 			print("Stop State")		

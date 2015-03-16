@@ -80,19 +80,17 @@ class Database:
 	    return 0	
 
 
-    def getAverageMeasureByName(self, name, numberOfInput = 10):
+    def getLastMeasureByName(self, name):
 
 	cur = self.db.cursor()
-        cur.execute("SELECT measure.value, hardwareconfiguration.name FROM measure INNER JOIN hardwareconfiguration ON measure.hardwareConfigurationId = hardwareconfiguration.Id WHERE name = '"+ name +"' ORDER BY timestamp DESC LIMIT "+ str(numberOfInput))
-        result = cur.fetchall()
-	moyenne = 0
-	for row in result :
-	    moyenne += row[0]
-	moyenne /= numberOfInput 
+        cur.execute("SELECT measure.value, hardwareconfiguration.name FROM measure INNER JOIN hardwareconfiguration ON measure.hardwareConfigurationId = hardwareconfiguration.Id WHERE name = '"+ name +"' ORDER BY timestamp DESC")
+        result = cur.fetchone()
+
+
 	self.db.commit()
 	cur.close()
 
-        return moyenne
+        return result[0]
 
 databaseSensorsRead = Database("localhost", "root", "root", "plashboard")
 databaseActuators = Database("localhost", "root", "root", "plashboard")

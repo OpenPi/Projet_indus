@@ -6,6 +6,8 @@ from Lib.IO_Num import get_input_num
 from Lib.IO_Num import set_pullUp
 from Lib.IO_Num import set_input_direction
 
+import Core.database as database
+
 """
 ================================================
 Sensors class
@@ -38,13 +40,15 @@ class AnalogSensor(Sensor):
 	"""
 	
 	# Builder class
-	def __init__(self, hardwareId, channel, refVolt):
+	def __init__(self, hardwareId, channel, refVolt, fSave, fRead):
 		"""
 		Analog sensor class
 		
 		hardwareId: Unique Id to hardware
 		channel: Physical position sensor on Expender PI
 		refVolt: Reference voltage of Expender PI
+		fRead  : sensor is read every fRead seconds
+		fSave  : Average value is stored in the database every fRead seconds
 		"""
 		channelChanged = channel
 		# Exchange channel position by pair
@@ -56,7 +60,9 @@ class AnalogSensor(Sensor):
 		
 		Sensor.__init__(self, hardwareId, channelChanged)
 		self.refVolt = refVolt
-		
+		self.fSave = fSave
+		self.fRead = fRead
+		self.sensorValue = []
 		set_refVolt_adc(self.refVolt)	# Call set value reference voltage
 		
 	# Get and return physical value of analog sensor 
@@ -106,15 +112,17 @@ class Thermocouple(AnalogSensor):
 	"""
 	
 	# Builder class
-	def __init__(self, hardwareId, channel, refVolt):
+	def __init__(self, hardwareId, channel, refVolt, fSave, fRead):
 		"""
 		Thermocouple sensor class
 		
 		hardwareId: Unique Id to hardware
 		channel: Physical position sensor on Expender PI
 		refVolt: Reference voltage of Expender PI
+		fRead  : sensor is read every fRead seconds
+		fSave  : Average value is stored in the database every fRead seconds
 		"""
-		AnalogSensor.__init__(self, hardwareId, channel, refVolt)
+		AnalogSensor.__init__(self, hardwareId, channel, refVolt, fSave, fRead)
 	
 	# convert physical value to temperature value
 	def conversion(self, voltValue):
@@ -159,6 +167,24 @@ class Thermocouple(AnalogSensor):
 			return -1
 		else:
 			return self.conversion(voltValue)
+
+	def read_save(self, NumberOfSecond):
+		#print(NumberOfSecond)
+		if(NumberOfSecond % self.fRead == 0):
+			#print(str(self.hardwareId) + " : read")
+			# read and add to the list
+			self.sensorValue.append(self.get_value())
+		if(NumberOfSecond % self.fSave == 0):
+			#Average value and store into database
+			#print(str(self.hardwareId) + " : save")
+			average = 0
+			#print("Valeurs capteur : " + str(self.sensorValue))
+			for value in self.sensorValue:
+				average += value	
+			sensorAverageValue = average / len(self.sensorValue)
+			#print("Valeur Moyenne : " + str(sensorAverageValue))
+			database.databaseSensorsRead.insertMeasure(self.hardwareId, sensorAverageValue)
+			self.sensorValue = []
 			
 class PhMeter(AnalogSensor):
 	"""
@@ -167,17 +193,19 @@ class PhMeter(AnalogSensor):
 	"""
 	
 	# Builder class
-	def __init__(self, hardwareId, channel, refVolt):
+	def __init__(self, hardwareId, channel, refVolt, fSave, fRead):
 		"""
 		Ph meter class
 		
 		hardwareId: Unique Id to hardware
 		channel: Physical position sensor on Expender PI
 		refVolt: Reference voltage of Expender PI
+		fRead  : sensor is read every fRead seconds
+		fSave  : Average value is stored in the database every fRead seconds
 		"""
 
 		self.offset = 0 #TODO use the preferences
-		AnalogSensor.__init__(self, hardwareId, channel, refVolt)
+		AnalogSensor.__init__(self, hardwareId, channel, refVolt, fSave, fRead)
 	
 	# convert physical value to ph value
 	def conversion(self, value):
@@ -208,7 +236,22 @@ class PhMeter(AnalogSensor):
 			return -1
 		else:
 			return self.conversion(voltValue)
-			
+
+	def read_save(self, NumberOfSecond):
+
+		if(NumberOfSecond % self.fRead == 0):
+			#print(str(self.hardwareId) + " : read")
+			# read and add to the list
+			self.sensorValue.append(self.get_value())
+		if(NumberOfSecond % self.fSave == 0):
+			#Average value and store into database
+			#print(str(self.hardwareId) + " : save")
+			average = 0
+			for value in self.sensorValue:
+				average += value	
+			sensorAverageValue = average / len(self.sensorValue)
+			database.databaseSensorsRead.insertMeasure(self.hardwareId, sensorAverageValue)
+			self.sensorValue = []
 class AmpereMeter(AnalogSensor):
 	"""
 	Class for ampere sensor
@@ -216,15 +259,17 @@ class AmpereMeter(AnalogSensor):
 	"""
 	
 	# Builder class
-	def __init__(self, hardwareId, channel, refVolt):
+	def __init__(self, hardwareId, channel, refVolt, fSave, fRead):
 		"""
 		Ampere meter class
 		
 		hardwareId: Unique Id to hardware
 		channel: Physical position sensor on Expender PI
 		refVolt: Reference voltage of Expender PI
+		fRead  : sensor is read every fRead seconds
+		fSave  : Average value is stored in the database every fRead seconds
 		"""
-		AnalogSensor.__init__(self, hardwareId, channel, refVolt)
+		AnalogSensor.__init__(self, hardwareId, channel, refVolt, fSave, fRead)
 	
 	# convert physical value to ampere value
 	def conversion(self, value):
@@ -253,3 +298,19 @@ class AmpereMeter(AnalogSensor):
 			return -1
 		else:
 			return self.conversion(voltValue)
+
+	def read_save(self, NumberOfSecond):
+
+		if(NumberOfSecond % self.fRead == 0):
+			#print(str(self.hardwareId) + " : read")
+			# read and add to the list
+			self.sensorValue.append(self.get_value())
+		if(NumberOfSecond % self.fSave == 0):
+			#Average value and store into database
+			#print(str(self.hardwareId) + " : save")
+			average = 0
+			for value in self.sensorValue:
+				average += value	
+			sensorAverageValue = average / len(self.sensorValue)
+			database.databaseSensorsRead.insertMeasure(self.hardwareId, sensorAverageValue)
+			self.sensorValue = []

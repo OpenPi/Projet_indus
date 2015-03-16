@@ -12,26 +12,26 @@ import Core.Queue_Global as Queue_Global
 from Core.QueueItem import QueueItem
 from datetime import datetime
 import Core.database as database
-#from Core.actuator import Pump
+from Core.actuator import Pump
 
 def process(Queue):
 	poolPumpConfig = database.databasePump.getHardwareConfigurationByName("Pool Pump")
 	pump = Pump(poolPumpConfig[0],poolPumpConfig[2])
-
+	
 	while True:
 		Item = Queue.get()
 		state = Item.state
 		data = Item.data
 		if state == "Init":
-			print("Init State")
+
+			indexProcess = 0
 
 			date = datetime
 
 			precision = 30 #minute
-			poolTemperature = 12.0
-
+			poolTemperature = database.databasePump.getLastMeasureByName("Pool Temperature Sensor")
 			pumpingHoursConfig = database.databasePump.getUserConfiguration("pumping_hours")
-			print(pumpingHoursConfig)
+			
 
 			#Create preference hours with data in database
 			preferedHours = []
@@ -51,7 +51,7 @@ def process(Queue):
 			if pumpingInterval > 48 :
 				pumpingInterval = 48
 
-			pumpingInterval = 30
+			#pumpingInterval = 30
 
 			#Calculate position of max occurence of 0 in preferedHours
 			numberOfIntervale = 1
@@ -143,11 +143,12 @@ def process(Queue):
 				else :
 					pumpDecision[index] = 1
 					blockApply += 1
-
+			#print(pumpingHoursConfig)
 			#print(pumpingInterval)
 			#print(blockApply)
 			#print(preferedHours)
-			#print(pumpDecision)
+			print(pumpDecision)
+			dateIndex = date.now()
 			Queue_Global.process_Pump.enqueue('Start')
 			
 		elif state == "Start":
@@ -155,24 +156,28 @@ def process(Queue):
 			Queue_Global.process_Pump.enqueue('auto')	
 
 		elif state == "Process":
-			print("Process State")		
+			#print("Process State")		
 
 			#Calculate time to find index to check
 			#Test without time
-			index = 0
-			#index = (date.now().hour*60 + date.now().minute)/precision
-
-			#Check decision and start or stop pump
-			if(pumpDecision[index] == 1):
-				pump.set_value(True)
-				pass
+			if(date.now().day > dateIndex.day):
+				Queue_Global.process_Pump.enqueue('Init')
 			else:
-				pump.set_value(False)
-				pass
+				indexProcess = (date.now().hour*60 + date.now().minute)/precision
 
-			Queue.enqueueIfEmpty(state, data, 1000)
+				#Check decision and start or stop pump
+				if(pumpDecision[indexProcess] == 1):
+					pump.set_value(True)
+					
+				else:
+					pump.set_value(False)
+				Queue.enqueueIfEmpty(state, data, 1000)
+			#print(pumpDecision[indexProcess])
+			#indexProcess += 1
+
+			
 			#Test without time
-			index += 1
+			
 			
 		elif state == "on":	
 			print("On State")		
