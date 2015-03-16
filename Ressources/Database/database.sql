@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Ven 13 Mars 2015 à 10:02
+-- Généré le :  Lun 16 Mars 2015 à 10:58
 -- Version du serveur :  5.6.17
 -- Version de PHP :  5.5.12
 
@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS `userconfiguration` (
   `value` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `hardwareConfiguration` (`hardwareConfigurationId`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
 
 --
 -- Contenu de la table `userconfiguration`
@@ -129,7 +129,8 @@ INSERT INTO `userconfiguration` (`id`, `name`, `hardwareConfigurationId`, `unit`
 (4, 'ph_alert_level', 4, 'None', '6.8:7.9'),
 (7, 'ph_offset', 4, 'None', '0'),
 (8, 'pool_volume', NULL, 'm3', '0.12'),
-(9, 'power_heat_pump', 6, 'kW', '0.15');
+(9, 'power_heat_pump', 6, 'kW', '0.15'),
+(10, 'pumping_hours', 5, '30min', '1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1');
 
 -- --------------------------------------------------------
 
