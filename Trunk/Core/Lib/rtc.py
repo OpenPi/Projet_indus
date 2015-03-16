@@ -3,44 +3,84 @@ from ABE.ABE_helpers import ABEHelpers
 from datetime import datetime
 import urllib2 as url
 
-def initRtc():
-	req = url.Request('http://www.google.com')
+"""
+================================================
+RTC (Real Time Clock) management
+
+Version 1.0 Created 12/03/2015
+
+================================================
+"""
+
+def getOSDate():
+	"""
+	After test Return OS clock
+	"""
+	req = url.Request('http://www.google.com')		# Create request of connection
+	
+	# Control state connection
 	try:
 		url.urlopen(req)
 	except IOError:
 		print("ERROR: Connection impossible. Initialization time impossible")
 		return -1
+	else:
+		return datetime.now()		# Return OS clock
 
-	t = datetime.now()
-
+def initRtc():
+	"""
+	Intialization clock to RTC Expander Pi
+	"""
+	t = getOSDate()
+	# Test if error getOSDate()
+	if t = -1:
+		return -1
+	
+	# Convert OS clock format to rtc Expander Pi format
 	rtcDate = str(t.year)+"-"+str(t.month)+"-"+str(t.day)+"T"+str(t.hour)+":"+str(t.minute)+":"+str(t.second)
 
-	rtc.set_date(rtcDate)
-
+	rtc.set_date(rtcDate)	# Save initialization clock
+	
 def getDate():
-	return rtc.read_date()
+	"""
+	Return date and time to RTC Expander Pi
+	"""
+	return rtc.read_date()	# Return date and time
 
 def getTime():
+	"""
+	Return time to RTC Expander Pi
+	"""
 	j = 0
-	t = str(getDate())
+	t = str(getDate())	# Save date and time
+	# Loop to scan date/Time 
 	for i in t:
-		j += 1
-		if i == 'T':
+		j += 1	# Save loop's position
+		if i == 'T':	# In str t, the date and time is separate by 'T'
 			n=0
 			time=''
 			while n<5:
 				time = time+t[j+n]
 				n += 1
-			return time
+			return time	# Return time
 
 def reguleTime():
-	t = datetime.now()
-	osTime = str(t.hour)+":"+str(t.minute)
-	rtcTime = getTime()
+	"""
+	Control if clock expander Pi value is correct
+	"""
+	t = getOSDate()
+	# Test if error getOSDate())
+	if t = -1:
+		return -1
+		
+	osTime = str(t.hour)+":"+str(t.minute)	# Get and convert OS time
+	rtcTime = getTime()						# Get Expander Pi time
 
+	# Control if OS time == Expander Pi time
 	if osTime <> rtcTime:
-		initRtc()
+		initRtc()		# Initialize Expander Pi Time
 
+# Instantiate Expander Pi time
 i2c_helper = ABEHelpers()
 bus = i2c_helper.get_smbus()
 rtc = RTC(bus)
