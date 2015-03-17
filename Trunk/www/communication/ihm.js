@@ -455,12 +455,16 @@ function displayLoginBox()
 {
 
 	$("#connect").html(log);
+	$("#connected").hide();
+	$("#disconnected").show();
 }
 
 function deDisplayLoginBox()
 {
 
 	$("#connect").html(delog);
+	$("#connected").show();
+	$("#disconnected").hide();
 	getHardwareConfiguration();
 }
 
@@ -504,8 +508,6 @@ function postDisconnect()
 			url : urlAuthorization, // We send a request with the date from which we want the data
 
 			type : "DELETE",
-
-			//data : 'user='+user+'&password='+password,
 
 		 	success : displayLoginBox,
 
