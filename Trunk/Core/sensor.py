@@ -3,7 +3,6 @@
 from Lib.IO_Ana import get_input_ana
 from Lib.IO_Ana import set_refVolt_adc
 from Lib.IO_Num import get_input_num
-from Lib.IO_Num import set_pullUp
 from Lib.IO_Num import set_input_direction
 
 import Core.database as database
@@ -81,7 +80,7 @@ class NumericSensor(Sensor):
 	"""
 	
 	# Builder class
-	def __init__(self, hardwareId, pin, pullup):
+	def __init__(self, hardwareId, pin):
 		"""
 		Numeric sensor class
 		
@@ -89,10 +88,8 @@ class NumericSensor(Sensor):
 		pin: Physical position sensor on Expender PI
 		"""
 		Sensor.__init__(self, hardwareId, pin)
-		self.pullup = pullup
 		
 		set_input_direction(self.channel)		# Set pin to input
-		set_pullUp(self.channel, self.pullup)	# Set pull type
 	
 	# Get and return physical value of numeric sensor
 	def get_value_sensor(self):
@@ -252,6 +249,7 @@ class PhMeter(AnalogSensor):
 			sensorAverageValue = average / len(self.sensorValue)
 			database.databaseSensorsRead.insertMeasure(self.hardwareId, sensorAverageValue)
 			self.sensorValue = []
+			
 class AmpereMeter(AnalogSensor):
 	"""
 	Class for ampere sensor
