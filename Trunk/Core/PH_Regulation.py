@@ -9,6 +9,8 @@
 
 
 from time import sleep
+import Core.database as database
+import Core.Queue_Global as Queue_Global
 
 class PH_Regulation(object):
 	"""PID Thermocouple"""
@@ -37,9 +39,9 @@ class PH_Regulation(object):
 		#Preset value for the conversion scale
 		self.correctingBasicPh = 160 #ml (milliliter)
 		self.lowerPh = 0.1 #unit ph
-		self.poolVolume = 10 #m3 (cubic meter)	
+		self.poolVolume = float(database.databaseThermocoupleRegulation.getUserConfiguration("pool_volume")) #volume of the pool (m3)
 
-		#Rate of flow
+		#Rate of flow, parameter of the peristaltic pump
 		self.valueLiter = 0.4 #unit liter
 		self.valueHours = 1 #unit hours
 
@@ -105,19 +107,23 @@ class PH_Regulation(object):
 	#------------------------------#
 	def BD_Temperature(self):
 	  ### a lire dans la base de donnée
-	    temperature = float(input("saisissez une temperature °C : "))
-	    return temperature
+	  temperature = database.databaseThermocoupleRegulation.getLastMeasureByName("Pool Temperature Sensor")
+	  print("Temperature = {} ".format(temperature))
+	  return temperature
 	
+	 
 	#---------------------------#
 	# Definition engine control #
 	#---------------------------#	 
-	def turn_on(self):
+	def turn_on(self, numberOfSeconds):
 	  ### taper dans le process marche moteur
 	  print("turn on")
+	  Queue_Global.process_Heater.enqueue('on', numberOfSeconds)
 	 
 	def turn_off(self):
 	  ### taper dans le process arret moteur
 	  print("turn off")
+	  Queue_Global.process_Heater.enqueue('off')
 	 
 	
 	
@@ -246,7 +252,8 @@ class PH_Regulation(object):
 				state="on"
 				self.turn_on()
 				print("toto")
-				sleep(timeProduced*60)
+				#sleep(timeProduced*60)
+				self.turn_on(timeProduced*60) #return time heating operation
 		else:
 			if (state=="on"):
 				state="off"
