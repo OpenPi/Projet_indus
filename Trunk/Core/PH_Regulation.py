@@ -164,7 +164,20 @@ class PH_Regulation(object):
 
 		#print("Dosage ph- = {} milliliter whether {} liter".format(milliliter, liter))
 
-		return milliliter
+		# Control tag, if it is beyond the max or min
+		dosage = milliliter
+		dosage_min = 0
+		dosage_max = ( self.poolVolume *100 ) / 10 # 100ml --> 10m3
+		print("dosage = {}".format(dosage))
+		print("dosage_min = {}".format(dosage_min))
+		print("dosage_max = {}".format(dosage_max))
+
+		if dosage > dosage_max:
+			dosage = dosage_max
+		elif dosage < dosage_min:
+			 dosage = dosage_min
+
+		return dosage
 
 
 	def Calculate_Time_Produced_LessPh(self, current_milliliter):
@@ -188,6 +201,25 @@ class PH_Regulation(object):
 		#print("timeProduced = {} secondes soit {} minutes".format(timeProduced*60, timeProduced))
 
 		return timeProduced #minutes
+
+
+	def Calculate_Number_Injection(self, poolVolume):
+		"""
+		Calculating the number of product injection days
+		"""
+		if self.poolVolume <= 50:
+			NumberInjection = 3
+		if self.poolVolume > 50 and self.poolVolume <= 70:
+			NumberInjection = 5
+		if self.poolVolume > 70 and self.poolVolume <= 90:
+			NumberInjection = 6
+		if self.poolVolume > 90 and self.poolVolume <= 130:
+			NumberInjection = 11
+		if self.poolVolume > 130 and self.poolVolume <= 260:
+			NumberInjection = 20
+
+		return NumberInjection
+				
 
 
 	def Calulate_PID(self,current_value):
@@ -229,12 +261,17 @@ class PH_Regulation(object):
 			#self.PH_init()
 			self.initialization = True 
 
-		#test seb
+		#calculating the volume of product injection
 		calculatePhLess = self.Calculate_Volume_Produced_LessPh(self.BD_PH(), self.set_point)
-		print("calculatePhLess ml = {}".format(calculatePhLess))
+		print("calculatePhLess ml = {} and L = {}".format(calculatePhLess, calculatePhLess/1000))
 
+		#calculating the number of product injection
 		timeProduced = self.Calculate_Time_Produced_LessPh(calculatePhLess)
 		print("timeProduced = {} secondes soit {} minutes".format(timeProduced*60, timeProduced))
+
+		#calculating the number of product injection days
+		NumberInjection = self.Calculate_Number_Injection(self.poolVolume)
+		print("NumberInjection = {}".format(NumberInjection))
 
 		# Turn on for initial ramp up
 		state="off"
