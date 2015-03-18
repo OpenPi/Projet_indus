@@ -256,6 +256,79 @@ class PH_Regulation(object):
 
 
 	def Regulate(self):
+
+		#calculating the volume of product injection
+		calculatePhLess = self.Calculate_Volume_Produced_LessPh(self.BD_PH(), self.set_point)
+		print("calculatePhLess ml = {} and L = {}".format(calculatePhLess, calculatePhLess/1000))
+
+		#calculating the number of product injection
+		timeProduced = self.Calculate_Time_Produced_LessPh(calculatePhLess)
+		print("timeProduced = {} secondes soit {} minutes".format(timeProduced*60, timeProduced))
+
+		#calculating the number of product injection days
+		NumberInjection = self.Calculate_Number_Injection(self.poolVolume)
+		print("NumberInjection = {}".format(NumberInjection))
+
+		#calculating operation hours of injection with respect to the hours of operation of the pump of the swimming pool.
+		precision = 30 #precision
+		precisionInjection = 0 #precision d'injection
+		injectionPrevious = 0 #injection Number Previous
+		inject = 0 #injecté
+		value = 0 #valeur
+		forecast = 4 #prevision
+		pumpDecision = [1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0] #schedule of pump operation hours
+		peristalticPumpDecision = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] #schedule of peristaltic pump operation hours
+		timeInjectionBlock = timeProduced / NumberInjection
+
+#		# Control tag, if it is beyond the max or min
+#		timeInjectionBlock_max = 30
+#		timeInjectionBlock_min = 0
+#		if timeInjectionBlock > timeInjectionBlock_max:
+#			timeInjectionBlock = timeInjectionBlock_max
+#		elif timeInjectionBlock < timeInjectionBlock_min:
+#			timeInjectionBlock = timeInjectionBlock_min
+
+		for i in range(0, len(pumpDecision)):
+			if ( pumpDecision[i] == 1  ) and ( value == 0 ) and ( inject < NumberInjection ) and ( forecast >= 4):
+				#peristalticPumpDecision[i] = 1
+				value = 1
+				forecast = 0
+				injectionPrevious += 1
+				inject += 1
+				if timeInjectionBlock > 30:
+					peristalticPumpDecision[i] = 30
+					injectionPrevious += 30
+				else:
+					peristalticPumpDecision[i] = int(timeInjectionBlock)
+					injectionPrevious += int(timeInjectionBlock)
+
+
+			elif pumpDecision[i] == 0:
+				value = 0
+				injectionPrevious = 0
+				forecast += 1
+
+			elif ( pumpDecision[i] == 1 ) and ( value == 1 ):
+				if injectionPrevious < timeInjectionBlock :
+					if timeInjectionBlock - injectionPrevious > 30:
+						peristalticPumpDecision[i] = 30
+						injectionPrevious += 30
+					else:
+						peristalticPumpDecision[i] = int(timeInjectionBlock - injectionPrevious)
+						injectionPrevious += int(timeInjectionBlock - injectionPrevious)
+			else :
+				forecast += 1
+
+		print("timeInjectionBlock = {}".format(timeInjectionBlock))
+		print("pumpDecision = {}".format(pumpDecision))
+		print("peristalticPumpDecision = {}".format(peristalticPumpDecision))
+
+		return peristalticPumpDecision
+
+
+
+
+	def RegulateTest(self):
 		#Initialise some variables for the control loop
 		if self.initialization == False:
 			#self.PH_init()
