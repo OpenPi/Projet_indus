@@ -48,11 +48,11 @@ class AnalogActuator(Actuator):
 		Actuator.__init__(self, hardwareId, channel, initValue)
 		self.voltage = voltage
 		
-		set_value(self.initValue)	# Initialize actuator
+		self.set_value(self.initValue)	# Initialize actuator
 		
 	# Destructor class
 	def __del__(self):
-		set_value(self.initValue)	# Initialize actuator
+		self.set_value(self.initValue)	# Initialize actuator
 	
 	# Set value activator
 	def set_value(self, value):
@@ -81,11 +81,11 @@ class NumericActuator(Actuator):
 		
 		set_output_direction(self.channel)		# Set pin to output
 		
-		set_value(self.initValue)	# Initialize actuator
+		self.set_value(self.initValue)	# Initialize actuator
 	
 	# Destructor class
 	def __del__(self):
-		set_value(self.initValue)	# Initialize actuator
+		self.set_value(self.initValue)	# Initialize actuator
 	
 	# Set value activator to on and lock
 	def set_on(self):

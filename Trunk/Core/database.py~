@@ -83,7 +83,7 @@ class Database:
     def getLastMeasureByName(self, name):
 
 	cur = self.db.cursor()
-        cur.execute("SELECT measure.value, hardwareconfiguration.name FROM measure INNER JOIN hardwareconfiguration ON measure.hardwareConfigurationId = hardwareconfiguration.Id WHERE name = '"+ name +"' ORDER BY timestamp DESC )
+        cur.execute("SELECT measure.value, hardwareconfiguration.name FROM measure INNER JOIN hardwareconfiguration ON measure.hardwareConfigurationId = hardwareconfiguration.Id WHERE name = '"+ name +"' ORDER BY timestamp DESC")
         result = cur.fetchone()
 
 

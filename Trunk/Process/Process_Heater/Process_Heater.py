@@ -20,7 +20,7 @@ def process(Queue):
 		data = Item.data
 		if state == "Init":
 			poolHeaterConfig = database.databaseHeater.getHardwareConfigurationByName("Pool Heater")
-			heater = Heater(poolHeaterConfig[0],poolHeaterConfig[2])
+			heater = Heater(poolHeaterConfig[0],poolHeaterConfig[2], False)
 		elif state == "Start":
 			print("Start State")	
 

@@ -24,11 +24,14 @@ def process(Queue):
 			poolThermocoupleConfig = database.databaseSensorsRead.getHardwareConfigurationByName("Pool Temperature Sensor")			
 			pumpAmpereMeterConfig = database.databaseSensorsRead.getHardwareConfigurationByName("Pump Ampere Meter")
 			poolPhConfig = database.databaseSensorsRead.getHardwareConfigurationByName("Pool Ph Meter")			
-	
+			waterLevelConfig = database.databaseSensorsRead.getHardwareConfigurationByName("Water Level Sensor")
+
+
 			poolThermocouple = Thermocouple(poolThermocoupleConfig[0],poolThermocoupleConfig[2], 4.14, 60, 2)
 			pumpAmpereMeter = AmpereMeter(pumpAmpereMeterConfig[0],pumpAmpereMeterConfig[2], 4.14, 60, 2)
 			poolPhMeter = PhMeter(poolPhConfig[0],poolPhConfig[2], 4.14, 60, 2)
-
+			#waterLevelMeter = WaterLevelMeter(waterLevelConfig[0],waterLevelConfig[2], 4.14, 60, 2)
+			waterLevelMeter = WaterLevelMeter(waterLevelConfig[0],5, 4.14, 60, 2)
 
 		elif state == "Start":
 			print("Start State")	
@@ -46,7 +49,8 @@ def process(Queue):
 				
 				poolThermocouple.read_save(numberOfSecond)
 				pumpAmpereMeter.read_save(numberOfSecond)
-				poolThermocouple.read_save(numberOfSecond)
+				poolPhMeter.read_save(numberOfSecond)
+				waterLevelMeter.read_save(numberOfSecond)
 				numberOfSecond = numberOfSecond - 1
 				
 			else:

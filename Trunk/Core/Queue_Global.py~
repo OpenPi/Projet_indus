@@ -16,7 +16,7 @@ class ProcessQueue(Queue, object):
 
 	def enqueueIfEmpty(self, state, data = False, timeoutMs = 1000):
 		numberOfSeconds = timeoutMs/1000 # Number Of seconds to wait before timeout
-		while(numberOfSeconds > 0 and self.empty())
+		while(numberOfSeconds > 0 and self.empty()):
 			if(numberOfSeconds >= 1):
 				time.sleep(1)
 			else:

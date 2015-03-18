@@ -278,7 +278,7 @@ class AmpereMeter(AnalogSensor):
 		
 		Return current value
 		"""
-		
+		print(value)
 		ampereValue = value*30
 		return ampereValue
 
@@ -308,6 +308,75 @@ class AmpereMeter(AnalogSensor):
 			#print(str(self.hardwareId) + " : save")
 			average = 0
 			for value in self.sensorValue:
+				average += value	
+			sensorAverageValue = average / len(self.sensorValue)
+			database.databaseSensorsRead.insertMeasure(self.hardwareId, sensorAverageValue)
+			self.sensorValue = []
+
+
+
+class WaterLevelMeter(AnalogSensor):
+	"""
+	Class for water level sensor
+	Inherit to AnalogSensor class
+	"""
+	
+	# Builder class
+	def __init__(self, hardwareId, channel, refVolt, fSave, fRead):
+		"""
+		Ampere meter class
+		
+		hardwareId: Unique Id to hardware
+		channel: Physical position sensor on Expender PI
+		refVolt: Reference voltage of Expender PI
+		fRead  : sensor is read every fRead seconds
+		fSave  : Average value is stored in the database every fRead seconds
+
+		"""
+		AnalogSensor.__init__(self, hardwareId, channel, refVolt, fSave, fRead)
+	
+	# convert physical value to ampere value
+	def conversion(self, value):
+		"""
+		Convert physical value to ampere value
+
+		value: Value to convert
+		
+
+		Return current value
+		"""
+		#print(value)
+		waterLevelValue = value
+		return waterLevelValue
+
+	# Return water level
+	def get_value(self):
+		"""
+		Return current value
+		"""
+		
+		voltValue = self.get_value_sensor()
+		
+		# If get_value_sensor work return current else Error
+		if voltValue == -1:
+			print("ERROR: get value ph sensor\n")
+			return -1
+		else:
+			return self.conversion(voltValue)
+
+	def read_save(self, NumberOfSecond):
+
+		if(NumberOfSecond % self.fRead == 0):
+			#print(str(self.hardwareId) + " : read")
+			# read and add to the list
+			self.sensorValue.append(self.get_value())
+			#print(self.get_value())
+		if(NumberOfSecond % self.fSave == 0):
+			#Average value and store into database
+			#print(str(self.hardwareId) + " : save")
+			average = 0
+			for value in self.sensorValue:
+
 				average += value	
 			sensorAverageValue = average / len(self.sensorValue)
 			database.databaseSensorsRead.insertMeasure(self.hardwareId, sensorAverageValue)

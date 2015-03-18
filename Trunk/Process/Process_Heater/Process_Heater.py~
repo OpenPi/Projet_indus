@@ -20,7 +20,7 @@ def process(Queue):
 		data = Item.data
 		if state == "Init":
 			poolHeaterConfig = database.databaseHeater.getHardwareConfigurationByName("Pool Heater")
-			heater = Heater(poolHeaterConfig[0],poolHeaterConfig[2])
+			heater = Heater(poolHeaterConfig[0],poolHeaterConfig[2], False)
 		elif state == "Start":
 			print("Start State")	
 
@@ -34,7 +34,7 @@ def process(Queue):
 			heater.set_value(False)
 
 		elif state == "Process":
-			print("Number of second left : " + str(numberOfSecond))
+			#print("Number of second left : " + str(numberOfSecond))
 			numberOfSecond = numberOfSecond - 1
 			if(numberOfSecond <= 0):
 				Queue_Global.process_Heater.enqueue('off')

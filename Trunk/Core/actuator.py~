@@ -3,7 +3,6 @@
 from Lib.IO_Ana import set_output_ana
 from Lib.IO_Num import set_output_num
 from Lib.IO_Num import set_output_direction
-from Lib.IO_Num import set_pullUp
 
 """
 ================================================
@@ -20,7 +19,7 @@ class Actuator:
 	"""
 	
 	# Builder class
-	def __init__(self, hardwareId, channel):
+	def __init__(self, hardwareId, channel, initValue):
 		"""
 		Actuator class
 		
@@ -29,6 +28,7 @@ class Actuator:
 		"""
 		self.hardwareId = hardwareId
 		self.channel = channel
+		self.initValue = initValue
 	
 class AnalogActuator(Actuator):
 	"""
@@ -37,7 +37,7 @@ class AnalogActuator(Actuator):
 	"""
 	
 	# Builder class
-	def __init__(self, hardwareId, channel, voltage):
+	def __init__(self, hardwareId, channel, voltage, initValue):
 		"""
 		Analog actuator class
 		
@@ -45,11 +45,17 @@ class AnalogActuator(Actuator):
 		channel: Physical position actuator on Expander PI
 		voltage: Type of value
 		"""
-		Actuator.__init__(self, hardwareId, channel)
+		Actuator.__init__(self, hardwareId, channel, initValue)
 		self.voltage = voltage
+		
+		self.set_value(self.initValue)	# Initialize actuator
+		
+	# Destructor class
+	def __del__(self):
+		self.set_value(self.initValue)	# Initialize actuator
 	
 	# Set value activator
-	def set_value_activator(self, value):
+	def set_value(self, value):
 		"""
 		Set value to analog actuator		
 		"""
@@ -62,19 +68,24 @@ class NumericActuator(Actuator):
 	"""
 	
 	# Builder class
-	def __init__(self, hardwareId, pin, pullup):
+	def __init__(self, hardwareId, pin, initValue):
 		"""
 		Numeric actuator class
 		
 		hardwareId: Unique Id to hardware
 		pin: Physical position actuator on Expender PI
 		"""
-		Actuator.__init__(self, hardwareId, pin)
+		Actuator.__init__(self, hardwareId, pin, initValue)
 		self._lock = False
-		self.pullup = pullup
+		self.state = ''
 		
 		set_output_direction(self.channel)		# Set pin to output
-		set_pullUp(self.channel, self.pullup)	# Set pull type
+		
+		self.set_value(self.initValue)	# Initialize actuator
+	
+	# Destructor class
+	def __del__(self):
+		set_value(self.initValue)	# Initialize actuator
 	
 	# Set value activator to on and lock
 	def set_on(self):
@@ -83,7 +94,9 @@ class NumericActuator(Actuator):
 		"""
 		self._lock = True
 		value = True
-		set_output_num(self.channel, not value)  #active low relay
+		if self.state <> value:
+			set_output_num(self.channel, not value)  #active low relay
+			self.state = value
 	
 	# Set value activator to off and lock
 	def set_off(self):
@@ -92,7 +105,9 @@ class NumericActuator(Actuator):
 		"""
 		self._lock = True
 		value = False
-		set_output_num(self.channel, not value)  #active low relay
+		if self.state <> value:
+			set_output_num(self.channel, not value)  #active low relay
+			self.state = value
 		
 	# Reset lock
 	def set_mode_auto(self):
@@ -103,9 +118,13 @@ class NumericActuator(Actuator):
 		
 	# Set value activator
 	def set_value(self, value):
-		if not self._lock:
+		if (self.state <> value) and not self._lock:
 			set_output_num(self.channel, not value)  #active low relay
+			self.state = value
 		
+	# Get value actuator
+	def get_value(self):
+		return self.state
 
 		
 class Pump(NumericActuator):
@@ -115,13 +134,13 @@ class Pump(NumericActuator):
 	"""
 	
 	# Builder class
-	def __init__(self, hardwareId, pin, pullup = False): 
+	def __init__(self, hardwareId, pin, initValue=False): 
 		"""
 		Pump actuator class
 		
 		pin: Physical position actuator on Expender PI
 		"""
-		NumericActuator.__init__(self, hardwareId, pin, pullup)	
+		NumericActuator.__init__(self, hardwareId, pin, initValue)	
 	
 class Light(NumericActuator):
 	"""
@@ -130,13 +149,13 @@ class Light(NumericActuator):
 	"""
 	
 	# Builder class
-	def __init__(self, hardwareId, pin, pullup = True): 
+	def __init__(self, hardwareId, pin, initValue=False): 
 		"""
 		Light actuator class
 		
 		pin: Physical position actuator on Expander PI
 		"""
-		NumericActuator.__init__(self, hardwareId, pin, pullup)	
+		NumericActuator.__init__(self, hardwareId, pin, initValue)	
 		
 class Heater(NumericActuator):
 	"""
@@ -145,10 +164,10 @@ class Heater(NumericActuator):
 	"""
 	
 	# Builder class
-	def __init__(self, hardwareId, pin, pullup = False):
+	def __init__(self, hardwareId, pin, initValue=False):
 		"""
 		Heater actuator class
 		
 		pin: Physical position actuator on Expander PI		
 		"""
-		NumericActuator.__init__(self, hardwareId, pin, pullup)	
+		NumericActuator.__init__(self, hardwareId, pin, initValue)	

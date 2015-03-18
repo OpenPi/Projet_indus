@@ -16,7 +16,7 @@ from Core.actuator import Pump
 
 def process(Queue):
 	poolPumpConfig = database.databasePump.getHardwareConfigurationByName("Pool Pump")
-	pump = Pump(poolPumpConfig[0],poolPumpConfig[2])
+	pump = Pump(poolPumpConfig[0],poolPumpConfig[2], False)
 	
 	while True:
 		Item = Queue.get()

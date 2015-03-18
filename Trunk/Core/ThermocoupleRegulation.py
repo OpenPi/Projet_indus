@@ -18,7 +18,7 @@ class ThermocoupleRegulation(object):
 	#------------------------------#
 	# Definition of initialization #
 	#------------------------------#
-	def __init__(self, P=5.0, I=0.0, D=0.0, Derivator=0, Integrator=0, Integrator_max=500, Integrator_min=-500):
+	def __init__(self, P=1.81, I=0.00158, D=0.0, Derivator=0, Integrator=0, Integrator_max=10, Integrator_min=-10):
 		self.Kp=P #Proportional gain, a tuning parameter
 		self.Ki=I #Integral gain, a tuning parameter
 		self.Kd=D #Derivative gain, a tuning parameter

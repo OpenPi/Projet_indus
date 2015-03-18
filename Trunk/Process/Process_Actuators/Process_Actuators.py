@@ -17,13 +17,13 @@ import Core.database as database
 
 def process(Queue):
 
-	#poolLightConfig = database.databaseActuators.getHardwareConfigurationByName("Pool Light")
+	poolLightConfig = database.databaseActuators.getHardwareConfigurationByName("Pool Light")
 	#poolPumpConfig = database.databaseActuators.getHardwareConfigurationByName("Pool Pump")
 
 
-	#light = Light(poolLightConfig[0],poolLightConfig[2])
+	light = Light(poolLightConfig[0],poolLightConfig[2], False)
 	#pump = Pump(poolPumpConfig[0],poolPumpConfig[2])
-	light = Light(2,1)
+	#light = Light(2,1)
 	#pump = Pump(5,2)
 
 	while True:
