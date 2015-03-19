@@ -28,7 +28,7 @@ def process(Queue):
 		elif state == "Process":
 
 			thermocoupleRegulation.Regulate()
-			Queue.enqueueIfEmpty(state, data, 600000)
+			Queue.enqueueIfEmpty(state, data, 60000)
 			
 		elif state == "Stop":
 			print("Stop State")		

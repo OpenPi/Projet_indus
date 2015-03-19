@@ -3,7 +3,7 @@
 # Go to Trunk/Core/Queue_Global.py and follow instructions
 # Go to Trunk/main.py and follow instructions
 # Rename Process name in StartThread function
-g
+
 
 from Queue import Queue
 from threading import Thread
