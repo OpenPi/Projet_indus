@@ -1,0 +1,3 @@
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule .* state-machine.php/$0 [L]

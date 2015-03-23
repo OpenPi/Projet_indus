@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Lun 16 Mars 2015 à 10:58
+-- Généré le :  Jeu 19 Mars 2015 à 09:43
 -- Version du serveur :  5.6.17
 -- Version de PHP :  5.5.12
 
@@ -21,6 +21,31 @@ SET time_zone = "+00:00";
 --
 CREATE DATABASE IF NOT EXISTS `plashboard` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
 USE `plashboard`;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `alerts`
+--
+
+CREATE TABLE IF NOT EXISTS `alerts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `hardwareConfigurationId` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `timestamp` datetime NOT NULL,
+  `shown` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `hardwareConfiguration` (`hardwareConfigurationId`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+
+--
+-- Contenu de la table `alerts`
+--
+
+INSERT INTO `alerts` (`id`, `hardwareConfigurationId`, `name`, `description`, `timestamp`, `shown`) VALUES
+(1, 1, 'Alert hight temperature', 'Water temperature is over the maximum authorize', '2015-03-19 17:00:00', 1),
+(2, 1, 'Alert low temperature', 'Water temperature is under the minimum authorize', '2015-03-19 17:00:00', 1);
 
 -- --------------------------------------------------------
 
@@ -156,6 +181,12 @@ INSERT INTO `users` (`id`, `name`, `password`) VALUES
 --
 -- Contraintes pour les tables exportées
 --
+
+--
+-- Contraintes pour la table `alerts`
+--
+ALTER TABLE `alerts`
+  ADD CONSTRAINT `alerts_ibfk_1` FOREIGN KEY (`hardwareConfigurationId`) REFERENCES `hardwareconfiguration` (`id`);
 
 --
 -- Contraintes pour la table `measure`
