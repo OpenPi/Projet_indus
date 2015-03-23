@@ -171,7 +171,6 @@ abstract class Table{
             * @return -1 if problem
         */
 	public function updateRow($newValue, $cond){
-	
 		$queryUpdateRow = "UPDATE ".$this->name." SET ";
 		
 		reset($newValue);
@@ -189,19 +188,22 @@ abstract class Table{
 		$queryUpdateRow = substr_replace($queryUpdateRow, "", -2, 2)." WHERE ";
 		
 		reset($cond);
-		while (list($key, $val) = each($cond)) {
+		while (list($key, $operator_value) = each($cond)) {
 		
 			if( !array_key_exists($key, $this->fields) ){
 			
 				echo "<br><br> PROBLEME => Le champ ".$key." n'existe pas ! <br><br>";
 				return -1;
 			}
+			if( !in_array($operator_value[0], array("<",">","=","<=",">=")) ){
+                    echo "<br><br> PROBLEME : Operator ".$operator_value[0]." doesn't exist ! <br><br>";
+                    return $rows;
+                }	
 			
-			$queryUpdateRow .= $key."=".$val." AND ";
+			$queryUpdateRow .= $key.$operator_value[0].$operator_value[1]." AND ";
 		}
 		
 		$queryUpdateRow = substr_replace($queryUpdateRow, "", -5, 5).";";
-				
 		$this->db->executeQuery($queryUpdateRow);
 	}
 
