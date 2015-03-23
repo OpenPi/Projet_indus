@@ -11,10 +11,7 @@ if(isset($_SESSION['user']))
             require_once('get.php');
             break;
         case 'PUT':
-            header('HTTP/1.1 405 Method Not Allowed');
-
-            $output['code'] = 405.1;
-            $output['message'] = 'Methode '.$_SERVER['REQUEST_METHOD'].' not allowed';
+            require_once('put.php');
             break;
         case 'POST':
             header('HTTP/1.1 405 Method Not Allowed');

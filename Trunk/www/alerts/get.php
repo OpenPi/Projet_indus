@@ -83,15 +83,15 @@
         
         //Insert database result in the output
         $i= 0;
-        $output["measures"] = "";
+        $output["alerts"] = "";
         foreach ($res as $value) {
-            $output["measures"][$i] = $value;
+            $output["alerts"][$i] = $value;
             $i++;
         }
         header('HTTP/1.1 200 OK');
 
         //If output is empty respond ressource not found
-        if(empty($output["measures"])){
+        if(empty($output["alerts"])){
             //Clean the output
             $output="";
             $output["code"]=404;

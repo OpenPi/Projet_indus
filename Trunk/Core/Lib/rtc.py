@@ -12,7 +12,7 @@ Version 1.0 Created 12/03/2015
 ================================================
 """
 
-def getOSDate():
+def _getOSDate():
 	"""
 	After test Return OS clock
 	"""
@@ -27,12 +27,12 @@ def getOSDate():
 	else:
 		return datetime.now()		# Return OS clock
 
-def initRtc():
+def _initRtc():
 	"""
 	Intialization clock to RTC Expander Pi
 	"""
-	t = getOSDate()
-	# Test if error getOSDate()
+	t = _getOSDate()
+	# Test if error _getOSDate()
 	if t = -1:
 		return -1
 	
@@ -41,6 +41,9 @@ def initRtc():
 
 	rtc.set_date(rtcDate)	# Save initialization clock
 	
+	
+# Public function
+
 def getDate():
 	"""
 	Return date and time to RTC Expander Pi
@@ -68,8 +71,8 @@ def reguleTime():
 	"""
 	Control if clock expander Pi value is correct
 	"""
-	t = getOSDate()
-	# Test if error getOSDate())
+	t = _getOSDate()
+	# Test if error _getOSDate())
 	if t = -1:
 		return -1
 		
@@ -78,7 +81,7 @@ def reguleTime():
 
 	# Control if OS time == Expander Pi time
 	if osTime <> rtcTime:
-		initRtc()		# Initialize Expander Pi Time
+		_initRtc()		# Initialize Expander Pi Time
 
 # Instantiate Expander Pi time
 i2c_helper = ABEHelpers()
