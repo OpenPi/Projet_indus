@@ -182,7 +182,7 @@ class Heater(NumericActuator):
 		"""
 		NumericActuator.__init__(self, hardwareId, pin, initValue)
 		
-class peristalticPump(NumericActuator):
+class PeristalticPump(NumericActuator):
 	"""
 	Class for peristaltic pump actuator
 	Inherit to NumericActuator class
