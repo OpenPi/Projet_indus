@@ -54,9 +54,9 @@ function getMeasure()
 
 	if(!$.isNumeric(sensorType))
 	{
-		urlAll =  urlAllMeasure;
-		urlLimit =  urlAllMeasure;
-		urlDAte =  urlAllMeasure;
+		urlAll =  urlAllMeasure + urlLimitMeasure + xlast;
+		urlLimit =  urlAllMeasure + urlLimitMeasure + xlast;
+		urlDAte =  urlAllMeasure + urlLimitMeasure + xlast;
 	}
 	else
 	{
@@ -343,30 +343,61 @@ function displayHardwareConfiguration(text)
 
 function displayAlert(text)
 {
-
 	var data_long = text['alerts'].length; //We take the number of records in the form
+	
+	/*if (text["alerts"] != undefined)
+	{
+		var data_long = text['alerts'].length; //We take the number of records in the form
+	}
+	else
+	{
+		var data_long = 0;
+	}*/
+
 	var name = '';
 	var id = '';
+	var cpt = 0;
 
 	var txt_alert = ''; //We initiate the form to display
 
-	txt_alert += '<table id="alert_display"><th>Hardware Name</th><th>Name</th><th>Description</th><th>TimeStamp</th>';
+	txt_alert += '<table id="alert_display"><th>Hardware Name</th><th>Name</th><th>Description</th><th>TimeStamp</th><th>Delete</th>';
 
 	for(i=0; i<data_long; i++) //We write in the string the data from the DB
 	{
+		if(text['alerts'][i]['is_viewed'] == '0')
+		{
 
-		id = text['alerts'][i]['id'];
-		name = text['alerts'][i]['hardware_name'].split(" ");
+			id = text['alerts'][i]['id'];
+			name = text['alerts'][i]['hardware_name'].split(" ");
 
-		txt_alert += "<tr><td>" + name[1] + "</td>"
-		txt_alert += "<td>" + text['alerts'][i]['alert_name'] + "</td>"
-		txt_alert += "<td>" + text['alerts'][i]['alert_description'] + "</td>"
-		txt_alert += "<td>" + text['alerts'][i]['timestamp'] + "</td></tr>"
+			txt_alert += "<tr><td>" + name[1] + "</td>";
+			txt_alert += "<td>" + text['alerts'][i]['alert_name'] + "</td>";
+			txt_alert += "<td>" + text['alerts'][i]['alert_description'] + "</td>";
+			txt_alert += "<td>" + text['alerts'][i]['timestamp'] + "</td>";
+			txt_alert += "<td> <input type='button' value='I seen it' onclick='updateAlert("+text['alerts'][i]['alert_id']+");'> </td></tr>";
+
+			cpt++;
+		}
+		else
+		{
+			continue;
+		}
 	}
 
 	txt_alert += "</table>";
 
-	$("#alert").html(txt_alert); //We send on the screen the form
+	if(cpt != 0)
+	{
+		$("#alert").html(txt_alert); //We send on the screen the form
+	}
+	else if(data_long != 0)
+	{
+		$("#alert").html("<p>You red all alerts!</p>"); //We send on the screen the table
+	}
+	else
+	{
+		$("#alert").html("<p>You don't have any alert!</p>"); //We send on the screen the table
+	}
 }
 
 
@@ -408,22 +439,22 @@ function displayMeasure(text)
 
 function displayUserCommand(text)
 {
+		var data_long = text['commandes'].length; //We take the number of records in the table
 
-	var data_long = text['commandes'].length; //We take the number of records in the table
+		var txt_userCommand = '<table id="userCommand_display"><th>Command</th><th>Target Name</th><th>Value</th><th>TimeStamp</th><th>Done</th>'; //We initiate the table to display
 
-	var txt_userCommand = '<table id="userCommand_display"><th>Command</th><th>Target Name</th><th>Value</th><th>TimeStamp</th><th>Done</th>'; //We initiate the table to display
+		for(i=0; i<data_long; i++) //We write in the string the data from the DB
+		{
 
-	for(i=0; i<data_long; i++) //We write in the string the data from the DB
-	{
-		txt_userCommand += "<tr><td>" + text['commandes'][i]['command'] + "</td>"
-		txt_userCommand += "<td>" + text['commandes'][i]['name'] + "</td>"
-		txt_userCommand += "<td>" + text['commandes'][i]['value'] + "</td>"
-		txt_userCommand += "<td>" + text['commandes'][i]['timestamp'] + "</td>"
-		txt_userCommand += "<td>" + text['commandes'][i]['done'] + "</td></tr>"
-	}
-	txt_userCommand += "</table>";
+			txt_userCommand += "<tr><td>" + text['commandes'][i]['command'] + "</td>"
+			txt_userCommand += "<td>" + text['commandes'][i]['name'] + "</td>"
+			txt_userCommand += "<td>" + text['commandes'][i]['value'] + "</td>"
+			txt_userCommand += "<td>" + text['commandes'][i]['timestamp'] + "</td>"
+			txt_userCommand += "<td>" + text['commandes'][i]['done'] + "</td></tr>"
+		}
+		txt_userCommand += "</table>";
 
-	$("#userCommand").html(txt_userCommand); //We send on the screen the table
+		$("#userCommand").html(txt_userCommand); //We send on the screen the table
 
 }
 
@@ -598,4 +629,15 @@ function postUserCommand()
 		getUserCommand //the function that we want execute after the sends
 
 	);
+}
+
+
+function updateAlert(id)
+{
+	$.ajax({
+	  url: urlAlert + id,
+	  type: 'PUT',
+	  data: "show=1",
+	  success: displayAlert
+  });
 }
