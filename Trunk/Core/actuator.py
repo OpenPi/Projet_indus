@@ -87,6 +87,7 @@ class NumericActuator(Actuator):
 	
 	# Destructor class
 	def __del__(self):
+		print("Delete class ID: {} -- initValue: {}".format(self.hardwareId, self.initValue))
 		self.set_value(self.initValue)	# Initialize actuator
 	
 	# Set value activator to on and lock
@@ -140,7 +141,9 @@ class Pump(NumericActuator):
 		"""
 		Pump actuator class
 		
+		hardwareId: Unique Id to hardware
 		pin: Physical position actuator on Expender PI
+		initValue: Inital value to actuator
 		"""
 		NumericActuator.__init__(self, hardwareId, pin, initValue)	
 	
@@ -155,7 +158,9 @@ class Light(NumericActuator):
 		"""
 		Light actuator class
 		
-		pin: Physical position actuator on Expander PI
+		hardwareId: Unique Id to hardware
+		pin: Physical position actuator on Expender PI
+		initValue: Inital value to actuator
 		"""
 		NumericActuator.__init__(self, hardwareId, pin, initValue)	
 		
@@ -170,7 +175,26 @@ class Heater(NumericActuator):
 		"""
 		Heater actuator class
 		
-		pin: Physical position actuator on Expander PI		
+		hardwareId: Unique Id to hardware
+		pin: Physical position actuator on Expender PI
+		initValue: Inital value to actuator	
+		"""
+		NumericActuator.__init__(self, hardwareId, pin, initValue)
+		
+class peristalticPump(NumericActuator):
+	"""
+	Class for peristaltic pump actuator
+	Inherit to NumericActuator class
+	"""
+	
+	# Builder class
+	def __init__(self, hardwareId, pin, initValue=False): 
+		"""
+		Peristaltic pump actuator class
+		
+		hardwareId: Unique Id to hardware
+		pin: Physical position actuator on Expender PI
+		initValue: Inital value to actuator
 		"""
 		NumericActuator.__init__(self, hardwareId, pin, initValue)
 
