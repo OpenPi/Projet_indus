@@ -1,8 +1,21 @@
 # PlashBoard
 #
-# More information: http://www.phidgets.com/docs/1130_User_Guide
-#			 		
+# More information: http://www.phidgets.com/docs/1130_User_Guide			 		
 #
+#Explanation of pH control program. Please note this program works for regulation with a product for lowering the pH:
+#A pH setpoint is recovered in the lower data. This instruction corresponds to the target value given by the operator. This basic set is 7.3
+#The actual pH of the pool is retrieved from the database. The actual pH corresponds to the pH sensor.
+#Several constraints come into play:
+#	- The time difference in each assay (often written on the products, it is basic to 2h but it is adjustable by the user)
+#	- The maximum amount of pH by injecting days
+#	- The maximum number of days following the injection volume pool
+#	- The volume of the pool (it is adjustable by the user)
+#	- The pool filter should work for the assay is performed. This allows better distribution of chlorine in the pool.
+#	- The volume per hour that can inject the dosing pump (it is adjustable by the user)
+#The program works:
+#	- If the actual ph ph is below the set point then we do nothing.
+#	- If the actual ph ph exceeds the setpoint then dose. For this referral program a dosing period of time.
+#The program that calls the ph regulating use this dosing time to activate the operating time of the peristaltic pump with the requested time.
 
 
 
@@ -36,6 +49,9 @@ class PH_Regulation(object):
 	# Definition PH value #
 	#------------------------------#
 	def BD_PH(self):
+		"""
+		Recovery the pH of the pool
+		"""
 	    SensorValuePH = float(input("saisissez un ph : ")) ###########################################
 	    return SensorValuePH
 	
@@ -105,7 +121,9 @@ class PH_Regulation(object):
 
 
 	def Regulate(self):
-
+		"""
+		Regulation PH
+		"""
 		#calculating the volume of product injection
 		calculatePhLess = self.Calculate_Volume_Produced_LessPh(self.BD_PH(), self.set_point)
 		print("calculatePhLess ml = {} and L = {}".format(calculatePhLess, calculatePhLess/1000))
