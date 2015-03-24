@@ -32,14 +32,13 @@ def process(Queue):
 		data = Item.data
 		
 		if state == "Init":
-			print("Init State")
+			pass
 
 
 		elif state == "Start":
 			print("Start State")	
 
-		elif state == "Process":
-			print("Process State")		
+		elif state == "Process":		
 			Queue.enqueueIfEmpty(state, data, 1000)
 			
 		elif state == "Stop":

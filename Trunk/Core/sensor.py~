@@ -278,7 +278,7 @@ class AmpereMeter(AnalogSensor):
 		
 		Return current value
 		"""
-		
+		print(value)
 		ampereValue = value*30
 		return ampereValue
 

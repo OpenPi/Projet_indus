@@ -21,6 +21,7 @@ def process(Queue):
 		if state == "Init":
 			poolHeaterConfig = database.databaseHeater.getHardwareConfigurationByName("Pool Heater")
 			heater = Heater(poolHeaterConfig[0],poolHeaterConfig[2], False)
+			Queue_Global.process_TemperatureRegulation.enqueue('Process')
 		elif state == "Start":
 			print("Start State")	
 

@@ -35,8 +35,9 @@ class ThermocoupleRegulation(object):
 
 		#Initialise temperature rise time
 		#self.desiredTemperature = self.set_point #desired temperature
-		self.poolVolume = float(database.databaseThermocoupleRegulation.getUserConfiguration("pool_volume")) #volume of the pool (m3)
-		self.powerHeatPump = float(database.databaseThermocoupleRegulation.getUserConfiguration("power_heat_pump")) #power of the heat pump (kW)
+		self.poolVolume = float(database.databaseThermocoupleRegulation.getUserConfigurationValue("pool_volume")) #volume of the pool (m3)
+		self.powerHeatPump = float(database.databaseThermocoupleRegulation.getUserConfigurationValue("power_heat_pump")) #power of the heat pump (kW)
+		self.turn_off()
 
 	
 	#------------------------------#
@@ -45,7 +46,7 @@ class ThermocoupleRegulation(object):
 	def BD_Temperature(self):
 	  ### a lire dans la base de donnée
 	    #temperature = float(input("saisissez une temperature °C : "))
-	    temperature = database.databaseThermocoupleRegulation.getLastMeasureByName("Pool Temperature Sensor")
+	    temperature = database.databaseThermocoupleRegulation.getLastMeasureByName("Pool Temperature Sensor")[0]
 	    print("Temperature = {} ".format(temperature))
 	    return temperature
 	    
@@ -73,7 +74,7 @@ class ThermocoupleRegulation(object):
 		"""
 		Calculate PID output value for given reference input and feedback
 		"""
-		set_point = float(database.databaseThermocoupleRegulation.getUserConfiguration("temperature_setpoint")) #set_point is requested setpoint
+		set_point = float(database.databaseThermocoupleRegulation.getUserConfigurationValue("temperature_setpoint")) #set_point is requested setpoint
 		#error calculation
 		self.error = set_point - current_value
 	
@@ -102,8 +103,8 @@ class ThermocoupleRegulation(object):
 
 	def Regulate(self):
 		# Turn on for initial ramp up
-		state="off"
-		self.turn_off()
+		#state="off"
+		#self.turn_off()
 		PID=self.Calulate_PID(self.BD_Temperature())
 
 		#power = PID*self.pwr_coef

@@ -40,8 +40,9 @@ Queue_Global.process_Actuators.enqueue('Init')
 Queue_Global.process_Heater.enqueue('Init')
 Queue_Global.process_Pump.enqueue('Init')
 Queue_Global.process_Alert.enqueue('Init')
+Queue_Global.process_Alert.enqueue('Process')
 
-Queue_Global.process_TemperatureRegulation.enqueue('Process')
+
 
 while commande != "Exit":
     commande = raw_input("commande : ")

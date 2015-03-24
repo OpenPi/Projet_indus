@@ -29,8 +29,8 @@ def process(Queue):
 			date = datetime
 
 			precision = 30 #minute
-			poolTemperature = database.databasePump.getLastMeasureByName("Pool Temperature Sensor")
-			pumpingHoursConfig = database.databasePump.getUserConfiguration("pumping_hours")
+			poolTemperature = database.databasePump.getLastMeasureByName("Pool Temperature Sensor")[0]
+			pumpingHoursConfig = database.databasePump.getUserConfigurationValue("pumping_hours")
 			
 
 			#Create preference hours with data in database
@@ -179,12 +179,10 @@ def process(Queue):
 			#Test without time
 			
 			
-		elif state == "on":	
-			print("On State")		
+		elif state == "on":			
 			pump.set_on()		
 
 		elif state == "off":
-			print("Off State")
 			pump.set_off()	
 
 		elif state == "auto":

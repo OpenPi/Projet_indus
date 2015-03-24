@@ -16,7 +16,7 @@ from Core.actuator import Pump
 
 def process(Queue):
 	poolPumpConfig = database.databasePump.getHardwareConfigurationByName("Pool Pump")
-	pump = Pump(poolPumpConfig[0],poolPumpConfig[2])
+	pump = Pump(poolPumpConfig[0],poolPumpConfig[2], False)
 	
 	while True:
 		Item = Queue.get()
@@ -29,8 +29,8 @@ def process(Queue):
 			date = datetime
 
 			precision = 30 #minute
-			poolTemperature = database.databasePump.getLastMeasureByName("Pool Temperature Sensor")
-			pumpingHoursConfig = database.databasePump.getUserConfiguration("pumping_hours")
+			poolTemperature = database.databasePump.getLastMeasureByName("Pool Temperature Sensor")[0]
+			pumpingHoursConfig = database.databasePump.getUserConfigurationValue("pumping_hours")
 			
 
 			#Create preference hours with data in database
