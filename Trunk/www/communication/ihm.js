@@ -54,9 +54,9 @@ function getMeasure()
 
 	if(!$.isNumeric(sensorType))
 	{
-		urlAll =  urlAllMeasure;
-		urlLimit =  urlAllMeasure;
-		urlDAte =  urlAllMeasure;
+		urlAll =  urlAllMeasure + urlLimitMeasure + xlast;
+		urlLimit =  urlAllMeasure + urlLimitMeasure + xlast;
+		urlDAte =  urlAllMeasure + urlLimitMeasure + xlast;
 	}
 	else
 	{
