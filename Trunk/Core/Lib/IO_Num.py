@@ -117,7 +117,7 @@ def get_input_num(pin):
 	Return the state of numeric input OR -1 if ERROR
 	"""	
 		
-	return io.read_pin(pin)		# Read state of pin
+	return io.read_pin(pin)		# Read state of pin (0 or 1)
 	
 i2c_helper = ABEHelpers()
 bus = i2c_helper.get_smbus()	# Create i2c instance

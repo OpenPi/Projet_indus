@@ -25,6 +25,7 @@ class Actuator:
 		
 		hardwareId: Id to hardware equipment
 		channel: Physical position actuator on Expender PI
+		initValue: Inital value to actuator
 		"""
 		self.hardwareId = hardwareId
 		self.channel = channel
@@ -44,6 +45,7 @@ class AnalogActuator(Actuator):
 		hardwareId: Unique Id to hardware
 		channel: Physical position actuator on Expander PI
 		voltage: Type of value
+		initValue: Inital value to actuator
 		"""
 		Actuator.__init__(self, hardwareId, channel, initValue)
 		self.voltage = voltage
@@ -170,4 +172,41 @@ class Heater(NumericActuator):
 		
 		pin: Physical position actuator on Expander PI		
 		"""
-		NumericActuator.__init__(self, hardwareId, pin, initValue)	
+		NumericActuator.__init__(self, hardwareId, pin, initValue)
+
+# Template class
+class NewAnalogActuator(AnalogActuator):
+	"""
+	Class description
+	Inherit to AnalogActuator class
+	"""
+	
+	# Builder class
+	def __init__(self, hardwareId, channel, voltage, initValue=0.0):
+		"""
+		Analog actuator description
+		
+		hardwareId: Unique Id to hardware
+		channel: Physical position actuator on Expander PI
+		voltage: Type of value
+		initValue: Inital value to actuator
+		"""
+		AnalogActuator.__init__(self, hardwareId, channel, voltage, initValue)
+		
+class NewNumericActuator(NumericActuator):
+	"""
+	Class description
+	Inherit to NumericActuator class
+	"""
+	
+	# Builder class
+	def __init__(self, hardwareId, pin, initValue=False): 
+		"""
+		Digital actuator description
+		
+		hardwareId: Unique Id to hardware
+		pin: Physical position actuator on Expender PI
+		initValue: Inital value to actuator
+		"""
+		NumericActuator.__init__(self, hardwareId, pin, initValue)
+		

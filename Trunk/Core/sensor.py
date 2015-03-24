@@ -96,7 +96,7 @@ class NumericSensor(Sensor):
 		"""
 		Return value to digital sensor		
 		"""
-		valueSensor = get_input_num(self.channel)	# get_input_num return -1 if ERROR
+		valueSensor = get_input_num(self.channel)	# get_input_num return return int (0 or 1)
 		
 		return valueSensor		
 	
