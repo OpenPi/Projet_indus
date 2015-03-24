@@ -1,11 +1,9 @@
-# The recipe gives simple implementation of a Discrete Proportional-Integral-Derivative (PID) controller. 
-# PID controller gives output value for error between desired reference input and measurement feedback to minimize error value.
+# PlashBoard
 #
-# More information: http://en.wikipedia.org/wiki/PID_controller
-#			 		http://www.phidgets.com/docs/1130_User_Guide
-#					http://clement.storck.me/blog/2014/08/controle-et-supervision-de-la-piscine/
+# More information: http://www.phidgets.com/docs/1130_User_Guide
+#			 		
 #
-# PlashBoard test PID
+
 
 
 from time import sleep
@@ -18,133 +16,33 @@ class PH_Regulation(object):
 	#------------------------------#
 	# Definition of initialization #
 	#------------------------------#
-	def __init__(self, P=2.0, I=0.0, D=1.0, Derivator=0, Integrator=0, Integrator_max=500, Integrator_min=-500):
-		self.Kp=P #Proportional gain, a tuning parameter
-		self.Ki=I #Integral gain, a tuning parameter
-		self.Kd=D #Derivative gain, a tuning parameter
-		self.Derivator=Derivator #Derivator
-		self.Integrator=Integrator #Integrator
-		self.Integrator_max=Integrator_max #Integrator_max (a tag max)
-		self.Integrator_min=Integrator_min #Integrator_min (a tag min)
+	def __init__(self):
 
-		self.set_point=7.3 #set_point is requested setpoint
-		self.error=0.0 #asked error or previous error
-
-		#Initialise some variables for the control loop
-		self.pwr_coef=-2 #conversion coefficient to obtain second
-		self.coef_regul=1 #coefficient for duration of heaters
-
-		self.initialization = False
+		#pH setpoint given by the user
+		self.set_point=7.3 #set_point is requested setpoint ###########################################
 
 		#Preset value for the conversion scale
 		self.correctingBasicPh = 160 #ml (milliliter)
 		self.lowerPh = 0.1 #unit ph
-		self.poolVolume = float(database.databaseThermocoupleRegulation.getUserConfiguration("pool_volume")) #volume of the pool (m3)
+		self.poolVolume = float(database.databaseThermocoupleRegulation.getUserConfiguration("pool_volume")) #volume of the pool (m3) #####################
 
 		#Rate of flow, parameter of the peristaltic pump
-		self.valueLiter = 0.4 #unit liter
-		self.valueHours = 1 #unit hours
+		self.valueLiter = 0.4 #unit liter ##############################################
+		self.valueHours = 1 #unit hours   ##############################################
 
-
-
-	
-	#------------------------------#
-	# Definition PH initialization #
-	#------------------------------#
-	def PH_init(self):
-		print("Etalonnage de la sonde PH 10")
-		# inizialisation PH 10 
-		nextEtape = 0
-		while nextEtape != 1 :
-			nextEtape = float (input ("taper 1 pour continuer : "))
-		
-		print("Tremper la sonde dans solution PH 10")
-		while nextEtape != 2 :
-			nextEtape = float (input ("taper 2 quand la sonde est immergé : "))	
-			
-		print("Etalonnage PH 10 en cours ..")
-		PH = self.BD_PH()
-		#sleep(10)
-		print ("Etalonnage PH 10 terminer")
-		print(PH)
-		if PH >= 9.0 and PH <= 11.0 :
-			print("Sonde OK")
-		else: 
-			print("Sonde HS")
-
-		# inizialisation PH 7
-		print("Etalonnage de la sonde PH 7")
-		while nextEtape != 3 :
-			nextEtape = float (input ("taper 3 pour continuer : "))
-		
-		print("Tremper la sonde dans solution PH 7")
-		while nextEtape != 4 :
-			nextEtape = float (input ("taper 4 quand la sonde est immergé : "))	
-			
-		print("Etalonnage PH 7 en cours ..")
-		PH = self.BD_PH()
-		#sleep(10)
-		print ("Etalonnage PH 7 terminer")
-		print(PH)
-		if PH >= 6.0 and PH <= 8.0 :
-			print("Sonde OK")
-		else: 
-			print("Sonde HS")
-		
-		return 0
 
 
 	#------------------------------#
 	# Definition PH value #
 	#------------------------------#
 	def BD_PH(self):
-	  ### a lire dans la base de donnée
-	    SensorValuePH = float(input("saisissez un ph : "))
+	    SensorValuePH = float(input("saisissez un ph : ")) ###########################################
 	    return SensorValuePH
-
-	#------------------------------#
-	# Definition temperature value #
-	#------------------------------#
-	def BD_Temperature(self):
-	  ### a lire dans la base de donnée
-	  temperature = database.databaseThermocoupleRegulation.getLastMeasureByName("Pool Temperature Sensor")
-	  print("Temperature = {} ".format(temperature))
-	  return temperature
-	
-	 
-	#---------------------------#
-	# Definition engine control #
-	#---------------------------#	 
-	def turn_on(self, numberOfSeconds):
-	  ### taper dans le process marche moteur
-	  print("turn on")
-	  Queue_Global.process_Heater.enqueue('on', numberOfSeconds)
-	 
-	def turn_off(self):
-	  ### taper dans le process arret moteur
-	  print("turn off")
-	  Queue_Global.process_Heater.enqueue('off')
-	 
-	
 	
 	
 	#-------------------------#
 	#  Definition of Updated  #
 	#-------------------------#
-	def Calulate_PH(self,current_value_temp, current_value_ph):
-		"""
-		Depending on the temperature of the solution and on the actual pH level, 
-		the SensorValue can change dramatically. To incorporate temperature (in degrees Celsius) for added accuracy, 
-		the following formula can be used: 
-		"""
-
-		firstEquation = 2.5 - ( current_value_ph / 200 )
-		secondEquation = 0.257179 + 0.000941468 * current_value_temp
-		PH = 7 - ( firstEquation / secondEquation )
-
-		return PH
-
-
 	def Calculate_Volume_Produced_LessPh(self, current_value_ph, set_point_ph):
 		"""
 		An average of 160 mL of less liquid pH corrector lower the pH of 0.1 units of 10 m3 of water.
@@ -162,15 +60,10 @@ class PH_Regulation(object):
 		milliliter = correctionDose
 		liter = milliliter / 1000
 
-		#print("Dosage ph- = {} milliliter whether {} liter".format(milliliter, liter))
-
 		# Control tag, if it is beyond the max or min
 		dosage = milliliter
 		dosage_min = 0
 		dosage_max = ( self.poolVolume *100 ) / 10 # 100ml --> 10m3
-		print("dosage = {}".format(dosage))
-		print("dosage_min = {}".format(dosage_min))
-		print("dosage_max = {}".format(dosage_max))
 
 		if dosage > dosage_max:
 			dosage = dosage_max
@@ -184,21 +77,11 @@ class PH_Regulation(object):
 		"""
 		Parameter of the peristaltic pump
 		"""
-		#print("valueLiter = {} ".format(self.valueLiter))
-		#print("valueHours = {} ".format(self.valueHours))
-		
-
 		#pump conversion parameter
 		valueMilliliter = self.valueLiter * 1000
 		valueMinutes = ( self.valueHours * 60 ) 
 
-		#print("valueMilliliter = {} ".format(valueMilliliter))
-		#print("valueMinutes = {} ".format(valueMinutes))
-
 		timeProduced = ( current_milliliter * valueMinutes ) / valueMilliliter
-
-		#print("timeProduced = {} ".format(timeProduced))
-		#print("timeProduced = {} secondes soit {} minutes".format(timeProduced*60, timeProduced))
 
 		return timeProduced #minutes
 
@@ -219,40 +102,6 @@ class PH_Regulation(object):
 			NumberInjection = 20
 
 		return NumberInjection
-				
-
-
-	def Calulate_PID(self,current_value):
-		"""
-		Calculate PID output value for given reference input and feedback
-		"""
-	
-		#error calculation
-		self.error = self.set_point - current_value
-	
-		#PID calculation
-		self.P_value = self.Kp * self.error
-		self.D_value = self.Kd * ( self.error - self.Derivator)
-		self.Derivator = self.error
-	
-		#Integrator calculation
-		self.Integrator = self.Integrator + self.error
-	
-		# Control tag, if it is beyond the max or min
-		if self.Integrator > self.Integrator_max:
-			self.Integrator = self.Integrator_max
-		elif self.Integrator < self.Integrator_min:
-			self.Integrator = self.Integrator_min
-	
-		self.I_value = self.Integrator * self.Ki
-	
-		#calculation results PID
-		PID = self.P_value + self.I_value + self.D_value
-		print("PID = {}".format(PID))
-		PID = PID * 10
-		print("PID = {}".format(PID))
-	
-		return PID
 
 
 	def Regulate(self):
@@ -273,24 +122,18 @@ class PH_Regulation(object):
 		precision = 30 #precision
 		precisionInjection = 0 #precision d'injection
 		injectionPrevious = 0 #injection Number Previous
-		inject = 0 #injecté
-		value = 0 #valeur
-		forecast = 4 #prevision
+		inject = 0 #injected
+		value = 0 #value
+		forecast = 4 #forecast
+		#pumpDecision = recovery of pump operation hours of the pool
 		pumpDecision = [1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0] #schedule of pump operation hours
+		#peristalticPumpDecision = initializing the operating hours of the dosing pump
 		peristalticPumpDecision = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] #schedule of peristaltic pump operation hours
+		#timeInjectionBlock = dosing time injection block
 		timeInjectionBlock = timeProduced / NumberInjection
-
-#		# Control tag, if it is beyond the max or min
-#		timeInjectionBlock_max = 30
-#		timeInjectionBlock_min = 0
-#		if timeInjectionBlock > timeInjectionBlock_max:
-#			timeInjectionBlock = timeInjectionBlock_max
-#		elif timeInjectionBlock < timeInjectionBlock_min:
-#			timeInjectionBlock = timeInjectionBlock_min
 
 		for i in range(0, len(pumpDecision)):
 			if ( pumpDecision[i] == 1  ) and ( value == 0 ) and ( inject < NumberInjection ) and ( forecast >= 4):
-				#peristalticPumpDecision[i] = 1
 				value = 1
 				forecast = 0
 				injectionPrevious += 1
@@ -325,73 +168,4 @@ class PH_Regulation(object):
 
 		return peristalticPumpDecision
 
-
-
-
-	def RegulateTest(self):
-		#Initialise some variables for the control loop
-		if self.initialization == False:
-			#self.PH_init()
-			self.initialization = True 
-
-		#calculating the volume of product injection
-		calculatePhLess = self.Calculate_Volume_Produced_LessPh(self.BD_PH(), self.set_point)
-		print("calculatePhLess ml = {} and L = {}".format(calculatePhLess, calculatePhLess/1000))
-
-		#calculating the number of product injection
-		timeProduced = self.Calculate_Time_Produced_LessPh(calculatePhLess)
-		print("timeProduced = {} secondes soit {} minutes".format(timeProduced*60, timeProduced))
-
-		#calculating the number of product injection days
-		NumberInjection = self.Calculate_Number_Injection(self.poolVolume)
-		print("NumberInjection = {}".format(NumberInjection))
-
-		# Turn on for initial ramp up
-		state="off"
-		self.turn_off()
-		#PID=self.Calulate_PID(self.BD_PH())
-
-		#power = PID*self.pwr_coef
-		#power = calculatePhLess/10
-
-		#print("POWER = {} secondes soit {} minutes".format(power, power/60))
-
-		#Long duration pulse width modulation
-		if (calculatePhLess > self.set_point):
-			if (state=="off"):
-				state="on"
-				self.turn_on()
-				print("toto")
-				#sleep(timeProduced*60)
-				self.turn_on(timeProduced*60) #return time heating operation
-		else:
-			if (state=="on"):
-				state="off"
-				self.turn_off()
-				print("tata")
-				#print(power*self.coef_regul)
-
-#		#Long duration pulse width modulation
-#		for x in range (1, 100):
-#			if (power > x):
-#				if (state=="off"):
-#					state="on"
-#					self.turn_on()
-#					print("toto")
-#					#sleep(power*self.coef_regul)
-#			else:
-#				if (state=="on"):
-#					state="off"
-#					self.turn_off()
-#					print("tata")
-#					#print(power*self.coef_regul)
-
-	
-
-if __name__ == '__main__':
-    
-   	#PH_init()
-	PH = PH_Regulation()
-	while True:
-		PH.Regulate()
 		 
