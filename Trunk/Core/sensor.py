@@ -98,7 +98,11 @@ class NumericSensor(Sensor):
 		"""
 		valueSensor = get_input_num(self.channel)	# get_input_num return return int (0 or 1)
 		
-		try valueSensor == 0 or valueSensor == 1:
+		try:
+			valueSensor == 0 or valueSensor == 1
+		except ValueError:
+			print("ERROR: The value sensor is not OK")
+			return -1
 		
 		if valueSensor == 0:
 			value = False

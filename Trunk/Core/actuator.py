@@ -88,6 +88,7 @@ class NumericActuator(Actuator):
 	# Destructor class
 	def __del__(self):
 		print("Delete class ID: {} -- initValue: {}".format(self.hardwareId, self.initValue))
+		self.set_off()
 		self.set_value(self.initValue)	# Initialize actuator
 	
 	# Set value activator to on and lock
