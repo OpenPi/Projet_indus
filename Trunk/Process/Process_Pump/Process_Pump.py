@@ -190,7 +190,7 @@ def process(Queue):
 			#print("Process State")		
 
 			#Calculate time to find index to check
-			if(date.now().day > dateIndex.day):
+			if(date.now().day != dateIndex.day):
 				Queue_Global.process_Pump.enqueue('Init')
 			else:
 				indexProcess = (date.now().hour*60 + date.now().minute)/precision
@@ -205,7 +205,6 @@ def process(Queue):
 				Queue.enqueueIfEmpty(state, data, 60000)
 					
 		elif state == "on":			
-
 			pump.set_on()		
 
 		elif state == "off":
