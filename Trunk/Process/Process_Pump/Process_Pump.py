@@ -201,7 +201,7 @@ def process(Queue):
 					
 				else:
 					pump.set_value(False)
-
+				Queue_Global.process_PhRegulation.enqueue('setPumpDecision', pumpDecision)
 				Queue.enqueueIfEmpty(state, data, 60000)
 					
 		elif state == "on":			

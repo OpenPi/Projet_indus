@@ -21,6 +21,8 @@ import Process.Process_Heater.Process_Heater as Process_Heater
 import Process.Process_Pump.Process_Pump as Process_Pump
 import Process.Process_Alert.Process_Alert as Process_Alert
 import Process.Process_PeristalticPump.Process_PeristalticPump as Process_PeristalticPump
+import Process.Process_PhRegulation.Process_PhRegulation as Process_PhRegulation
+import Process.Process_RTC.Process_RTC as Process_RTC
 
 # Process launch
 Process_UserCommand.StartThread()
@@ -32,6 +34,7 @@ Process_Pump.StartThread()
 Process_Alert.StartThread()
 Process_PeristalticPump.StartThread()
 Process_RTC.StartThread()
+Process_RTC.StartThread()
 
 commande = ""
 
@@ -40,7 +43,7 @@ Queue_Global.process_SensorsRead.enqueue('Init')
 Queue_Global.process_SensorsRead.enqueue('Process')
 Queue_Global.process_Actuators.enqueue('Init')
 Queue_Global.process_Heater.enqueue('Init')
-Queue_Global.process_Pump.enqueue('Init')
+Queue_Global.process_Pump.enqueue('Init') #call Ph Regulation
 Queue_Global.process_Alert.enqueue('Init')
 Queue_Global.process_Alert.enqueue('Process')
 Queue_Global.process_PeristalticPump.enqueue('Init')
@@ -59,5 +62,5 @@ while commande != "Exit":
 	Queue_Global.process_Alert.enqueue('Exit')
 	Queue_Global.process_PeristalticPump.enqueue('Exit')
 	Queue_Global.process_RTC.enqueue('Exit')
-
+	Queue_Global.process_PhRegulation.enqueue('Exit')
 

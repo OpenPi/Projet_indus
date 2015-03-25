@@ -20,7 +20,7 @@ def process(Queue):
 		state = Item.state
 		data = Item.data
 		if state == "Init":
-			poolperistalticPumpConfig = database.databasePeristalticPump.getHardwareConfigurationByName("Peristaltic pump")
+			poolperistalticPumpConfig = database.databasePeristalticPump.getHardwareConfigurationByName("Peristaltic Pump")
 			peristalticPump = PeristalticPump(poolperistalticPumpConfig[0],poolperistalticPumpConfig[2], False)
 		elif state == "Start":
 			print("Start State")	
