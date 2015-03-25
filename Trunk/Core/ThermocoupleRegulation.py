@@ -6,7 +6,7 @@
 # More information: http://en.wikipedia.org/wiki/PID_controller
 #
 #Explanation of the pool temperature control program:
-#A set temperature is recovered in the lower data. This instruction corresponds to the target value given by the operator. The basic setpoint is 25 °.
+#A set temperature is recovered in the lower data. This instruction corresponds to the target value given by the operator. The basic setpoint is 25 degrees.
 #The actual temperature of the pool is retrieved from the database. The actual temperature corresponds to the value of the temperature sensor.
 #Several constraints come into play:
 #	- The volume of the pool (it is adjustable by the user)
@@ -48,7 +48,7 @@ class ThermocoupleRegulation(object):
 		#Initialise temperature rise time
 		self.poolVolume = float(database.databaseThermocoupleRegulation.getUserConfigurationValue("pool_volume")) #volume of the pool (m3)
 		self.powerHeatPump = float(database.databaseThermocoupleRegulation.getUserConfigurationValue("power_heat_pump")) #power of the heat pump (kW)
-		self.turn_off()
+		
 
 	
 	#------------------------------#
@@ -58,9 +58,9 @@ class ThermocoupleRegulation(object):
 		"""
 		Recovery of the temperature in the database
 		"""
-	    temperature = database.databaseThermocoupleRegulation.getLastMeasureByName("Pool Temperature Sensor")[0]
-	    print("Temperature = {} ".format(temperature))
-	    return temperature
+		temperature = database.databaseThermocoupleRegulation.getLastMeasureByName("Pool Temperature Sensor")[0]
+		print("Temperature = {} ".format(temperature))
+		return temperature
 	    
 	
 	#---------------------------#
@@ -122,7 +122,7 @@ class ThermocoupleRegulation(object):
 		Operation control
 		"""
 
-		PID=self.Calulate_PID(self.BD_Temperature()))
+		PID=self.Calulate_PID(self.BD_Temperature())
 
 		#Temperature rise time
 		initialTemperature = PID/2

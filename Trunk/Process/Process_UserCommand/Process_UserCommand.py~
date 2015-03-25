@@ -58,6 +58,8 @@ def command(type, command, targetName, value):
 			Queue_Global.process_Actuators.enqueue(targetName, value)
 		elif(targetName == 'pump'):
 			Queue_Global.process_Pump.enqueue(value)
+		elif(targetName == 'peristalticPump'):
+			Queue_Global.process_Pump.enqueue(value)
 	elif(type == 'UserConfiguration'):
 
 		if(targetName == 'ph_setpoint' or targetName == 'temperature_setpoint' or targetName == 'temperature_setpoint' or targetName == 'temperature_alert_level' or targetName == 'ph_alert_level' or targetName == 'ph_offset'):

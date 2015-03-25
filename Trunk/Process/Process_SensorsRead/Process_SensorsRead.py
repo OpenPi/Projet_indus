@@ -28,7 +28,7 @@ def process(Queue):
 
 
 			poolThermocouple = Thermocouple(poolThermocoupleConfig[0],poolThermocoupleConfig[2], 4.14, 60, 2)
-			pumpAmpereMeter = AmpereMeter(pumpAmpereMeterConfig[0],pumpAmpereMeterConfig[2], 4.14, 60, 2)
+			pumpAmpereMeter = AmpereMeter(pumpAmpereMeterConfig[0],pumpAmpereMeterConfig[2], 4.14, 60, 2, database.databaseSensorsRead.getUserConfigurationValue("installation_tension"))
 			poolPhMeter = PhMeter(poolPhConfig[0],poolPhConfig[2], 4.14, 60, 2)
 			waterLevelMeter = WaterLevelMeter(waterLevelConfig[0],waterLevelConfig[2], 4.14, 60, 2)
 

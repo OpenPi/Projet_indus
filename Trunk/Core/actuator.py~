@@ -25,6 +25,7 @@ class Actuator:
 		
 		hardwareId: Id to hardware equipment
 		channel: Physical position actuator on Expender PI
+		initValue: Inital value to actuator
 		"""
 		self.hardwareId = hardwareId
 		self.channel = channel
@@ -44,6 +45,7 @@ class AnalogActuator(Actuator):
 		hardwareId: Unique Id to hardware
 		channel: Physical position actuator on Expander PI
 		voltage: Type of value
+		initValue: Inital value to actuator
 		"""
 		Actuator.__init__(self, hardwareId, channel, initValue)
 		self.voltage = voltage
@@ -85,7 +87,8 @@ class NumericActuator(Actuator):
 	
 	# Destructor class
 	def __del__(self):
-		set_value(self.initValue)	# Initialize actuator
+		print("Delete class ID: {} -- initValue: {}".format(self.hardwareId, self.initValue))
+		self.set_value(self.initValue)	# Initialize actuator
 	
 	# Set value activator to on and lock
 	def set_on(self):
@@ -138,7 +141,9 @@ class Pump(NumericActuator):
 		"""
 		Pump actuator class
 		
+		hardwareId: Unique Id to hardware
 		pin: Physical position actuator on Expender PI
+		initValue: Inital value to actuator
 		"""
 		NumericActuator.__init__(self, hardwareId, pin, initValue)	
 	
@@ -153,7 +158,9 @@ class Light(NumericActuator):
 		"""
 		Light actuator class
 		
-		pin: Physical position actuator on Expander PI
+		hardwareId: Unique Id to hardware
+		pin: Physical position actuator on Expender PI
+		initValue: Inital value to actuator
 		"""
 		NumericActuator.__init__(self, hardwareId, pin, initValue)	
 		
@@ -168,6 +175,62 @@ class Heater(NumericActuator):
 		"""
 		Heater actuator class
 		
-		pin: Physical position actuator on Expander PI		
+		hardwareId: Unique Id to hardware
+		pin: Physical position actuator on Expender PI
+		initValue: Inital value to actuator	
 		"""
-		NumericActuator.__init__(self, hardwareId, pin, initValue)	
+		NumericActuator.__init__(self, hardwareId, pin, initValue)
+		
+class peristalticPump(NumericActuator):
+	"""
+	Class for peristaltic pump actuator
+	Inherit to NumericActuator class
+	"""
+	
+	# Builder class
+	def __init__(self, hardwareId, pin, initValue=False): 
+		"""
+		Peristaltic pump actuator class
+		
+		hardwareId: Unique Id to hardware
+		pin: Physical position actuator on Expender PI
+		initValue: Inital value to actuator
+		"""
+		NumericActuator.__init__(self, hardwareId, pin, initValue)
+
+# Template class
+class NewAnalogActuator(AnalogActuator):
+	"""
+	Class description
+	Inherit to AnalogActuator class
+	"""
+	
+	# Builder class
+	def __init__(self, hardwareId, channel, voltage, initValue=0.0):
+		"""
+		Analog actuator description
+		
+		hardwareId: Unique Id to hardware
+		channel: Physical position actuator on Expander PI
+		voltage: Type of value
+		initValue: Inital value to actuator
+		"""
+		AnalogActuator.__init__(self, hardwareId, channel, voltage, initValue)
+		
+class NewNumericActuator(NumericActuator):
+	"""
+	Class description
+	Inherit to NumericActuator class
+	"""
+	
+	# Builder class
+	def __init__(self, hardwareId, pin, initValue=False): 
+		"""
+		Digital actuator description
+		
+		hardwareId: Unique Id to hardware
+		pin: Physical position actuator on Expender PI
+		initValue: Inital value to actuator
+		"""
+		NumericActuator.__init__(self, hardwareId, pin, initValue)
+		

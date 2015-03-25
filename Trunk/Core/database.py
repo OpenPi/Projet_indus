@@ -149,3 +149,4 @@ databaseThermocoupleRegulation = Database("localhost", "root", "root", "plashboa
 databaseHeater = Database("localhost", "root", "root", "plashboard")
 databasePump = Database("localhost", "root", "root", "plashboard")
 databaseAlert = Database("localhost", "root", "root", "plashboard")
+databasePeristalticPump = Database("localhost", "root", "root", "plashboard")

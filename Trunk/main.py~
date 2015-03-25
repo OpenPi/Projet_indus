@@ -20,7 +20,7 @@ import Process.Process_Actuators.Process_Actuators as Process_Actuators
 import Process.Process_Heater.Process_Heater as Process_Heater
 import Process.Process_Pump.Process_Pump as Process_Pump
 import Process.Process_Alert.Process_Alert as Process_Alert
-
+import Process.Process_PeristalticPump.Process_PeristalticPump as Process_PeristalticPump
 
 # Process launch
 Process_UserCommand.StartThread()
@@ -30,6 +30,8 @@ Process_TemperatureRegulation.StartThread()
 Process_Heater.StartThread()
 Process_Pump.StartThread()
 Process_Alert.StartThread()
+Process_PeristalticPump.StartThread()
+Process_RTC.StartThread()
 
 commande = ""
 
@@ -41,8 +43,9 @@ Queue_Global.process_Heater.enqueue('Init')
 Queue_Global.process_Pump.enqueue('Init')
 Queue_Global.process_Alert.enqueue('Init')
 Queue_Global.process_Alert.enqueue('Process')
+Queue_Global.process_PeristalticPump.enqueue('Init')
+Queue_Global.process_RTC.enqueue('Init')
 
-Queue_Global.process_TemperatureRegulation.enqueue('Process')
 
 while commande != "Exit":
     commande = raw_input("commande : ")
@@ -54,4 +57,7 @@ while commande != "Exit":
 	Queue_Global.process_Heater.enqueue('Exit')
 	Queue_Global.process_Pump.enqueue('Exit')
 	Queue_Global.process_Alert.enqueue('Exit')
+	Queue_Global.process_PeristalticPump.enqueue('Exit')
+	Queue_Global.process_RTC.enqueue('Exit')
+
 

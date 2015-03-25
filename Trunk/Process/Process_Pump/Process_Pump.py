@@ -147,7 +147,8 @@ def process(Queue):
 			#print(pumpingInterval)
 			#print(blockApply)
 			#print(preferedHours)
-			print(pumpDecision)
+			#print(pumpDecision)
+			Queue_Global.process_PeristalticPump.enqueue('setPumpDecision', pumpDecision)
 			dateIndex = date.now()
 			Queue_Global.process_Pump.enqueue('Start')
 			
@@ -188,7 +189,8 @@ def process(Queue):
 		elif state == "auto":
 			print("Auto State")
 			pump.set_mode_auto()
-			Queue_Global.process_Pump.enqueue('Process')	
+			Queue_Global.process_Pump.enqueue('Process')
+
 
 		elif state == "Stop":
 			print("Stop State")	

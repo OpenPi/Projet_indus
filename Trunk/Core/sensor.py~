@@ -96,7 +96,18 @@ class NumericSensor(Sensor):
 		"""
 		Return value to digital sensor		
 		"""
-		valueSensor = get_input_num(self.channel)	# get_input_num return -1 if ERROR
+		valueSensor = get_input_num(self.channel)	# get_input_num return return int (0 or 1)
+		
+		try:
+			valueSensor == 0 or valueSensor == 1
+		except ValueError:
+			print("ERROR: The value sensor is not OK")
+			return -1
+		
+		if valueSensor == 0:
+			value = False
+		elif valueSensor == 1:
+			value = True
 		
 		return valueSensor		
 	
@@ -216,7 +227,7 @@ class PhMeter(AnalogSensor):
 		#phSensor = value*5000/1023/1000
 		#phValue = (0.0178*phSensor*200)-1.889
 
-      		phValue = 3.5*value+self.offset;
+		phValue = 3.5*value+self.offset
 		return phValue
 
 	# Return ph
@@ -257,7 +268,7 @@ class AmpereMeter(AnalogSensor):
 	"""
 	
 	# Builder class
-	def __init__(self, hardwareId, channel, refVolt, fSave, fRead):
+	def __init__(self, hardwareId, channel, refVolt, fSave, fRead, voltage):
 		"""
 		Ampere meter class
 		
@@ -266,26 +277,31 @@ class AmpereMeter(AnalogSensor):
 		refVolt: Reference voltage of Expender PI
 		fRead  : sensor is read every fRead seconds
 		fSave  : Average value is stored in the database every fRead seconds
+		voltage: Installation voltage
 		"""
+
 		AnalogSensor.__init__(self, hardwareId, channel, refVolt, fSave, fRead)
+
+		self.voltage = voltage 
 	
 	# convert physical value to ampere value
 	def conversion(self, value):
 		"""
-		Convert physical value to ampere value
+		Convert physical value to watt value
 
 		value: Value to convert
 		
-		Return current value
+		Return power value
 		"""
-		print(value)
-		ampereValue = value*30
-		return ampereValue
+		#print(value)
+		# P = U*I
+		wattValue = self.voltage*(value*30)
+		return wattValue
 
-	# Return ampere
+	# Return watt
 	def get_value(self):
 		"""
-		Return current value
+		Return power value
 		"""
 		
 		voltValue = self.get_value_sensor()
@@ -312,8 +328,6 @@ class AmpereMeter(AnalogSensor):
 			sensorAverageValue = average / len(self.sensorValue)
 			database.databaseSensorsRead.insertMeasure(self.hardwareId, sensorAverageValue)
 			self.sensorValue = []
-
-
 
 class WaterLevelMeter(AnalogSensor):
 	"""
@@ -381,3 +395,88 @@ class WaterLevelMeter(AnalogSensor):
 			sensorAverageValue = average / len(self.sensorValue)
 			database.databaseSensorsRead.insertMeasure(self.hardwareId, sensorAverageValue)
 			self.sensorValue = []
+			
+# Template class
+class NewAnalogSensor(AnalogSensor):
+	"""
+	Class description
+	Inherit to AnalogSensor class
+	"""
+	
+	# Builder class
+	def __init__(self, hardwareId, channel, refVolt, fSave, fRead):
+		"""
+		Analog actuator description
+		
+		hardwareId: Unique Id to hardware
+		channel: Physical position sensor on Expender PI
+		refVolt: Reference voltage of Expender PI
+		fRead  : sensor is read every fRead seconds
+		fSave  : Average value is stored in the database every fRead seconds
+		"""
+
+		AnalogSensor.__init__(self, hardwareId, channel, refVolt, fSave, fRead)
+	
+	# convert physical value to analog value
+	def conversion(self, value):
+		"""
+		Convert physical value to analog value
+
+		value: Value to convert
+		
+		Return analog value
+		"""
+
+		analogValue = analogValue*1
+		return analogValue
+		
+	# Return analog value
+	def get_value(self):
+		"""
+		Return analog value
+		"""
+	
+		voltValue = self.get_value_sensor()
+		
+		# If get_value_sensor work return analog value else Error
+		if voltValue == -1:
+			print("ERROR: get value ph sensor\n")
+			return -1
+		else:
+			return self.conversion(voltValue)
+			
+	def read_save(self, NumberOfSecond):
+
+		if(NumberOfSecond % self.fRead == 0):
+			#print(str(self.hardwareId) + " : read")
+			# read and add to the list
+			self.sensorValue.append(self.get_value())
+		if(NumberOfSecond % self.fSave == 0):
+			#Average value and store into database
+			#print(str(self.hardwareId) + " : save")
+			average = 0
+			for value in self.sensorValue:
+				average += value	
+			sensorAverageValue = average / len(self.sensorValue)
+			database.databaseSensorsRead.insertMeasure(self.hardwareId, sensorAverageValue)
+			self.sensorValue = []
+		
+class NewNumericSensor(NumericSensor):
+	"""
+	Class description
+	Inherit to NumericSensor class
+	"""
+	
+	# Builder class
+	def __init__(self, hardwareId, pin): 
+		"""
+		Digital sensor description
+		
+		hardwareId: Unique Id to hardware
+		pin: Physical position sensor on Expender PI
+		"""
+		NumericSensor.__init__(self, hardwareId, pin)
+		
+	def get_value(self):
+		return get_value_sensor()	# Return True, False or -1 if ERROR
+		

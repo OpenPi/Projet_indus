@@ -1,11 +1,22 @@
-# The recipe gives simple implementation of a Discrete Proportional-Integral-Derivative (PID) controller. 
-# PID controller gives output value for error between desired reference input and measurement feedback to minimize error value.
+# PlashBoard
 #
-# More information: http://en.wikipedia.org/wiki/PID_controller
-#			 		http://www.phidgets.com/docs/1130_User_Guide
-#					http://clement.storck.me/blog/2014/08/controle-et-supervision-de-la-piscine/
+# More information: http://www.phidgets.com/docs/1130_User_Guide			 		
 #
-# PlashBoard test PID
+#Explanation of pH control program. Please note this program works for regulation with a product for lowering the pH:
+#A pH setpoint is recovered in the lower data. This instruction corresponds to the target value given by the operator. This basic set is 7.3
+#The actual pH of the pool is retrieved from the database. The actual pH corresponds to the pH sensor.
+#Several constraints come into play:
+#	- The time difference in each assay (often written on the products, it is basic to 2h but it is adjustable by the user)
+#	- The maximum amount of pH by injecting days
+#	- The maximum number of days following the injection volume pool
+#	- The volume of the pool (it is adjustable by the user)
+#	- The pool filter should work for the assay is performed. This allows better distribution of chlorine in the pool.
+#	- The volume per hour that can inject the dosing pump (it is adjustable by the user)
+#The program works:
+#	- If the actual ph ph is below the set point then we do nothing.
+#	- If the actual ph ph exceeds the setpoint then dose. For this referral program a dosing period of time.
+#The program that calls the ph regulating use this dosing time to activate the operating time of the peristaltic pump with the requested time.
+
 
 
 from time import sleep
@@ -18,85 +29,39 @@ class PH_Regulation(object):
 	#------------------------------#
 	# Definition of initialization #
 	#------------------------------#
-	def __init__(self, P=2.0, I=0.0, D=1.0, Derivator=0, Integrator=0, Integrator_max=500, Integrator_min=-500):
-		self.Kp=P #Proportional gain, a tuning parameter
-		self.Ki=I #Integral gain, a tuning parameter
-		self.Kd=D #Derivative gain, a tuning parameter
-		self.Derivator=Derivator #Derivator
-		self.Integrator=Integrator #Integrator
-		self.Integrator_max=Integrator_max #Integrator_max (a tag max)
-		self.Integrator_min=Integrator_min #Integrator_min (a tag min)
+	def __init__(self):
 
-		self.set_point=loat(database.databaseThermocoupleRegulation.getUserConfiguration("ph_setpoint")) #set_point is requested setpoint
-		self.error=0.0 #asked error or previous error
-
-		#Initialise some variables for the control loop
-		self.pwr_coef=-2 #conversion coefficient to obtain second
-		self.coef_regul=1 #coefficient for duration of heaters
-
-		self.initialization = False
+		#pH setpoint given by the user
+		self.set_point=float(database.databasePeristalticPump.getUserConfiguration("ph_setpoint")) #set_point is requested setpoint 
 
 		#Preset value for the conversion scale
 		self.correctingBasicPh = 160 #ml (milliliter)
 		self.lowerPh = 0.1 #unit ph
-		self.poolVolume = float(database.databaseThermocoupleRegulation.getUserConfiguration("pool_volume")) #volume of the pool (m3)
-
+		self.poolVolume = float(database.databasePeristalticPump.getUserConfiguration("pool_volume")) #volume of the pool (m3) 
+		self.pumpDecision = [] #schedule of pump operation hours
 		#Rate of flow, parameter of the peristaltic pump
-		self.valueLiter = 0.4 #unit liter
-		self.valueHours = 1 #unit hours
+		self.valueLiter = float(database.databasePeristalticPump.getUserConfiguration("peristaltic_pump_debit")) #unit liter 
+		self.valueHours = 1 #unit hours  
+
 
 
 	#------------------------------#
 	# Definition PH value #
 	#------------------------------#
 	def BD_PH(self):
-	  ### a lire dans la base de donnée
-	    SensorValuePH = database.databaseThermocoupleRegulation.getLastMeasureByName("Pool Ph Meter")
-	    return SensorValuePH
+		"""
+		Recovery the pH of the pool
+		"""
+	    	SensorValuePH = database.databasePeristalticPump.getLastMeasureByName("Peristaltic pump")[0] 
+	    	return SensorValuePH
+	
+	def setPumpDecision(self, pumpDecision):
+		self.pumpDecision = pumpDecision
 
-	#------------------------------#
-	# Definition temperature value #
-	#------------------------------#
-	def BD_Temperature(self):
-	  ### a lire dans la base de donnée
-	  temperature = database.databaseThermocoupleRegulation.getLastMeasureByName("Pool Temperature Sensor")
-	  print("Temperature = {} ".format(temperature))
-	  return temperature
-	
-	 
-	#---------------------------#
-	# Definition engine control #
-	#---------------------------#	 
-	def turn_on(self, numberOfSeconds):
-	  ### taper dans le process marche moteur
-	  print("turn on")
-	  Queue_Global.process_Heater.enqueue('on', numberOfSeconds)
-	 
-	def turn_off(self):
-	  ### taper dans le process arret moteur
-	  print("turn off")
-	  Queue_Global.process_Heater.enqueue('off')
-	 
-	
-	
 	
 	#-------------------------#
 	#  Definition of Updated  #
 	#-------------------------#
-	def Calulate_PH(self,current_value_temp, current_value_ph):
-		"""
-		Depending on the temperature of the solution and on the actual pH level, 
-		the SensorValue can change dramatically. To incorporate temperature (in degrees Celsius) for added accuracy, 
-		the following formula can be used: 
-		"""
-
-		firstEquation = 2.5 - ( current_value_ph / 200 )
-		secondEquation = 0.257179 + 0.000941468 * current_value_temp
-		PH = 7 - ( firstEquation / secondEquation )
-
-		return PH
-
-
 	def Calculate_Volume_Produced_LessPh(self, current_value_ph, set_point_ph):
 		"""
 		An average of 160 mL of less liquid pH corrector lower the pH of 0.1 units of 10 m3 of water.
@@ -114,126 +79,114 @@ class PH_Regulation(object):
 		milliliter = correctionDose
 		liter = milliliter / 1000
 
-		#print("Dosage ph- = {} milliliter whether {} liter".format(milliliter, liter))
+		# Control tag, if it is beyond the max or min
+		dosage = milliliter
+		dosage_min = 0
+		dosage_max = ( self.poolVolume *100 ) / 10 # 100ml --> 10m3
 
-		return milliliter
+		if dosage > dosage_max:
+			dosage = dosage_max
+		elif dosage < dosage_min:
+			 dosage = dosage_min
+
+		return dosage
 
 
 	def Calculate_Time_Produced_LessPh(self, current_milliliter):
 		"""
 		Parameter of the peristaltic pump
 		"""
-		#print("valueLiter = {} ".format(self.valueLiter))
-		#print("valueHours = {} ".format(self.valueHours))
-		
-
 		#pump conversion parameter
 		valueMilliliter = self.valueLiter * 1000
 		valueMinutes = ( self.valueHours * 60 ) 
 
-		#print("valueMilliliter = {} ".format(valueMilliliter))
-		#print("valueMinutes = {} ".format(valueMinutes))
-
 		timeProduced = ( current_milliliter * valueMinutes ) / valueMilliliter
-
-		#print("timeProduced = {} ".format(timeProduced))
-		#print("timeProduced = {} secondes soit {} minutes".format(timeProduced*60, timeProduced))
 
 		return timeProduced #minutes
 
 
-	def Calulate_PID(self,current_value):
+	def Calculate_Number_Injection(self, poolVolume):
 		"""
-		Calculate PID output value for given reference input and feedback
+		Calculating the number of product injection days
 		"""
-	
-		#error calculation
-		self.error = self.set_point - current_value
-	
-		#PID calculation
-		self.P_value = self.Kp * self.error
-		self.D_value = self.Kd * ( self.error - self.Derivator)
-		self.Derivator = self.error
-	
-		#Integrator calculation
-		self.Integrator = self.Integrator + self.error
-	
-		# Control tag, if it is beyond the max or min
-		if self.Integrator > self.Integrator_max:
-			self.Integrator = self.Integrator_max
-		elif self.Integrator < self.Integrator_min:
-			self.Integrator = self.Integrator_min
-	
-		self.I_value = self.Integrator * self.Ki
-	
-		#calculation results PID
-		PID = self.P_value + self.I_value + self.D_value
-		print("PID = {}".format(PID))
-		PID = PID * 10
-		print("PID = {}".format(PID))
-	
-		return PID
+		if self.poolVolume <= 50:
+			NumberInjection = 3
+		if self.poolVolume > 50 and self.poolVolume <= 70:
+			NumberInjection = 5
+		if self.poolVolume > 70 and self.poolVolume <= 90:
+			NumberInjection = 6
+		if self.poolVolume > 90 and self.poolVolume <= 130:
+			NumberInjection = 11
+		if self.poolVolume > 130 and self.poolVolume <= 260:
+			NumberInjection = 20
+
+		return NumberInjection
 
 
 	def Regulate(self):
-		#Initialise some variables for the control loop
-		if self.initialization == False:
-			#self.PH_init()
-			self.initialization = True 
-
-		#test seb
+		"""
+		Regulation PH
+		"""
+		#calculating the volume of product injection
 		calculatePhLess = self.Calculate_Volume_Produced_LessPh(self.BD_PH(), self.set_point)
-		print("calculatePhLess ml = {}".format(calculatePhLess))
+		print("calculatePhLess ml = {} and L = {}".format(calculatePhLess, calculatePhLess/1000))
 
+		#calculating the number of product injection
 		timeProduced = self.Calculate_Time_Produced_LessPh(calculatePhLess)
 		print("timeProduced = {} secondes soit {} minutes".format(timeProduced*60, timeProduced))
 
-		# Turn on for initial ramp up
-		state="off"
-		self.turn_off()
-		#PID=self.Calulate_PID(self.BD_PH())
+		#calculating the number of product injection days
+		NumberInjection = self.Calculate_Number_Injection(self.poolVolume)
+		print("NumberInjection = {}".format(NumberInjection))
 
-		#power = PID*self.pwr_coef
-		#power = calculatePhLess/10
+		#calculating operation hours of injection with respect to the hours of operation of the pump of the swimming pool.
+		precision = 30 #precision
+		precisionInjection = 0 #precision d'injection
+		injectionPrevious = 0 #injection Number Previous
+		inject = 0 #injected
+		value = 0 #value
+		forecast = 4 #forecast
+		#pumpDecision = recovery of pump operation hours of the pool
 
-		#print("POWER = {} secondes soit {} minutes".format(power, power/60))
+		#peristalticPumpDecision = initializing the operating hours of the dosing pump
+		peristalticPumpDecision = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] #schedule of peristaltic pump operation hours
+		#timeInjectionBlock = dosing time injection block
+		timeInjectionBlock = timeProduced / NumberInjection
 
-		#Long duration pulse width modulation
-		if (calculatePhLess > self.set_point):
-			if (state=="off"):
-				state="on"
-				self.turn_on()
-				print("toto")
-				#sleep(timeProduced*60)
-				self.turn_on(timeProduced*60) #return time heating operation
-		else:
-			if (state=="on"):
-				state="off"
-				self.turn_off()
-				print("tata")
-				#print(power*self.coef_regul)
+		for i in range(0, len(pumpDecision)):
+			if ( self.pumpDecision[i] == 1  ) and ( value == 0 ) and ( inject < NumberInjection ) and ( forecast >= 4):
+				value = 1
+				forecast = 0
+				injectionPrevious += 1
+				inject += 1
+				if timeInjectionBlock > 30:
+					peristalticPumpDecision[i] = 30
+					injectionPrevious += 30
+				else:
+					peristalticPumpDecision[i] = int(timeInjectionBlock)
+					injectionPrevious += int(timeInjectionBlock)
 
-#		#Long duration pulse width modulation
-#		for x in range (1, 100):
-#			if (power > x):
-#				if (state=="off"):
-#					state="on"
-#					self.turn_on()
-#					print("toto")
-#					#sleep(power*self.coef_regul)
-#			else:
-#				if (state=="on"):
-#					state="off"
-#					self.turn_off()
-#					print("tata")
-#					#print(power*self.coef_regul)
 
-	
+			elif self.pumpDecision[i] == 0:
+				value = 0
+				injectionPrevious = 0
+				forecast += 1
 
-if __name__ == '__main__':
-    
-   	#PH_init()
-	PH = PH_Regulation()
-	while True:
-		PH.Regulate()
+			elif ( self.pumpDecision[i] == 1 ) and ( value == 1 ):
+				if injectionPrevious < timeInjectionBlock :
+					if timeInjectionBlock - injectionPrevious > 30:
+						peristalticPumpDecision[i] = 30
+						injectionPrevious += 30
+					else:
+						peristalticPumpDecision[i] = int(timeInjectionBlock - injectionPrevious)
+						injectionPrevious += int(timeInjectionBlock - injectionPrevious)
+			else :
+				forecast += 1
+
+		print("timeInjectionBlock = {}".format(timeInjectionBlock))
+		print("pumpDecision = {}".format(pumpDecision))
+		print("peristalticPumpDecision = {}".format(peristalticPumpDecision))
+
+		return peristalticPumpDecision
+
 		 

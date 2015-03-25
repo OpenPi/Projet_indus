@@ -32,16 +32,16 @@ class PH_Regulation(object):
 	def __init__(self):
 
 		#pH setpoint given by the user
-		self.set_point=7.3 #set_point is requested setpoint ###########################################
+		self.set_point=float(database.databasePeristalticPump.getUserConfiguration("ph_setpoint")) #set_point is requested setpoint 
 
 		#Preset value for the conversion scale
 		self.correctingBasicPh = 160 #ml (milliliter)
 		self.lowerPh = 0.1 #unit ph
-		self.poolVolume = float(database.databaseThermocoupleRegulation.getUserConfiguration("pool_volume")) #volume of the pool (m3) #####################
-
+		self.poolVolume = float(database.databasePeristalticPump.getUserConfiguration("pool_volume")) #volume of the pool (m3) 
+		self.pumpDecision = [] #schedule of pump operation hours
 		#Rate of flow, parameter of the peristaltic pump
-		self.valueLiter = 0.4 #unit liter ##############################################
-		self.valueHours = 1 #unit hours   ##############################################
+		self.valueLiter = float(database.databasePeristalticPump.getUserConfiguration("peristaltic_pump_debit")) #unit liter 
+		self.valueHours = 1 #unit hours  
 
 
 
@@ -52,9 +52,12 @@ class PH_Regulation(object):
 		"""
 		Recovery the pH of the pool
 		"""
-	    SensorValuePH = float(input("saisissez un ph : ")) ###########################################
-	    return SensorValuePH
+	    	SensorValuePH = database.databasePeristalticPump.getLastMeasureByName("Peristaltic pump")[0] 
+	    	return SensorValuePH
 	
+	def set_pump_decision(self, pumpDecision):
+		self.pumpDecision = pumpDecision
+
 	
 	#-------------------------#
 	#  Definition of Updated  #
@@ -144,14 +147,14 @@ class PH_Regulation(object):
 		value = 0 #value
 		forecast = 4 #forecast
 		#pumpDecision = recovery of pump operation hours of the pool
-		pumpDecision = [1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0] #schedule of pump operation hours
+
 		#peristalticPumpDecision = initializing the operating hours of the dosing pump
 		peristalticPumpDecision = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] #schedule of peristaltic pump operation hours
 		#timeInjectionBlock = dosing time injection block
 		timeInjectionBlock = timeProduced / NumberInjection
 
 		for i in range(0, len(pumpDecision)):
-			if ( pumpDecision[i] == 1  ) and ( value == 0 ) and ( inject < NumberInjection ) and ( forecast >= 4):
+			if ( self.pumpDecision[i] == 1  ) and ( value == 0 ) and ( inject < NumberInjection ) and ( forecast >= 4):
 				value = 1
 				forecast = 0
 				injectionPrevious += 1
@@ -164,12 +167,12 @@ class PH_Regulation(object):
 					injectionPrevious += int(timeInjectionBlock)
 
 
-			elif pumpDecision[i] == 0:
+			elif self.pumpDecision[i] == 0:
 				value = 0
 				injectionPrevious = 0
 				forecast += 1
 
-			elif ( pumpDecision[i] == 1 ) and ( value == 1 ):
+			elif ( self.pumpDecision[i] == 1 ) and ( value == 1 ):
 				if injectionPrevious < timeInjectionBlock :
 					if timeInjectionBlock - injectionPrevious > 30:
 						peristalticPumpDecision[i] = 30

@@ -268,7 +268,7 @@ class AmpereMeter(AnalogSensor):
 	"""
 	
 	# Builder class
-	def __init__(self, hardwareId, channel, refVolt, fSave, fRead):
+	def __init__(self, hardwareId, channel, refVolt, fSave, fRead, voltage):
 		"""
 		Ampere meter class
 		
@@ -277,26 +277,31 @@ class AmpereMeter(AnalogSensor):
 		refVolt: Reference voltage of Expender PI
 		fRead  : sensor is read every fRead seconds
 		fSave  : Average value is stored in the database every fRead seconds
+		voltage: Installation voltage
 		"""
+
 		AnalogSensor.__init__(self, hardwareId, channel, refVolt, fSave, fRead)
+
+		self.voltage = voltage 
 	
 	# convert physical value to ampere value
 	def conversion(self, value):
 		"""
-		Convert physical value to ampere value
+		Convert physical value to watt value
 
 		value: Value to convert
 		
-		Return current value
+		Return power value
 		"""
 		#print(value)
-		ampereValue = value*30
-		return ampereValue
+		# P = U*I
+		wattValue = float(self.voltage)*(value*30)
+		return wattValue
 
-	# Return ampere
+	# Return watt
 	def get_value(self):
 		"""
-		Return current value
+		Return power value
 		"""
 		
 		voltValue = self.get_value_sensor()
