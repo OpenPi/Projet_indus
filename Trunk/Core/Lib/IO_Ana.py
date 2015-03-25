@@ -120,6 +120,11 @@ def get_input_ana(channel):
 	
 	voltage = float(adc.read_adc_voltage(channel))	# Read the value of the input
 	
+	try:
+		voltage <> 0.0
+	except ValueError:
+		print("ERROR: Malfunction sensor")		# TODO sent alert malfunction sensor
+	
 	return voltage		# Return value to analog input
 	
 adc = ADC()  	# create an instance of the ADC class (Input analog)

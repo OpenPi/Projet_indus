@@ -109,7 +109,7 @@ class NumericSensor(Sensor):
 		elif valueSensor == 1:
 			value = True
 		
-		return valueSensor		
+		return valueSensor
 	
 
 	
