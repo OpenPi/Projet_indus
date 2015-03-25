@@ -29,9 +29,9 @@ def process(Queue):
 			date = datetime
 
 			precision = 30 #minute
+
 			poolTemperature = database.databasePump.getLastMeasureByName("Pool Temperature Sensor")[0]
-			pumpingHoursConfig = database.databasePump.getUserConfigurationValue("pumping_hours")
-			
+			pumpingHoursConfig = database.databasePump.getUserConfigurationValue("pumping_hours")			
 
 			#Create preference hours with data in database
 			preferedHours = []
@@ -42,16 +42,23 @@ def process(Queue):
 					preferedHours.append(1)
 				else:
 					preferedHours.append(0)
-			
-			pumpDecision  = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] # use the same precision 
 
+			#Create decision array with the same size of pumping hours prefered/config
+			pumpDecision = []
+			for value in preferedHours:
+				pumpDecision.append(0)
+			
+			#Now preferedHours look like 00111111000001111 and pumpDecision 00000000000000000
+			#We have to change pumpDecision to 1 when we want started pump
+
+			#Calculate time pumping according to temperature
 			pumpingTime = (poolTemperature / 3) * 60 # 1 hour of pumping every 3 degrees
 			pumpingInterval = pumpingTime / precision # Number of block to place in pumpDecision
 			
-			if pumpingInterval > 48 :
-				pumpingInterval = 48
-
-			#pumpingInterval = 30
+			#Fixe maximum pumpingInterval to place 
+			# !!! loop while after so never have pumpingInterval > pumpDecision else we have infinit loop
+			if pumpingInterval > len(pumpDecision) :
+				pumpingInterval = len(pumpDecision)
 
 			#Calculate position of max occurence of 0 in preferedHours
 			numberOfIntervale = 1
@@ -78,6 +85,9 @@ def process(Queue):
 
 			#Apply half of pumping time to the left of max occurency of 0
 			blockApply = 0
+			#If we have one interval of 1 start pumping in middle of day
+			if(numberOfIntervale == 0):
+				index = len(pumpDecision)/2
 			for i in range(index, 0, -1) :
 				if preferedHours[i] == 1 and blockApply < pumpingInterval/2 :
 					pumpDecision[i] = 1
@@ -91,6 +101,7 @@ def process(Queue):
 			#After that if block not assigned complete pumpDecision with preferedHours
 			i = 0
 			while blockApply < pumpingInterval :
+				#Break the loop if all preferedHours use 
 				if preferedHours.count(1) < pumpDecision.count(1) or i == len(preferedHours):
 					break
 				if preferedHours[i] == 1 and pumpDecision[i] == 0:
@@ -98,11 +109,20 @@ def process(Queue):
 					blockApply += 1
 				i += 1
 
+			#After that if block not assigned complete pumpDecision with preferedHours
+			for i in range(0, len(preferedHours)) :
+				if preferedHours[i] == 1 and pumpDecision[i] == 0:
+					#break the loop because all block was placed
+					if blockApply > pumpingInterval:
+						break
+					pumpDecision[i] = 1
+					blockApply += 1
+
 			#After that if block not assigned we have to start pump over preferedHours, calculate max occurrence of 0
-			#and number of element (1) next and previous of the max occurence of 0 
+			#and number of element (1) next and previous of the max occurence of 0 in pumpDecision and not in prefered
 			while blockApply < pumpingInterval :
 				numberOfIntervale = 1
-				value = preferedHours[0]
+				value = pumpDecision[0]
 				index = 0
 				consecutive = 0
 				interConsecutive = 0
@@ -132,6 +152,11 @@ def process(Queue):
 				if preferedHours[0] == preferedHours[len(preferedHours)-1] :
 					nextConsecutive = interPreviousConsecutive
 					numberOfIntervale -= 1
+
+				#If only on block of 0 create a new block of pumping 2/3 of the day
+				if(numberOfIntervale == 0):
+					pumpDecision[ 2*len(pumpDecision)/3 ] = 1
+					blockApply += 1
 				#If only two block (one with 1 and one with 0) create a new block of pumping in the bigger block of 0
 				if(numberOfIntervale == 2) :
 					pumpDecision[index-consecutive/2] = 1
@@ -143,12 +168,18 @@ def process(Queue):
 				else :
 					pumpDecision[index] = 1
 					blockApply += 1
+
+			#Print to debug
 			#print(pumpingHoursConfig)
-			#print(pumpingInterval)
-			#print(blockApply)
 			#print(preferedHours)
-			print(pumpDecision)
+			#print(pumpingInterval)
+			#print(pumpDecision)
+			#print(blockApply)
+			
+			#Save date to recall init when day change
 			dateIndex = date.now()
+
+			#Start process loop
 			Queue_Global.process_Pump.enqueue('Start')
 			
 		elif state == "Start":
@@ -159,7 +190,6 @@ def process(Queue):
 			#print("Process State")		
 
 			#Calculate time to find index to check
-			#Test without time
 			if(date.now().day > dateIndex.day):
 				Queue_Global.process_Pump.enqueue('Init')
 			else:
@@ -171,15 +201,11 @@ def process(Queue):
 					
 				else:
 					pump.set_value(False)
-				Queue.enqueueIfEmpty(state, data, 1000)
-			#print(pumpDecision[indexProcess])
-			#indexProcess += 1
 
-			
-			#Test without time
-			
-			
+				Queue.enqueueIfEmpty(state, data, 60000)
+					
 		elif state == "on":			
+
 			pump.set_on()		
 
 		elif state == "off":
