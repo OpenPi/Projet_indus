@@ -26,38 +26,20 @@ def process(Queue):
 			print("Start State")	
 
 		elif state == "Process":
-			#print("Process State")		
-
-			#Calculate time to find index to check
-
-			indexProcess = (date.now().hour*60 + date.now().minute)/precision
-
-				#Check decision and start or stop pump
-			if(peristalticPump.pumpDecision[indexProcess] == 1):
-				peristalticPump.set_value(True)
-					
-			else:
-				peristalticPump.set_value(False)
-
-			Queue.enqueueIfEmpty(state, data, 1000)
-			#print(pumpDecision[indexProcess])
-			#indexProcess += 1
-
-			
-			#Test without time
+			pass
 			
 		elif state == "Stop":
 			print("Stop State")
 
 		elif state == "on":			
-			peristalticPump.set_on()		
+			peristalticPump.set_value(True)		
 
 		elif state == "off":
-			peristalticPump.set_off()
-		elif state == "auto":
-			print("Peristaltic Auto State")
-			peristalticPump.set_mode_auto()
-			Queue_Global.PeristalticPump.enqueue('Process')
+			peristalticPump.set_value(False)
+		#elif state == "auto":
+		#	print("Peristaltic Auto State")
+		#	peristalticPump.set_mode_auto()
+		#	Queue_Global.PeristalticPump.enqueue('Process')
 		#elif state == "setPumpDecision":
 		#	peristalticPump.set_pump_decision(data)	
 		#	Queue_Global.PeristalticPump.enqueue('Process')

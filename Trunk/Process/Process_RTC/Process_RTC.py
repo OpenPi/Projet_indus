@@ -27,7 +27,7 @@ def process(Queue):
 			print("Start State")	
 
 		elif state == "Process":
-			print("RTC Process State")
+
 			rtc.reguleTime()
 	
 			Queue.enqueueIfEmpty(state, data, 1000)

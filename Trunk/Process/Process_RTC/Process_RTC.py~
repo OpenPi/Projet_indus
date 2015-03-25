@@ -45,6 +45,6 @@ def process(Queue):
 
 
 def StartThread():
-	ThreadProcess = Thread(target=process, args=(Queue_Global.process_Template,))
+	ThreadProcess = Thread(target=process, args=(Queue_Global.process_RTC,))
 	ThreadProcess.setDaemon(False)
 	ThreadProcess.start()

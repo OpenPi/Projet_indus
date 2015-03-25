@@ -27,9 +27,9 @@ def process(Queue):
 			waterLevelConfig = database.databaseSensorsRead.getHardwareConfigurationByName("Water Level Sensor")
 
 
-			poolThermocouple = Thermocouple(poolThermocoupleConfig[0],poolThermocoupleConfig[2], 4.14, 60, 2)
-			pumpAmpereMeter = AmpereMeter(pumpAmpereMeterConfig[0],pumpAmpereMeterConfig[2], 4.14, 60, 2, database.databaseSensorsRead.getUserConfigurationValue("installation_tension"))
-			poolPhMeter = PhMeter(poolPhConfig[0],poolPhConfig[2], 4.14, 60, 2)
+			poolThermocouple = Thermocouple(poolThermocoupleConfig[0],poolThermocoupleConfig[2], 4.14, 60, 2, float(database.databaseSensorsRead.getUserConfigurationValue("temperature_offset")))
+			pumpAmpereMeter = AmpereMeter(pumpAmpereMeterConfig[0],pumpAmpereMeterConfig[2], 4.14, 60, 2, float(database.databaseSensorsRead.getUserConfigurationValue("installation_tension")))
+			poolPhMeter = PhMeter(poolPhConfig[0],poolPhConfig[2], 4.14, 60, 2, float(database.databaseSensorsRead.getUserConfigurationValue("ph_offset")))
 			waterLevelMeter = WaterLevelMeter(waterLevelConfig[0],waterLevelConfig[2], 4.14, 60, 2)
 
 

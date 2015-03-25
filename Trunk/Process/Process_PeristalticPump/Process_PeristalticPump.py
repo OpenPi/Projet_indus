@@ -32,14 +32,14 @@ def process(Queue):
 			print("Stop State")
 
 		elif state == "on":			
-			peristalticPump.set_on()		
+			peristalticPump.set_value(True)		
 
 		elif state == "off":
-			peristalticPump.set_off()
-		elif state == "auto":
-			print("Peristaltic Auto State")
-			peristalticPump.set_mode_auto()
-			Queue_Global.PeristalticPump.enqueue('Process')
+			peristalticPump.set_value(False)
+		#elif state == "auto":
+		#	print("Peristaltic Auto State")
+		#	peristalticPump.set_mode_auto()
+		#	Queue_Global.PeristalticPump.enqueue('Process')
 		#elif state == "setPumpDecision":
 		#	peristalticPump.set_pump_decision(data)	
 		#	Queue_Global.PeristalticPump.enqueue('Process')

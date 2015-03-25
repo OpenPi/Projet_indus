@@ -29,14 +29,14 @@ def process(Queue):
 
 			#Calculate time to find index to check
 
-			indexProcess = (date.now().hour*60 + date.now().minute)/precision
+			indexProcess = (date.now().hour*60 + date.now().minute)/PhRegulation.precision
 
 			#Check decision and start or stop pump
 			if(phRegulation.pumpDecision[indexProcess] == 1):
-				phRegulation.set_value(True)
+				Queue_Global.PeristalticPump.enqueue('on')
 					
 			else:
-				peristalticPump.set_value(False)
+				Queue_Global.PeristalticPump.enqueue('off')
 
 			Queue.enqueueIfEmpty(state, data, 1000)
 			#print(pumpDecision[indexProcess])

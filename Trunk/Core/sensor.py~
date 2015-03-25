@@ -120,7 +120,7 @@ class Thermocouple(AnalogSensor):
 	"""
 	
 	# Builder class
-	def __init__(self, hardwareId, channel, refVolt, fSave, fRead):
+	def __init__(self, hardwareId, channel, refVolt, fSave, fRead, offset):
 		"""
 		Thermocouple sensor class
 		
@@ -130,6 +130,7 @@ class Thermocouple(AnalogSensor):
 		fRead  : sensor is read every fRead seconds
 		fSave  : Average value is stored in the database every fRead seconds
 		"""
+		self.offset = offset
 		AnalogSensor.__init__(self, hardwareId, channel, refVolt, fSave, fRead)
 	
 	# convert physical value to temperature value
@@ -157,7 +158,7 @@ class Thermocouple(AnalogSensor):
 
 		# temp = c0+(x*(c1+(x*(c2+(x*(c3+(x*(c4+(x*(c5+(x*(c6+(x*(c7+(x*(c8+(x*c9)))))))))))))))))
 		
-		temp = (voltValue - 1.25)/0.005
+		temp = (voltValue - 1.25)/0.005 + self.offset
 		
 		return float(temp)		
 	
@@ -201,7 +202,7 @@ class PhMeter(AnalogSensor):
 	"""
 	
 	# Builder class
-	def __init__(self, hardwareId, channel, refVolt, fSave, fRead):
+	def __init__(self, hardwareId, channel, refVolt, fSave, fRead, offset):
 		"""
 		Ph meter class
 		
@@ -212,7 +213,7 @@ class PhMeter(AnalogSensor):
 		fSave  : Average value is stored in the database every fRead seconds
 		"""
 
-		self.offset = 0 #TODO use the preferences
+		self.offset = offset
 		AnalogSensor.__init__(self, hardwareId, channel, refVolt, fSave, fRead)
 	
 	# convert physical value to ph value
@@ -228,6 +229,7 @@ class PhMeter(AnalogSensor):
 		#phValue = (0.0178*phSensor*200)-1.889
 
 		phValue = 3.5*value+self.offset
+		print(phValue)
 		return phValue
 
 	# Return ph
