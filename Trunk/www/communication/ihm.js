@@ -122,7 +122,7 @@ function getMeasure()
 
 		 	//We receive the data in JSON format
 		 	dataType : 'json', 
-
+ 
 		 	success : displayMeasure,
 
 		 	//If error
