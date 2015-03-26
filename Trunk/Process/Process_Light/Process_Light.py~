@@ -7,32 +7,50 @@
 
 from Queue import Queue
 from threading import Thread
-
+import time
 import Core.Queue_Global as Queue_Global
 from Core.QueueItem import QueueItem
+from Core.actuator import *
+import Core.database as database
+
 
 
 def process(Queue):
+
+
+
 
 	while True:
 		Item = Queue.get()
 		state = Item.state
 		data = Item.data
+		
 		if state == "Init":
-			print("Init State")
+			poolLightConfig = database.databaseLight.getHardwareConfigurationByName("Pool Light")
+			light = Light(poolLightConfig[0],poolLightConfig[2], False)
+
+
 
 		elif state == "Start":
 			print("Start State")	
 
-		elif state == "Process":
-			print("Process State")		
+		elif state == "Process":		
 			Queue.enqueueIfEmpty(state, data, 1000)
 			
 		elif state == "Stop":
 			print("Stop State")		
 
-		elif state == "Exit":
+		elif state == "light":
+			#print("Light " + data)
+			if(data == "on"):
+				light.set_value(True)
+			else:
+				light.set_value(False)	
 
+
+
+		elif state == "Exit":
+			del database.databaseLight
 			break
 		else:
 			print("Programmation error : This state is not implemented : "+state)
@@ -41,6 +59,6 @@ def process(Queue):
 
 
 def StartThread():
-	ThreadProcess = Thread(target=process, args=(Queue_Global.process_Template,))
+	ThreadProcess = Thread(target=process, args=(Queue_Global.process_Light,))
 	ThreadProcess.setDaemon(False)
 	ThreadProcess.start()

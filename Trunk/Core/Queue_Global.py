@@ -11,10 +11,11 @@ class ProcessQueue(Queue, object):
 	def __init__(self, maxsize = 0):
 		super(ProcessQueue, self).__init__()
         
-	def enqueue(self, state, data= False):
+	def enqueue(self, state, data= False):#Enqueue an element
 		self.put(QueueItem(state, data))
 
-	def enqueueIfEmpty(self, state, data = False, timeoutMs = 1000):
+	def enqueueIfEmpty(self, state, data = False, timeoutMs = 1000): #Enqueue the element if the queue is empty.
+
 		numberOfSeconds = timeoutMs/1000 # Number Of seconds to wait before timeout
 		while(numberOfSeconds > 0 and self.empty()):
 			if(numberOfSeconds >= 1):
@@ -26,9 +27,10 @@ class ProcessQueue(Queue, object):
 		if(self.empty()):
 			self.enqueue(state,data)
 
+#Declare The Process Queues
 process_UserCommand = ProcessQueue(maxsize=0)
 process_SensorsRead = ProcessQueue(maxsize=0)
-process_Actuators = ProcessQueue(maxsize=0)
+process_Light = ProcessQueue(maxsize=0)
 process_TemperatureRegulation = ProcessQueue(maxsize=0)
 process_Heater = ProcessQueue(maxsize=0)
 process_Pump = ProcessQueue(maxsize=0)

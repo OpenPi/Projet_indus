@@ -1,9 +1,4 @@
-# To add a new process, follow instructions :
-# Copy/Paste/rename Process_template folder
-# Go to Trunk/Core/Queue_Global.py and follow instructions
-# Go to Trunk/main.py and follow instructions
-# Rename Process name in StartThread function
-
+# templateAlertMinMax = alert.Alert('template_alert_database_userconfiguration', 'Template  alert title', 'Template alert Description')
 
 from Queue import Queue
 from threading import Thread

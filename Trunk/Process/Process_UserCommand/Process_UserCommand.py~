@@ -52,18 +52,30 @@ def StartThread():
 	ThreadProcess.setDaemon(False)
 	ThreadProcess.start()
 
-def command(type, command, targetName, value):
+def command(type, command, targetName, value): # Handle the user command
 	if(type == 'Actuators'):
 		if(targetName == 'light'):
-			Queue_Global.process_Actuators.enqueue(targetName, value)
+			Queue_Global.process_Light.enqueue(targetName, value)
 		elif(targetName == 'pump'):
 			Queue_Global.process_Pump.enqueue(value)
 		elif(targetName == 'peristalticPump'):
-			Queue_Global.process_Pump.enqueue(value)
+			Queue_Global.process_PeristalticPump.enqueue(value)
 	elif(type == 'UserConfiguration'):
 
-		if(targetName == 'ph_setpoint' or targetName == 'temperature_setpoint' or targetName == 'temperature_setpoint' or targetName == 'temperature_alert_level' or targetName == 'ph_alert_level' or targetName == 'ph_offset'):
-			print ("hahaha")
+		if(targetName == 'ph_setpoint'
+		or targetName == 'temperature_setpoint'
+		or targetName == 'temperature_setpoint'
+		or targetName == 'temperature_alert_level' 
+		or targetName == 'ph_alert_level' 
+		or targetName == 'ph_offset'
+		or targetName == 'pool_volume'
+		or targetName == 'power_heat_pump'
+		or targetName == 'water_level_alert'
+		or targetName == 'peristaltic_pump_debit'
+		or targetName == 'installation_tension'
+		or targetName == 'temperature_offset'
+		or targetName == 'pumping_hours'):
+			
 			database.databaseUserCommand.updateUserConfiguration(targetName, value)
 		else:
 			print('Database Error')

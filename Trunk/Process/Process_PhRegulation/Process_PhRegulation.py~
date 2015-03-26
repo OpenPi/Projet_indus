@@ -27,6 +27,7 @@ def process(Queue):
 			print("Start State")	
 
 		elif state == "setPumpDecision":
+			print("Set pump decision")	
 			phRegulation.set_pump_decision(data)	
 			PeristalticPumpHour = phRegulation.Regulate()
 			Queue_Global.process_PhRegulation.enqueue('Process')
@@ -37,15 +38,14 @@ def process(Queue):
 			#Calculate time to find index to check
 			hour = (date.now().hour*60 + date.now().minute)
 			indexProcess = (date.now().hour*60 + date.now().minute)/phRegulation.precision
-			stopHour =  indexProcess * phRegulation.precision + phRegulation.pumpDecision[indexProcess]
+			stopHour =  indexProcess * phRegulation.precision + PeristalticPumpHour[indexProcess]
 			#Check decision and start or stop pump
 			if(hour < stopHour):
 				Queue_Global.process_PeristalticPump.enqueue('on')
 					
 			else:
 				Queue_Global.process_PeristalticPump.enqueue('off')
-
-			Queue.enqueueIfEmpty(state, data, 1000)
+			Queue.enqueueIfEmpty(state, data, 60000)
 			#print(pumpDecision[indexProcess])
 			#indexProcess += 1
 

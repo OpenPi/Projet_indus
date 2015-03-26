@@ -27,6 +27,7 @@ def process(Queue):
 			print("Start State")	
 
 		elif state == "setPumpDecision":
+	
 			phRegulation.set_pump_decision(data)	
 			PeristalticPumpHour = phRegulation.Regulate()
 			Queue_Global.process_PhRegulation.enqueue('Process')
@@ -44,8 +45,7 @@ def process(Queue):
 					
 			else:
 				Queue_Global.process_PeristalticPump.enqueue('off')
-
-			Queue.enqueueIfEmpty(state, data, 1000)
+			Queue.enqueueIfEmpty(state, data, 60000)
 			#print(pumpDecision[indexProcess])
 			#indexProcess += 1
 

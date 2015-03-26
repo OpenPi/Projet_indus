@@ -10,8 +10,8 @@ class Database:
     def __del__(self):
         self.db.close()
 
-    def insertMeasure(self, hardwareConfigurationId, value):
-        # Use all the SQL you like$
+    def insertMeasure(self, hardwareConfigurationId, value): #Insert a measure in the database
+  
         try:
 
 	    cur = self.db.cursor()
@@ -21,7 +21,7 @@ class Database:
         except:
             self.db.rollback()
 
-    def getUserCommand(self):
+    def getUserCommand(self): # Select all the user commands
 	
 	cur = self.db.cursor()
         cur.execute("SELECT * FROM usercommand WHERE done=0")
@@ -30,7 +30,7 @@ class Database:
 	cur.close()
         return result
 
-    def userCommandDone(self, id):
+    def userCommandDone(self, id): # Update the Done bit to 1 
 
 
         try:
@@ -52,7 +52,7 @@ class Database:
         except:
             self.db.rollback()
 
-    def getUserConfiguration(self, name):
+    def getUserConfiguration(self, name): # get a user configuration
 
 	cur = self.db.cursor()
 	try:
@@ -66,7 +66,7 @@ class Database:
    	    print "Error: unable to fecth data"
 	    return 0	
 
-    def getUserConfigurationValue(self, name):
+    def getUserConfigurationValue(self, name):# get a user configuration value
 
 	cur = self.db.cursor()
 	try:
@@ -80,7 +80,8 @@ class Database:
    	    print "Error: unable to fecth data"
 	    return 0
 
-    def getHardwareConfigurationByName(self, name):
+    def getHardwareConfigurationByName(self, name): #Get hardware configuration by name
+
 
 	cur = self.db.cursor()
 	try:
@@ -95,7 +96,7 @@ class Database:
 	    return 0	
 
 
-    def getLastMeasureByName(self, name):
+    def getLastMeasureByName(self, name): # Get the Last Measure with the sensor's name
 
 	cur = self.db.cursor()
         cur.execute("SELECT measure.value, hardwareconfiguration.name, measure.timestamp FROM measure INNER JOIN hardwareconfiguration ON measure.hardwareConfigurationId = hardwareconfiguration.Id WHERE name = '"+ name +"' ORDER BY timestamp DESC")
@@ -107,7 +108,7 @@ class Database:
 
         return result
 
-    def getLastMeasureByHardwareConfigurationId(self, hardwareConfigurationId):
+    def getLastMeasureByHardwareConfigurationId(self, hardwareConfigurationId):# Get the Last Measure with hardware configuration id
 
 	cur = self.db.cursor()
         cur.execute("SELECT measure.value, hardwareconfiguration.name, measure.timestamp FROM measure INNER JOIN hardwareconfiguration WHERE hardwareConfigurationId = '"+ str(hardwareConfigurationId) +"' ORDER BY timestamp DESC")
@@ -119,11 +120,11 @@ class Database:
 
         return result
 
-    def addAlertIfNotExist(self, name, description, hardwareConfigurationId):
+    def addAlertIfNotExist(self, name, description, hardwareConfigurationId): # Add alert if it has been shown there is more than 1 day
 
 	try:
 	    cur = self.db.cursor()
-	    cur.execute("SELECT * FROM alerts WHERE hardwareConfigurationId="+str(hardwareConfigurationId)+" AND timestamp > NOW() - interval 1 day AND shown = 0 LIMIT 1")
+	    cur.execute("SELECT * FROM alerts WHERE hardwareConfigurationId="+str(hardwareConfigurationId)+" AND timestamp > NOW() - interval 1 day OR shown = 0 LIMIT 1")
             result = cur.rowcount
 
 	    if(result == 0):
@@ -141,9 +142,9 @@ class Database:
    	    print "Error: unable to add alert"
 	    return 0	
 	
- 
+# Instance Databases connection. One for each process because MySQL send an exception if two processes are trying to send a     request with the same database connection.
 databaseSensorsRead = Database("localhost", "root", "root", "plashboard")
-databaseActuators = Database("localhost", "root", "root", "plashboard")
+databaseLight = Database("localhost", "root", "root", "plashboard")
 databaseUserCommand = Database("localhost", "root", "root", "plashboard")
 databaseThermocoupleRegulation = Database("localhost", "root", "root", "plashboard")
 databaseHeater = Database("localhost", "root", "root", "plashboard")

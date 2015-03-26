@@ -26,12 +26,14 @@ class ProcessQueue(Queue, object):
 		if(self.empty()):
 			self.enqueue(state,data)
 
+#Declare The Process Queues
 process_UserCommand = ProcessQueue(maxsize=0)
 process_SensorsRead = ProcessQueue(maxsize=0)
-process_Actuators = ProcessQueue(maxsize=0)
+process_Light = ProcessQueue(maxsize=0)
 process_TemperatureRegulation = ProcessQueue(maxsize=0)
 process_Heater = ProcessQueue(maxsize=0)
 process_Pump = ProcessQueue(maxsize=0)
 process_Alert = ProcessQueue(maxsize=0)
 process_PeristalticPump = ProcessQueue(maxsize=0)
+process_PhRegulation = ProcessQueue(maxsize=0)
 process_RTC = ProcessQueue(maxsize=0)

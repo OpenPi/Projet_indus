@@ -180,6 +180,7 @@ def process(Queue):
 			dateIndex = date.now()
 
 			#Start process loop
+			Queue_Global.process_PhRegulation.enqueue('setPumpDecision', pumpDecision)
 			Queue_Global.process_Pump.enqueue('Start')
 			
 		elif state == "Start":
@@ -201,7 +202,7 @@ def process(Queue):
 					
 				else:
 					pump.set_value(False)
-				Queue_Global.process_PhRegulation.enqueue('setPumpDecision', pumpDecision)
+				
 				Queue.enqueueIfEmpty(state, data, 60000)
 					
 		elif state == "on":			
