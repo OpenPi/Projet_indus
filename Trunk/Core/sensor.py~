@@ -109,7 +109,7 @@ class NumericSensor(Sensor):
 		elif valueSensor == 1:
 			value = True
 		
-		return valueSensor		
+		return valueSensor
 	
 
 	
@@ -169,7 +169,7 @@ class Thermocouple(AnalogSensor):
 		"""
 		
 		voltValue = self.get_value_sensor()
-		
+		print(voltValue)
 		# If get_value_sensor work return Temperature else Error
 		if voltValue == -1:
 			print("ERROR: get value thermocouple sensor\n")
@@ -229,7 +229,7 @@ class PhMeter(AnalogSensor):
 		#phValue = (0.0178*phSensor*200)-1.889
 
 		phValue = 3.5*value+self.offset
-		print(phValue)
+		
 		return phValue
 
 	# Return ph
@@ -261,6 +261,7 @@ class PhMeter(AnalogSensor):
 				average += value	
 			sensorAverageValue = average / len(self.sensorValue)
 			database.databaseSensorsRead.insertMeasure(self.hardwareId, sensorAverageValue)
+			print(sensorAverageValue)
 			self.sensorValue = []
 			
 class AmpereMeter(AnalogSensor):
@@ -439,7 +440,7 @@ class NewAnalogSensor(AnalogSensor):
 		"""
 	
 		voltValue = self.get_value_sensor()
-		
+
 		# If get_value_sensor work return analog value else Error
 		if voltValue == -1:
 			print("ERROR: get value ph sensor\n")

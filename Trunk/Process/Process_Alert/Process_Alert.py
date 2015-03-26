@@ -24,7 +24,7 @@ def process(Queue):
 			print("Start State")	
 
 		elif state == "Process":
-	
+
 			temperatureAlert.checkAndSendAlert()
 			phAlert.checkAndSendAlert()
 			waterLevelAlert.checkAndSendAlert()

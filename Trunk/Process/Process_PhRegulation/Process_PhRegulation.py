@@ -45,7 +45,7 @@ def process(Queue):
 					
 			else:
 				Queue_Global.process_PeristalticPump.enqueue('off')
-			Queue.enqueueIfEmpty(state, data, 60000)
+			Queue.enqueueIfEmpty(state, data, 1000)
 			#print(pumpDecision[indexProcess])
 			#indexProcess += 1
 

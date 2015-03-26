@@ -1,4 +1,4 @@
-# templateAlert = alert.Alert('template_alert_database_userconfiguration', 'Template  alert title', 'Template alert Description')
+# templateAlertMinMax = alert.Alert('template_alert_database_userconfiguration', 'Template  alert title', 'Template alert Description')
 
 from Queue import Queue
 from threading import Thread
@@ -24,8 +24,9 @@ def process(Queue):
 			print("Start State")	
 
 		elif state == "Process":
-	
+			print("hohoho")
 			temperatureAlert.checkAndSendAlert()
+			print("hahaha")
 			phAlert.checkAndSendAlert()
 			waterLevelAlert.checkAndSendAlert()
 			Queue.enqueueIfEmpty(state, data, 1000)

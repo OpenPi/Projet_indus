@@ -124,11 +124,10 @@ class Database:
 
 	try:
 	    cur = self.db.cursor()
-	    cur.execute("SELECT * FROM alerts WHERE hardwareConfigurationId="+str(hardwareConfigurationId)+" AND timestamp > NOW() - interval 1 day OR shown = 0 LIMIT 1")
+	    cur.execute("SELECT * FROM alerts WHERE hardwareConfigurationId="+str(hardwareConfigurationId)+" AND (timestamp > NOW() - interval 1 day OR shown = 0) LIMIT 1")
             result = cur.rowcount
-
 	    if(result == 0):
-
+	    	
 	        cur.execute("INSERT INTO alerts (hardwareConfigurationId, name, description, timestamp, shown) VALUES (\""+str(hardwareConfigurationId)+"\", \""+name+"\", \""+description+"\", NOW(), 0)")
 	    
 	    self.db.commit()

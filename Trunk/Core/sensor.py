@@ -169,7 +169,6 @@ class Thermocouple(AnalogSensor):
 		"""
 		
 		voltValue = self.get_value_sensor()
-		
 		# If get_value_sensor work return Temperature else Error
 		if voltValue == -1:
 			print("ERROR: get value thermocouple sensor\n")
@@ -440,7 +439,7 @@ class NewAnalogSensor(AnalogSensor):
 		"""
 	
 		voltValue = self.get_value_sensor()
-		
+
 		# If get_value_sensor work return analog value else Error
 		if voltValue == -1:
 			print("ERROR: get value ph sensor\n")
