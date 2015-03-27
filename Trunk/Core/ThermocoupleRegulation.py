@@ -59,7 +59,7 @@ class ThermocoupleRegulation(object):
 		Recovery of the temperature in the database
 		"""
 		temperature = database.databaseThermocoupleRegulation.getLastMeasureByName("Pool Temperature Sensor")[0]
-		print("Temperature = {} ".format(temperature))
+		#print("Temperature = {} ".format(temperature))
 		return temperature
 	    
 	
@@ -70,14 +70,14 @@ class ThermocoupleRegulation(object):
 		"""
 		Request of pump operation
 		"""
-		print("turn on heating")
+		#print("turn on heating")
 		Queue_Global.process_Heater.enqueue('on', numberOfSeconds)
 	 
 	def turn_off(self):
 		"""
 		Request the pump stop
 		"""
-		print("turn off heating")
+		#print("turn off heating")
 		Queue_Global.process_Heater.enqueue('off')
 	 
 	
@@ -112,7 +112,7 @@ class ThermocoupleRegulation(object):
 	
 		#calculation results PID
 		PID = self.P_value + self.I_value + self.D_value
-		print("PID = {}".format(PID))
+		#print("PID = {}".format(PID))
 	
 		return PID
 
@@ -128,7 +128,7 @@ class ThermocoupleRegulation(object):
 		initialTemperature = PID/2
 
 		heatingTime = (self.poolVolume * initialTemperature * 1.163) / self.powerHeatPump
-		print("heatingTime = {} minutes, {} heures, {} jours".format(heatingTime*60, heatingTime, heatingTime/24))
+		#print("heatingTime = {} minutes, {} heures, {} jours".format(heatingTime*60, heatingTime, heatingTime/24))
 		
 		self.turn_on(heatingTime*60*60) #return time heating operation
 

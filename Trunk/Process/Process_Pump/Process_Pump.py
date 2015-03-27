@@ -25,7 +25,6 @@ def process(Queue):
 		if state == "Init":
 
 			indexProcess = 0
-
 			date = datetime
 
 			precision = 30 #minute
@@ -184,7 +183,7 @@ def process(Queue):
 			Queue_Global.process_Pump.enqueue('Start')
 			
 		elif state == "Start":
-			print("Start State")
+			#print("Start State")
 			Queue_Global.process_Pump.enqueue('auto')	
 
 		elif state == "Process":
@@ -212,13 +211,13 @@ def process(Queue):
 			pump.set_off()	
 
 		elif state == "auto":
-			print("Auto State")
+			#print("Auto State")
 			pump.set_mode_auto()
 			Queue_Global.process_Pump.enqueue('Process')	
 
 		elif state == "Stop":
-			print("Stop State")	
-
+			#print("Stop State")	
+			pass
 		elif state == "Exit":
 
 			break

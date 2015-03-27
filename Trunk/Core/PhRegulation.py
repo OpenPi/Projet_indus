@@ -38,7 +38,7 @@ class PhRegulation(object):
 		self.correctingBasicPh = 160 #ml (milliliter)
 		self.lowerPh = 0.1 #unit ph
 		self.poolVolume = float(database.databasePhRegulation.getUserConfigurationValue("pool_volume")) #volume of the pool (m3) .
-		print(self.poolVolume)
+		#print(self.poolVolume)
 		self.pumpDecision = [] #schedule of pump operation hours
 		#Rate of flow, parameter of the peristaltic pump
 		self.valueLiter = float(database.databasePhRegulation.getUserConfigurationValue("peristaltic_pump_debit")) #unit liter 
@@ -130,15 +130,15 @@ class PhRegulation(object):
 		"""
 		#calculating the volume of product injection
 		calculatePhLess = self.Calculate_Volume_Produced_LessPh(self.BD_PH(), self.set_point)
-		print("calculatePhLess ml = {} and L = {}".format(calculatePhLess, calculatePhLess/1000))
+		#print("calculatePhLess ml = {} and L = {}".format(calculatePhLess, calculatePhLess/1000))
 
 		#calculating the number of product injection
 		timeProduced = self.Calculate_Time_Produced_LessPh(calculatePhLess)
-		print("timeProduced = {} secondes soit {} minutes".format(timeProduced*60, timeProduced))
+		#print("timeProduced = {} secondes soit {} minutes".format(timeProduced*60, timeProduced))
 
 		#calculating the number of product injection days
 		NumberInjection = self.Calculate_Number_Injection(self.poolVolume)
-		print("NumberInjection = {}".format(NumberInjection))
+		#print("NumberInjection = {}".format(NumberInjection))
 
 		#calculating operation hours of injection with respect to the hours of operation of the pump of the swimming pool.
 		precision = self.precision #precision
@@ -184,9 +184,9 @@ class PhRegulation(object):
 			else :
 				forecast += 1
 
-		print("timeInjectionBlock = {}".format(timeInjectionBlock))
-		print("pumpDecision = {}".format(self.pumpDecision))
-		print("peristalticPumpDecision = {}".format(peristalticPumpDecision))
+		#print("timeInjectionBlock = {}".format(timeInjectionBlock))
+		#print("pumpDecision = {}".format(self.pumpDecision))
+		#print("peristalticPumpDecision = {}".format(peristalticPumpDecision))
 
 		return peristalticPumpDecision
 

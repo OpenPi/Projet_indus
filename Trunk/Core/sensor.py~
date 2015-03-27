@@ -6,7 +6,7 @@ from Lib.IO_Num import get_input_num
 from Lib.IO_Num import set_input_direction
 
 import Core.database as database
-
+import Core.Queue_Global as Queue_Global
 """
 ================================================
 Sensors class
@@ -169,13 +169,16 @@ class Thermocouple(AnalogSensor):
 		"""
 		
 		voltValue = self.get_value_sensor()
-		print(voltValue)
-		# If get_value_sensor work return Temperature else Error
-		if voltValue == -1:
-			print("ERROR: get value thermocouple sensor\n")
+
+		if voltValue == 0.0:
+			#TODO Alert thermocouple malfunction and stop Heater
+			Queue_Global.process_TemperatureRegulation.enqueue('Stop')
+			Queue_Global.process_Heater.enqueue('off')
+			
 			return -1
 		else:
 			return self.conversion(voltValue)
+
 
 	def read_save(self, NumberOfSecond):
 		#print(NumberOfSecond)
@@ -240,9 +243,15 @@ class PhMeter(AnalogSensor):
 	
 		voltValue = self.get_value_sensor()
 		
+
+
+
 		# If get_value_sensor work return ph else Error
-		if voltValue == -1:
-			print("ERROR: get value ph sensor\n")
+		if voltValue == 0.0:
+			#TODO Alert ph meter malfunction
+			Queue_Global.process_PhRegulation.enqueue('Stop')
+			Queue_Global.process_PeristalticPump.enqueue('off')
+			
 			return -1
 		else:
 			return self.conversion(voltValue)

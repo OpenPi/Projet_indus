@@ -12,7 +12,7 @@ import Core.Queue_Global as Queue_Global
 from Core.QueueItem import QueueItem
 import Core.database as database
 from Core.actuator import Heater
-import time
+
 
 def process(Queue):
 
@@ -22,14 +22,13 @@ def process(Queue):
 		data = Item.data
 		if state == "Init":
 			poolHeaterConfig = database.databaseHeater.getHardwareConfigurationByName("Pool Heater")
-			heater = Heater(poolHeaterConfig[0],poolHeaterConfig[2], False)
-			time.sleep(5)			
+			heater = Heater(poolHeaterConfig[0],poolHeaterConfig[2], False)			
 			Queue_Global.process_TemperatureRegulation.enqueue('Process')
 		elif state == "Start":
 			print("Start State")	
 
 		elif state == "on":
-			print("Heater : On State")
+			#print("Heater : On State")
 			numberOfSecond = data
 			heater.set_value(True)
 			Queue_Global.process_Heater.enqueue('Process')

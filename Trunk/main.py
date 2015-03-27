@@ -38,6 +38,7 @@ Process_PhRegulation.StartThread()
 
 commande = ""
 
+#Init
 Queue_Global.process_UserCommand.enqueue('Process')
 Queue_Global.process_SensorsRead.enqueue('Init')
 Queue_Global.process_SensorsRead.enqueue('Process')
@@ -49,9 +50,10 @@ Queue_Global.process_Alert.enqueue('Process')
 Queue_Global.process_PeristalticPump.enqueue('Init')
 Queue_Global.process_RTC.enqueue('Init')
 
+print("PlashBoard........................Init")
 
 while commande != "Exit":
-    commande = raw_input("commande : ")
+    commande = raw_input("")
     if commande == "Exit":
         Queue_Global.process_UserCommand.enqueue('Exit')
         Queue_Global.process_SensorsRead.enqueue('Exit')

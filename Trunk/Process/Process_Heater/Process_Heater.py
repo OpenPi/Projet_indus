@@ -28,12 +28,12 @@ def process(Queue):
 			print("Start State")	
 
 		elif state == "on":
-			print("Heater : On State")
+			#print("Heater : On State")
 			numberOfSecond = data
 			heater.set_value(True)
 			Queue_Global.process_Heater.enqueue('Process')
 		elif state == "off":
-			print("Heater : Off State")	
+			#print("Heater : Off State")	
 			heater.set_value(False)
 
 		elif state == "Process":

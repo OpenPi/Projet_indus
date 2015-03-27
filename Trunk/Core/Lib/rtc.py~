@@ -17,7 +17,7 @@ def initRtc():
 	After test Return OS clock
 	"""
 	req = url.Request('http://www.google.com')		# Create request of connection
-	
+	print(rtc.read_date())
 	# Control state connection
 	try:
 		url.urlopen(req)

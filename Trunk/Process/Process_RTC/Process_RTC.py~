@@ -19,22 +19,22 @@ def process(Queue):
 		state = Item.state
 		data = Item.data
 		if state == "Init":
-			print("RTC Init State")
+			#print("RTC Init State")
 			rtc.initRtc()
 			Queue_Global.process_RTC.enqueue('Process')
 
 		elif state == "Start":
-			print("Start State")	
+			#print("Start State")	
 
 		elif state == "Process":
-			print("RTC Process State")
+
 			rtc.reguleTime()
 	
 			Queue.enqueueIfEmpty(state, data, 1000)
 			
 		elif state == "Stop":
-			print("Stop State")		
-
+			#print("Stop State")		
+			pass
 		elif state == "Exit":
 
 			break
